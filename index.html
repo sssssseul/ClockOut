@@ -50,8 +50,8 @@
   .dot-lunch { background: #D3D1C7; border: 1px solid #444441; }
   .settings-card { background: #fff; border: 0.5px solid #e0dfd8; border-radius: 12px; padding: 12px 14px; display: flex; align-items: center; gap: 8px; }
   .settings-card label { font-size: 12px; color: #888780; white-space: nowrap; display: flex; align-items: center; gap: 4px; flex-shrink: 0; font-family: 'Noto Sans KR', sans-serif; }
-  .settings-card input[type="time"] { flex: 1; min-width: 0; font-size: 12px; color: #888780; border: 0.5px solid #e0dfd8; border-radius: 6px; padding: 4px 8px; background: #f9f9f7; outline: none; font-family: 'Noto Sans KR', sans-serif; }
-  .settings-card input[type="time"]:focus { border-color: #185FA5; }
+  .settings-card select { flex: 1; min-width: 0; font-size: 12px; color: #888780; border: 0.5px solid #e0dfd8; border-radius: 6px; padding: 4px 8px; background: #f9f9f7; outline: none; font-family: 'Noto Sans KR', sans-serif; cursor: pointer; }
+  .settings-card select:focus { border-color: #185FA5; }
 </style>
 </head>
 <body>
@@ -87,16 +87,35 @@
 
   <div class="settings-card">
     <label><i class="ti ti-clock" style="font-size:13px"></i> 출근</label>
-    <input type="time" id="start-time" value="09:00">
+    <select id="start-time"></select>
     <label><i class="ti ti-home" style="font-size:13px"></i> 퇴근</label>
-    <input type="time" id="end-time" value="18:00">
+    <select id="end-time"></select>
   </div>
 </div>
 
 <script>
 const LUNCH_START=11*60+30, LUNCH_END=13*60;
+
 function getMins(str){const[h,m]=str.split(':').map(Number);return h*60+m;}
 function fmt(s){const h=Math.floor(s/3600),m=Math.floor((s%3600)/60),ss=s%60;return[h,m,ss].map(n=>String(n).padStart(2,'0')).join(':');}
+
+function buildOptions(selectEl, defaultVal){
+  for(let t=0;t<24*60;t+=30){
+    const h=Math.floor(t/60),m=t%60;
+    const val=String(h).padStart(2,'0')+':'+String(m).padStart(2,'0');
+    const ampm=h<12?'오전':'오후';
+    const hh=h===0?12:h>12?h-12:h;
+    const label=ampm+' '+hh+':'+String(m).padStart(2,'0');
+    const opt=document.createElement('option');
+    opt.value=val;
+    opt.textContent=label;
+    if(val===defaultVal)opt.selected=true;
+    selectEl.appendChild(opt);
+  }
+}
+
+buildOptions(document.getElementById('start-time'),'09:00');
+buildOptions(document.getElementById('end-time'),'18:00');
 
 function tick(){
   const now=new Date();
