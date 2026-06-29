@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ClockOut</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #f5f5f3;
+    font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    padding: 2rem 1rem;
+  }
+  .wrap { width: 100%; max-width: 480px; }
+  .cards { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px; }
+  .card { background: #fff; border: 0.5px solid #e0dfd8; border-radius: 12px; padding: 12px 14px; }
+  .card-label { font-size: 11px; color: #888780; margin-bottom: 6px; display: flex; align-items: center; gap: 5px; }
+  .card-value { font-size: 26px; font-weight: 500; color: #1a1a18; font-variant-numeric: tabular-nums; letter-spacing: -1px; line-height: 1; }
+  .card-sub-row { display: flex; align-items: center; gap: 6px; margin-top: 4px; }
+  .card-sub { font-size: 12px; color: #888780; }
+  .muted { font-size: 16px; font-weight: 400; color: #888780; }
+  .badge { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 99px; font-family: 'Noto Sans KR', sans-serif; }
+  .badge-work { background: #E6F1FB; color: #185FA5; }
+  .badge-done { background: #EAF3DE; color: #3B6D11; }
+  .badge-before { background: #FAEEDA; color: #854F0B; }
+  .badge-lunch { background: #f1efea; color: #5F5E5A; border: 0.5px solid #e0dfd8; }
+  .blocks-card { background: #fff; border: 0.5px solid #e0dfd8; border-radius: 12px; padding: 12px 14px; margin-bottom: 8px; }
+  .blocks-label { font-size: 11px; color: #888780; margin-bottom: 8px; }
+  .blocks-wrap { display: grid; grid-template-columns: repeat(9, 1fr); gap: 4px; }
+  .block { border-radius: 5px; height: 24px; }
+  .block.done { background: #F4C0D1; border: 1px solid #993556; }
+  .block.current { background: #E6F1FB; border: 1px solid #185FA5; }
+  .block.remaining { background: #f1efea; border: 1px solid #888780; opacity: 0.4; }
+  .block.lunch { background: #D3D1C7; border: 1px solid #444441; }
+  .block.lunch.done { background: #B4B2A9; border: 1px solid #2C2C2A; }
+  .legend { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 8px; }
+  .leg { display: flex; align-items: center; gap: 4px; font-size: 11px; color: #888780; }
+  .leg-dot { width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0; }
+  .dot-done { background: #F4C0D1; border: 1px solid #993556; }
+  .dot-current { background: #E6F1FB; border: 1px solid #185FA5; }
+  .dot-rem { background: #f1efea; border: 1px solid #888780; opacity: 0.4; }
+  .dot-lunch { background: #D3D1C7; border: 1px solid #444441; }
+  .settings-card { background: #fff; border: 0.5px solid #e0dfd8; border-radius: 12px; padding: 12px 14px; display: flex; align-items: center; gap: 8px; }
+  .settings-card label { font-size: 12px; color: #888780; white-space: nowrap; display: flex; align-items: center; gap: 4px; flex-shrink: 0; font-family: 'Noto Sans KR', sans-serif; }
+  .settings-card input[type="time"] { flex: 1; min-width: 0; font-size: 12px; color: #888780; border: 0.5px solid #e0dfd8; border-radius: 6px; padding: 4px 8px; background: #f9f9f7; outline: none; font-family: 'Noto Sans KR', sans-serif; }
+  .settings-card input[type="time"]:focus { border-color: #185FA5; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="cards">
+    <div class="card">
+      <div class="card-label"><i class="ti ti-stack" style="font-size:13px"></i> 진행 세트</div>
+      <div class="card-value" id="sets-val">--<span class="muted" id="sets-total"></span></div>
+      <div class="card-sub-row">
+        <span class="card-sub">30분 단위</span>
+        <span class="badge badge-work" id="badge">로딩 중</span>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-label"><i class="ti ti-clock" style="font-size:13px"></i> 남은 시간</div>
+      <div class="card-value" id="countdown">--:--:--</div>
+      <div class="card-sub-row">
+        <span class="card-sub" id="sublabel">퇴근까지</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="blocks-card">
+    <div class="blocks-label">30분 블록 · 점심 11:30~13:00 고정</div>
+    <div class="blocks-wrap" id="blocks"></div>
+    <div class="legend">
+      <div class="leg"><div class="leg-dot dot-done"></div>완료</div>
+      <div class="leg"><div class="leg-dot dot-current"></div>진행 중</div>
+      <div class="leg"><div class="leg-dot dot-rem"></div>남은 세트</div>
+      <div class="leg"><div class="leg-dot dot-lunch"></div>점심</div>
+    </div>
+  </div>
+
+  <div class="settings-card">
+    <label><i class="ti ti-clock" style="font-size:13px"></i> 출근</label>
+    <input type="time" id="start-time" value="09:00">
+    <label><i class="ti ti-home" style="font-size:13px"></i> 퇴근</label>
+    <input type="time" id="end-time" value="18:00">
+  </div>
+</div>
+
+<script>
+const LUNCH_START=11*60+30, LUNCH_END=13*60;
+function getMins(str){const[h,m]=str.split(':').map(Number);return h*60+m;}
+function fmt(s){const h=Math.floor(s/3600),m=Math.floor((s%3600)/60),ss=s%60;return[h,m,ss].map(n=>String(n).padStart(2,'0')).join(':');}
+
+function tick(){
+  const now=new Date();
+  const nowMins=now.getHours()*60+now.getMinutes();
+  const nowSecs=now.getHours()*3600+now.getMinutes()*60+now.getSeconds();
+  const startMins=getMins(document.getElementById('start-time').value);
+  const endMins=getMins(document.getElementById('end-time').value);
+  const startSecs=startMins*60,endSecs=endMins*60;
+
+  const blocks=[];
+  for(let t=startMins;t<endMins;t+=30)blocks.push({start:t,end:Math.min(t+30,endMins)});
+
+  const blocksEl=document.getElementById('blocks');
+  blocksEl.innerHTML='';
+  let completed=0,total=0;
+
+  blocks.forEach(b=>{
+    const div=document.createElement('div');
+    const mid=(b.start+b.end)/2;
+    const isLunch=mid>=LUNCH_START&&mid<=LUNCH_END;
+    if(!isLunch)total++;
+    if(isLunch){div.className=nowMins>=b.end?'block lunch done':'block lunch';}
+    else if(nowMins>=b.end){div.className='block done';completed++;}
+    else if(nowMins>=b.start&&nowMins<b.end){div.className='block current';}
+    else{div.className='block remaining';}
+    blocksEl.appendChild(div);
+  });
+
+  const isLunch=nowMins>=LUNCH_START&&nowMins<LUNCH_END;
+  const cdEl=document.getElementById('countdown');
+  const badge=document.getElementById('badge');
+  const sub=document.getElementById('sublabel');
+  const setsVal=document.getElementById('sets-val');
+  const setsTotal=document.getElementById('sets-total');
+  setsTotal.textContent=' / '+total;
+
+  if(nowMins<startMins){
+    cdEl.textContent=fmt(Math.max(0,startSecs-nowSecs));
+    badge.className='badge badge-before';badge.textContent='출근 전';
+    sub.textContent='출근까지';setsVal.childNodes[0].textContent='--';setsTotal.textContent='';
+  }else if(nowSecs>=endSecs){
+    cdEl.textContent='퇴근!';
+    badge.className='badge badge-done';badge.textContent='완료';
+    sub.textContent='수고하셨습니다';setsVal.childNodes[0].textContent=total;
+  }else if(isLunch){
+    cdEl.textContent=fmt(Math.max(0,LUNCH_END*60-nowSecs));
+    badge.className='badge badge-lunch';badge.textContent='점심시간';
+    sub.textContent='점심 끝까지';setsVal.childNodes[0].textContent=completed;
+  }else{
+    cdEl.textContent=fmt(Math.max(0,endSecs-nowSecs));
+    badge.className='badge badge-work';badge.textContent='근무 중';
+    sub.textContent='퇴근까지';setsVal.childNodes[0].textContent=completed;
+  }
+}
+
+tick();
+setInterval(tick,1000);
+['start-time','end-time'].forEach(id=>document.getElementById(id).addEventListener('change',tick));
+</script>
+</body>
+</html>
