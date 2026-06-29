@@ -136,15 +136,15 @@ function tick(){
   if(nowMins<startMins){
     cdEl.textContent=fmt(Math.max(0,startSecs-nowSecs));
     badge.className='badge badge-before';badge.textContent='출근 전';
-    sub.textContent='출근까지';setsVal.childNodes[0].textContent='--';setsTotal.textContent='';
+    sub.textContent='퇴근까지';setsVal.childNodes[0].textContent='--';setsTotal.textContent='';
   }else if(nowSecs>=endSecs){
     cdEl.textContent='퇴근!';
     badge.className='badge badge-done';badge.textContent='완료';
     sub.textContent='수고하셨습니다';setsVal.childNodes[0].textContent=total;
   }else if(isLunch){
-    cdEl.textContent=fmt(Math.max(0,LUNCH_END*60-nowSecs));
+    cdEl.textContent=fmt(Math.max(0,endSecs-nowSecs));
     badge.className='badge badge-lunch';badge.textContent='점심시간';
-    sub.textContent='점심 끝까지';setsVal.childNodes[0].textContent=completed;
+    sub.textContent='퇴근까지';setsVal.childNodes[0].textContent=completed;
   }else{
     cdEl.textContent=fmt(Math.max(0,endSecs-nowSecs));
     badge.className='badge badge-work';badge.textContent='근무 중';
