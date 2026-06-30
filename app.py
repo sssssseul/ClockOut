@@ -12,12 +12,21 @@ DATABASE_URL = os.environ.get('DATABASE_URL')
 ADJ = ["졸린", "배고픈", "신난", "지친", "느긋한", "용감한", "조용한", "엉뚱한",
        "행복한", "느린", "빠른", "수줍은", "단호한", "차분한", "엉성한", "튼튼한",
        "졸음많은", "커피사랑", "야근싫은", "퇴근직전"]
-NOUN = ["돼지", "다람쥐", "펭귄", "햄스터", "여우", "고래", "토끼", "부엉이",
-        "거북이", "수달", "코알라", "사자", "너구리", "오리", "곰", "강아지",
-        "물개", "기린", "판다", "라마"]
+
+ANIMAL_EMOJI = {
+    "돼지": "🐷", "다람쥐": "🐿️", "펭귄": "🐧", "햄스터": "🐹",
+    "여우": "🦊", "고래": "🐳", "토끼": "🐰", "부엉이": "🦉",
+    "거북이": "🐢", "수달": "🦦", "코알라": "🐨", "사자": "🦁",
+    "너구리": "🦝", "오리": "🦆", "곰": "🐻", "강아지": "🐶",
+    "물개": "🦭", "기린": "🦒", "판다": "🐼", "라마": "🦙"
+}
+NOUN = list(ANIMAL_EMOJI.keys())
 
 def gen_nickname():
-    return random.choice(ADJ) + " " + random.choice(NOUN)
+    adj = random.choice(ADJ)
+    noun = random.choice(NOUN)
+    emoji = ANIMAL_EMOJI[noun]
+    return emoji + " " + adj + " " + noun
 
 def get_db():
     conn = psycopg2.connect(DATABASE_URL, sslmode='require')
