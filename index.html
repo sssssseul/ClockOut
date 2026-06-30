@@ -60,6 +60,22 @@
   .custom-card label { font-size: 12px; color: #888780; white-space: nowrap; display: flex; align-items: center; gap: 4px; flex-shrink: 0; width: 38px; font-family: 'Noto Sans KR', sans-serif; }
   .custom-card select { flex: 1; min-width: 0; font-size: 12px; color: #888780; border: 0.5px solid #e0dfd8; border-radius: 6px; padding: 4px 8px; background: #f9f9f7; outline: none; font-family: 'Noto Sans KR', sans-serif; cursor: pointer; }
   .custom-card select:focus { border-color: #185FA5; }
+  .chat-card { background: #fff; border: 0.5px solid #e0dfd8; border-radius: 12px; padding: 12px 14px; margin-top: 8px; }
+  .chat-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+  .chat-nickname { font-size: 11px; color: #185FA5; background: #E6F1FB; padding: 2px 8px; border-radius: 99px; font-family: 'Noto Sans KR', sans-serif; }
+  .chat-messages { display: flex; flex-direction: column; gap: 6px; max-height: 220px; overflow-y: auto; margin-bottom: 8px; padding-right: 2px; }
+  .chat-msg { font-size: 12px; line-height: 1.4; background: #f9f9f7; border-radius: 8px; padding: 6px 10px; }
+  .chat-msg .chat-msg-nick { color: #185FA5; font-weight: 500; margin-right: 4px; }
+  .chat-msg .chat-msg-time { color: #aaa; font-size: 10px; margin-left: 6px; }
+  .chat-msg.mine { background: #E6F1FB; }
+  .chat-empty { font-size: 12px; color: #aaa; text-align: center; padding: 12px 0; }
+  .chat-input-row { display: flex; gap: 6px; }
+  .chat-input-row input { flex: 1; min-width: 0; font-size: 12px; color: #5F5E5A; border: 0.5px solid #e0dfd8; border-radius: 6px; padding: 6px 10px; background: #f9f9f7; outline: none; font-family: 'Noto Sans KR', sans-serif; }
+  .chat-input-row input:focus { border-color: #185FA5; }
+  .chat-input-row button { background: #185FA5; color: #fff; border: none; border-radius: 6px; width: 32px; flex-shrink: 0; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+  .chat-input-row button:hover { background: #144d87; }
+  .chat-refresh-btn { background: none; border: 0.5px solid #e0dfd8; border-radius: 6px; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #888780; }
+  .chat-refresh-btn:hover { background: #f1efea; }
 </style>
 </head>
 <body>
@@ -106,6 +122,21 @@
     <select id="start-time"></select>
     <label><i class="ti ti-home" style="font-size:13px"></i> 퇴근</label>
     <select id="end-time"></select>
+  </div>
+
+  <div class="chat-card">
+    <div class="chat-header">
+      <span class="settings-label" style="margin:0;"><i class="ti ti-notebook" style="font-size:13px"></i> 방명록</span>
+      <div style="display:flex; align-items:center; gap:6px;">
+        <span class="chat-nickname" id="my-nickname">익명</span>
+        <button id="chat-refresh" class="chat-refresh-btn"><i class="ti ti-refresh" style="font-size:13px"></i></button>
+      </div>
+    </div>
+    <div class="chat-messages" id="chat-messages"></div>
+    <div class="chat-input-row">
+      <input type="text" id="chat-input" placeholder="한마디 남겨보세요" maxlength="200">
+      <button id="chat-send"><i class="ti ti-send" style="font-size:14px"></i></button>
+    </div>
   </div>
 </div>
 
@@ -271,6 +302,89 @@ function tick(){
 
 tick();
 setInterval(tick,1000);
+
+// --- 익명 방명록 ---
+let myNickname = localStorage.getItem('clockout-nickname');
+
+async function ensureNickname(){
+  if(!myNickname){
+    try{
+      const res = await fetch('/api/nickname');
+      const data = await res.json();
+      myNickname = data.nickname;
+      localStorage.setItem('clockout-nickname', myNickname);
+    }catch(e){
+      myNickname = '익명';
+    }
+  }
+  document.getElementById('my-nickname').textContent = myNickname;
+}
+
+function fmtChatTime(ts){
+  const d = new Date(ts*1000);
+  const h = d.getHours();
+  const ampm = h<12?'오전':'오후';
+  const hh = h===0?12:h>12?h-12:h;
+  return ampm+' '+hh+':'+String(d.getMinutes()).padStart(2,'0');
+}
+
+const chatMessagesEl = document.getElementById('chat-messages');
+
+function escapeHtml(str){
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+async function loadGuestbook(){
+  chatMessagesEl.innerHTML = '<div class="chat-empty">불러오는 중...</div>';
+  try{
+    const res = await fetch('/api/guestbook');
+    const data = await res.json();
+    const messages = data.messages || [];
+
+    if(messages.length === 0){
+      chatMessagesEl.innerHTML = '<div class="chat-empty">아직 방명록이 비어있어요. 첫 글을 남겨보세요!</div>';
+      return;
+    }
+
+    chatMessagesEl.innerHTML = messages.map(m=>{
+      const mine = m.nickname === myNickname;
+      return '<div class="chat-msg'+(mine?' mine':'')+'">'+
+        '<span class="chat-msg-nick">'+escapeHtml(m.nickname)+'</span>'+
+        escapeHtml(m.text)+
+        '<span class="chat-msg-time">'+fmtChatTime(m.ts)+'</span>'+
+        '</div>';
+    }).join('');
+  }catch(e){
+    chatMessagesEl.innerHTML = '<div class="chat-empty">불러오기 실패. 새로고침 버튼을 눌러주세요.</div>';
+  }
+}
+
+async function sendChat(){
+  const input = document.getElementById('chat-input');
+  const text = input.value.trim();
+  if(!text) return;
+  input.value = '';
+  try{
+    await fetch('/api/guestbook', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({nickname: myNickname, text})
+    });
+    loadGuestbook();
+  }catch(e){
+    input.value = text;
+  }
+}
+
+document.getElementById('chat-send').addEventListener('click', sendChat);
+document.getElementById('chat-input').addEventListener('keydown', (e)=>{
+  if(e.key === 'Enter') sendChat();
+});
+document.getElementById('chat-refresh').addEventListener('click', loadGuestbook);
+
+ensureNickname().then(loadGuestbook);
 </script>
 </body>
 </html>
