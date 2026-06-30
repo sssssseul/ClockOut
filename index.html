@@ -322,10 +322,13 @@ async function ensureNickname(){
 
 function fmtChatTime(ts){
   const d = new Date(ts*1000);
+  const year = d.getFullYear();
+  const month = String(d.getMonth()+1).padStart(2,'0');
+  const date = String(d.getDate()).padStart(2,'0');
   const h = d.getHours();
   const ampm = h<12?'오전':'오후';
   const hh = h===0?12:h>12?h-12:h;
-  return ampm+' '+hh+':'+String(d.getMinutes()).padStart(2,'0');
+  return year+'-'+month+'-'+date+' '+ampm+' '+hh+':'+String(d.getMinutes()).padStart(2,'0');
 }
 
 const chatMessagesEl = document.getElementById('chat-messages');
