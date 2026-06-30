@@ -304,7 +304,35 @@ tick();
 setInterval(tick,1000);
 
 // --- 익명 방명록 ---
+const ANIMAL_EMOJI = {
+  "돼지": "🐷", "다람쥐": "🐿️", "펭귄": "🐧", "햄스터": "🐹",
+  "여우": "🦊", "고래": "🐳", "토끼": "🐰", "부엉이": "🦉",
+  "거북이": "🐢", "수달": "🦦", "코알라": "🐨", "사자": "🦁",
+  "너구리": "🦝", "오리": "🦆", "곰": "🐻", "강아지": "🐶",
+  "물개": "🦭", "기린": "🦒", "판다": "🐼", "라마": "🦙"
+};
+
+function addEmojiToNickname(nickname){
+  if(!nickname) return nickname;
+  const firstChar = nickname.codePointAt(0);
+  if(firstChar > 0x1F000) return nickname;
+
+  for(const noun in ANIMAL_EMOJI){
+    if(nickname.includes(noun)){
+      return ANIMAL_EMOJI[noun] + ' ' + nickname;
+    }
+  }
+  return nickname;
+}
+
 let myNickname = localStorage.getItem('clockout-nickname');
+if(myNickname){
+  const withEmoji = addEmojiToNickname(myNickname);
+  if(withEmoji !== myNickname){
+    myNickname = withEmoji;
+    localStorage.setItem('clockout-nickname', myNickname);
+  }
+}
 
 async function ensureNickname(){
   if(!myNickname){
@@ -352,9 +380,10 @@ async function loadGuestbook(){
     }
 
     chatMessagesEl.innerHTML = messages.map(m=>{
-      const mine = m.nickname === myNickname;
+      const displayNick = addEmojiToNickname(m.nickname);
+      const mine = displayNick === myNickname;
       return '<div class="chat-msg'+(mine?' mine':'')+'">'+
-        '<span class="chat-msg-nick">'+escapeHtml(m.nickname)+'</span>'+
+        '<span class="chat-msg-nick">'+escapeHtml(displayNick)+'</span>'+
         escapeHtml(m.text)+
         '<span class="chat-msg-time">'+fmtChatTime(m.ts)+'</span>'+
         '</div>';
