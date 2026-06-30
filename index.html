@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ClockOut</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🍀</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500&display=swap" rel="stylesheet">
@@ -74,9 +75,9 @@
     </div>
     <div class="card">
       <div class="card-label"><i class="ti ti-clock" style="font-size:13px"></i> 남은 시간</div>
-      <div class="card-sub-row" style="align-items:baseline; gap:6px;">
+      <div class="card-sub-row" style="align-items:baseline; gap:6px; flex-wrap:nowrap;">
         <div class="card-value" id="countdown">--:--:--</div>
-        <span class="card-sub" id="now-clock"></span>
+        <span class="card-sub" id="now-clock" style="white-space:nowrap;"></span>
       </div>
       <div class="card-sub-row">
         <span class="card-sub" id="sublabel">퇴근까지</span>
