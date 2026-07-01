@@ -63,7 +63,12 @@
   .chat-card { background: #fff; border: 0.5px solid #e0dfd8; border-radius: 12px; padding: 12px 14px; margin-top: 8px; }
   .chat-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
   .chat-nickname { font-size: 11px; color: #185FA5; background: #E6F1FB; padding: 2px 8px; border-radius: 99px; font-family: 'Noto Sans KR', sans-serif; }
-  .chat-messages { display: flex; flex-direction: column; gap: 6px; max-height: 220px; overflow-y: auto; margin-bottom: 8px; padding-right: 2px; }
+  .chat-messages { display: flex; flex-direction: column; gap: 6px; margin-bottom: 8px; padding-right: 2px; }
+  .chat-pagination { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+  .chat-pagination button { background: none; border: 0.5px solid #e0dfd8; border-radius: 6px; padding: 4px 10px; font-size: 11px; color: #888780; cursor: pointer; font-family: 'Noto Sans KR', sans-serif; }
+  .chat-pagination button:hover { background: #f1efea; }
+  .chat-pagination button:disabled { opacity: 0.3; cursor: default; }
+  .chat-pagination .page-info { font-size: 11px; color: #888780; }
   .chat-msg { font-size: 12px; line-height: 1.4; background: #f9f9f7; border-radius: 8px; padding: 6px 10px; }
   .chat-msg .chat-msg-nick { color: #185FA5; font-weight: 500; margin-right: 4px; }
   .chat-msg .chat-msg-time { color: #aaa; font-size: 10px; margin-left: 6px; }
@@ -133,6 +138,11 @@
       </div>
     </div>
     <div class="chat-messages" id="chat-messages"></div>
+    <div class="chat-pagination" id="chat-pagination" style="display:none;">
+      <button id="page-prev">← 이전</button>
+      <span class="page-info" id="page-info"></span>
+      <button id="page-next">다음 →</button>
+    </div>
     <div class="chat-input-row">
       <input type="text" id="chat-input" placeholder="한마디 남겨보세요" maxlength="200">
       <button id="chat-send"><i class="ti ti-send" style="font-size:14px"></i></button>
@@ -161,7 +171,6 @@ function fmtLabel(t){
 function getMins(str){const[h,m]=str.split(':').map(Number);return h*60+m;}
 function fmt(s){const h=Math.floor(s/3600),m=Math.floor((s%3600)/60),ss=s%60;return[h,m,ss].map(n=>String(n).padStart(2,'0')).join(':');}
 
-// --- 드롭다운 옵션 생성 ---
 function buildOptions(selectEl, defaultVal){
   for(let t=0;t<24*60;t+=30){
     const h=Math.floor(t/60),m=t%60;
@@ -183,7 +192,6 @@ const savedEnd=localStorage.getItem('clockout-end')||'18:00';
 buildOptions(startSelect, savedStart);
 buildOptions(endSelect, savedEnd);
 
-// --- 프리셋 라디오 생성 ---
 const presetGrid=document.getElementById('preset-grid');
 
 function findMatchingPresetIdx(start, end){
@@ -316,7 +324,6 @@ function addEmojiToNickname(nickname){
   if(!nickname) return nickname;
   const firstChar = nickname.codePointAt(0);
   if(firstChar > 0x1F000) return nickname;
-
   for(const noun in ANIMAL_EMOJI){
     if(nickname.includes(noun)){
       return ANIMAL_EMOJI[noun] + ' ' + nickname;
@@ -360,6 +367,45 @@ function fmtChatTime(ts){
 }
 
 const chatMessagesEl = document.getElementById('chat-messages');
+const paginationEl = document.getElementById('chat-pagination');
+const pageInfoEl = document.getElementById('page-info');
+const pagePrevEl = document.getElementById('page-prev');
+const pageNextEl = document.getElementById('page-next');
+
+const PAGE_SIZE = 5;
+let allMessages = [];
+let currentPage = 0;
+
+function renderPage(){
+  const total = allMessages.length;
+  const totalPages = Math.ceil(total / PAGE_SIZE);
+  const start = currentPage * PAGE_SIZE;
+  const pageItems = allMessages.slice(start, start + PAGE_SIZE);
+
+  if(total === 0){
+    chatMessagesEl.innerHTML = '<div class="chat-empty">아직 방명록이 비어있어요. 첫 글을 남겨보세요!</div>';
+    paginationEl.style.display = 'none';
+    return;
+  }
+
+  chatMessagesEl.innerHTML = pageItems.map(m=>{
+    const displayNick = addEmojiToNickname(m.nickname);
+    const mine = displayNick === myNickname;
+    return '<div class="chat-msg'+(mine?' mine':'')+'">'+
+      '<span class="chat-msg-nick">'+escapeHtml(displayNick)+'</span>'+
+      escapeHtml(m.text)+
+      '<span class="chat-msg-time">'+fmtChatTime(m.ts)+'</span>'+
+      '</div>';
+  }).join('');
+
+  paginationEl.style.display = totalPages > 1 ? 'flex' : 'none';
+  pageInfoEl.textContent = (currentPage+1) + ' / ' + totalPages;
+  pagePrevEl.disabled = currentPage === 0;
+  pageNextEl.disabled = currentPage >= totalPages - 1;
+}
+
+pagePrevEl.addEventListener('click', ()=>{ if(currentPage > 0){ currentPage--; renderPage(); } });
+pageNextEl.addEventListener('click', ()=>{ currentPage++; renderPage(); });
 
 function escapeHtml(str){
   const div = document.createElement('div');
@@ -372,22 +418,9 @@ async function loadGuestbook(){
   try{
     const res = await fetch('/api/guestbook');
     const data = await res.json();
-    const messages = data.messages || [];
-
-    if(messages.length === 0){
-      chatMessagesEl.innerHTML = '<div class="chat-empty">아직 방명록이 비어있어요. 첫 글을 남겨보세요!</div>';
-      return;
-    }
-
-    chatMessagesEl.innerHTML = messages.map(m=>{
-      const displayNick = addEmojiToNickname(m.nickname);
-      const mine = displayNick === myNickname;
-      return '<div class="chat-msg'+(mine?' mine':'')+'">'+
-        '<span class="chat-msg-nick">'+escapeHtml(displayNick)+'</span>'+
-        escapeHtml(m.text)+
-        '<span class="chat-msg-time">'+fmtChatTime(m.ts)+'</span>'+
-        '</div>';
-    }).join('');
+    allMessages = data.messages || [];
+    currentPage = 0;
+    renderPage();
   }catch(e){
     chatMessagesEl.innerHTML = '<div class="chat-empty">불러오기 실패. 새로고침 버튼을 눌러주세요.</div>';
   }
