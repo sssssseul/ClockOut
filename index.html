@@ -443,9 +443,17 @@ async function sendChat(){
   }
 }
 
-document.getElementById('chat-send').addEventListener('click', sendChat);
+let sending = false;
+async function safeSendChat(){
+  if(sending) return;
+  sending = true;
+  await sendChat();
+  sending = false;
+}
+
+document.getElementById('chat-send').addEventListener('click', safeSendChat);
 document.getElementById('chat-input').addEventListener('keydown', (e)=>{
-  if(e.key === 'Enter') sendChat();
+  if(e.key === 'Enter'){ e.preventDefault(); safeSendChat(); }
 });
 document.getElementById('chat-refresh').addEventListener('click', loadGuestbook);
 
