@@ -8,7 +8,6 @@ app = Flask(__name__)
 
 DATABASE_URL = os.environ.get('DATABASE_URL')
 
-# --- 익명 닉네임 생성용 단어 ---
 ADJ = ["졸린", "배고픈", "신난", "지친", "느긋한", "용감한", "조용한", "엉뚱한",
        "행복한", "느린", "빠른", "수줍은", "단호한", "차분한", "엉성한", "튼튼한",
        "졸음많은", "커피사랑", "야근싫은", "퇴근직전"]
@@ -64,7 +63,7 @@ def api_nickname():
 def get_guestbook():
     conn = get_db()
     cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-    cur.execute('SELECT nickname, text, ts FROM guestbook ORDER BY id DESC LIMIT 100')
+    cur.execute('SELECT id, nickname, text, ts FROM guestbook ORDER BY id DESC LIMIT 100')
     rows = cur.fetchall()
     cur.close()
     conn.close()
@@ -84,6 +83,19 @@ def post_guestbook():
         'INSERT INTO guestbook (nickname, text, ts) VALUES (%s, %s, %s)',
         (nickname, text, time.time())
     )
+    conn.commit()
+    cur.close()
+    conn.close()
+    return jsonify({"ok": True})
+
+@app.route('/api/guestbook/<int:msg_id>', methods=['DELETE'])
+def delete_guestbook(msg_id):
+    pw = request.get_json(force=True).get('password', '')
+    if pw != '0530':
+        return jsonify({"error": "unauthorized"}), 401
+    conn = get_db()
+    cur = conn.cursor()
+    cur.execute('DELETE FROM guestbook WHERE id = %s', (msg_id,))
     conn.commit()
     cur.close()
     conn.close()
