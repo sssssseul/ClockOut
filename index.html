@@ -339,13 +339,13 @@ async function pressHate(){
     const data = await res.json();
     hateCount.textContent = data.count;
     localStorage.setItem(hateKey, 'true');
-    hateBtn.textContent = '✓ 눌렀음';
+    hateBtn.textContent = '퇴근하세요ㅋ';
     hateBtn.classList.add('pressed');
   }catch(e){}
 }
 
 if(localStorage.getItem(hateKey)){
-  hateBtn.textContent = '✓ 눌렀음';
+  hateBtn.textContent = '퇴근하세요ㅋ';
   hateBtn.classList.add('pressed');
 }
 hateBtn.addEventListener('click', pressHate);
