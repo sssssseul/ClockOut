@@ -130,7 +130,7 @@ def delete_guestbook(msg_id):
 def get_hate():
     conn = get_db()
     cur = conn.cursor()
-    today = __import__('datetime').date.today().isoformat()
+    today = (__import__('datetime').datetime.utcnow() + __import__('datetime').timedelta(hours=9)).strftime('%Y-%m-%d')
     cur.execute('''
         CREATE TABLE IF NOT EXISTS hate_count (
             date TEXT PRIMARY KEY,
@@ -148,7 +148,7 @@ def get_hate():
 def post_hate():
     conn = get_db()
     cur = conn.cursor()
-    today = __import__('datetime').date.today().isoformat()
+    today = (__import__('datetime').datetime.utcnow() + __import__('datetime').timedelta(hours=9)).strftime('%Y-%m-%d')
     cur.execute('''
         CREATE TABLE IF NOT EXISTS hate_count (
             date TEXT PRIMARY KEY,
