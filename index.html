@@ -82,10 +82,10 @@
     display: flex;
     flex-direction: column;
     width: 100%;
-    gap: 4px;
+    gap: 6px;
   }
   
-  /* 닉네임, 날짜 첫 줄 양끝 고정 라인 */
+  /* 닉네임라인과 날짜 첫 줄 고정 양끝 라인 */
   .chat-msg-top {
     display: flex;
     justify-content: space-between;
@@ -93,19 +93,26 @@
     width: 100%;
   }
   
-  /* 댓글 내용과 경고 뱃지가 인라인으로 이어지는 하단 라인 */
+  /* 닉네임과 뱃지가 함께 묶이는 그룹 */
+  .chat-msg-nick-group {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  
+  /* 댓글 내용이 뿜어져 나오는 하단 라인 */
   .chat-msg-bottom {
     font-size: 12px;
     line-height: 1.4;
     color: #1a1a18;
     word-break: break-all;
-    display: block; /* 텍스트와 뱃지가 한 덩어리로 흐르도록 설정 */
+    display: block;
   }
 
   .chat-msg .chat-msg-nick { color: #185FA5; font-weight: 500; }
   .chat-msg .chat-msg-time { color: #aaa; font-size: 10px; flex-shrink: 0; }
   
-  /* 타원형 🚨경고! 뱃지 스타일 (위아래 여백 넓히고 중앙정렬 완료) */
+  /* 타원형 🚨경고! 뱃지 스타일 (여백 및 중앙정렬 보완) */
   .badge-siren-text {
     display: inline-flex;
     align-items: center;
@@ -120,7 +127,6 @@
     border: 1px solid #f9d5d5;
     line-height: 1;
     vertical-align: middle;
-    margin-left: 4px;
   }
 
   .chat-empty { font-size: 12px; color: #aaa; text-align: center; padding: 12px 0; }
@@ -133,7 +139,7 @@
   .chat-refresh-btn:hover { background: #f1efea; }
   
   /* 관리자 패널 */
-  .admin-panel { display: flex; align-items: center; gap: 4px; flex-shrink: 0; margin-left: 6px; margin-top: 2px; }
+  .admin-panel { display: flex; align-items: center; gap: 4px; flex-shrink: 0; margin-left: 6px; }
   .admin-btn { background: none; border: 0.5px solid #e0dfd8; border-radius: 6px; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 12px; }
   .admin-btn:hover { background: #f1efea; }
   .siren-btn { background: none; border: none; cursor: pointer; font-size: 12px; padding: 0 2px; flex-shrink: 0; line-height: 1; }
@@ -245,7 +251,6 @@ function fmtLabel(t){
   return ampm+' '+hh+':'+String(m).padStart(2,'0');
 }
 
-// 드롭다운 옵션 생성
 function buildOptions(selectEl, defaultVal){
   for(let t=0;t<24*60;t+=30){
     const h=Math.floor(t/60),m=t%60;
@@ -264,7 +269,6 @@ const savedEnd=localStorage.getItem('clockout-end')||'18:00';
 buildOptions(startSelect, savedStart);
 buildOptions(endSelect, savedEnd);
 
-// 점심 체크박스 상태 복원
 const lunchAltEl = document.getElementById('lunch-alt');
 lunchAltEl.checked = localStorage.getItem('clockout-lunch-alt') === 'true';
 lunchAltEl.addEventListener('change', ()=>{
@@ -272,7 +276,6 @@ lunchAltEl.addEventListener('change', ()=>{
   tick();
 });
 
-// 근무 프리셋
 const presetGrid=document.getElementById('preset-grid');
 function findMatchingPresetIdx(s,e){return PRESETS.findIndex(p=>p.start===s&&p.end===e);}
 let selectedIdx=findMatchingPresetIdx(savedStart,savedEnd);
@@ -486,16 +489,18 @@ function renderPage(){
     const body=document.createElement('div');
     body.className='chat-msg-body';
     
-    const sirenHtml = m.has_siren ? `<span class="badge-siren-text">🚨경고!</span>` : '';
+    const sirenHtml = m.has_siren ? `<span class="badge-siren-text">🚨경고</span>` : '';
     
-    // 구조 리팩토링: 상단엔 닉네임과 날짜 고정 / 하단 텍스트 뒤에 뱃지가 바로 인라인으로 이어짐
+    // 최종 확정 구조: 첫 줄에 닉네임 바로 옆 sirenHtml 배치, 날짜는 혼자 오른쪽 끝 고정!
     body.innerHTML = `
       <div class="chat-msg-top">
-        <span class="chat-msg-nick">${escapeHtml(displayNick)}</span>
+        <div class="chat-msg-nick-group">
+          <span class="chat-msg-nick">${escapeHtml(displayNick)}</span>${sirenHtml}
+        </div>
         <span class="chat-msg-time">${fmtChatTime(m.ts)}</span>
       </div>
       <div class="chat-msg-bottom">
-        <span>${escapeHtml(m.text)}</span>${sirenHtml}
+        <span>${escapeHtml(m.text)}</span>
       </div>
     `;
     
@@ -614,7 +619,6 @@ document.getElementById('chat-input').addEventListener('keydown',(e)=>{
 });
 document.getElementById('chat-refresh').addEventListener('click',loadGuestbook);
 
-// 초기화 가동
 tick();
 setInterval(tick, 1000);
 
