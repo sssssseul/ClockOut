@@ -62,7 +62,7 @@
   .custom-card select { flex: 1; min-width: 0; font-size: 12px; color: #888780; border: 0.5px solid #e0dfd8; border-radius: 6px; padding: 4px 8px; background: #f9f9f7; outline: none; font-family: 'Noto Sans KR', sans-serif; cursor: pointer; }
   .custom-card select:focus { border-color: #185FA5; }
   
-  /* 방명록 카드 베이스 */
+  /* 방명록 카드 스타일 */
   .chat-card { background: #fff; border: 0.5px solid #e0dfd8; border-radius: 12px; padding: 12px 14px; margin-top: 8px; }
   .chat-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; gap: 6px; }
   .placard { background: #fffbe6; border: 1px dashed #e0c040; border-radius: 4px; padding: 6px 20px; font-size: 11px; font-weight: 500; color: #5c4500; text-align: center; margin-bottom: 8px; }
@@ -74,14 +74,14 @@
   .chat-pagination button:disabled { opacity: 0.3; cursor: default; }
   .chat-pagination .page-info { font-size: 11px; color: #888780; }
   
-  /* 개별 방명록 한 행 구조 정렬 조정 */
+  /* 개별 방명록 구조 */
   .chat-msg { font-size: 12px; line-height: 1.4; background: #f9f9f7; border-radius: 8px; padding: 6px 10px; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
   .chat-msg-body { flex: 1; min-width: 0; display: flex; align-items: center; flex-wrap: wrap; gap: 4px; }
   .chat-msg .chat-msg-nick { color: #185FA5; font-weight: 500; margin-right: 4px; }
-  .chat-msg .chat-msg-time { color: #aaa; font-size: 10px; margin-left: auto; padding-left: 6px; } /* 날짜를 항상 본문 맨 우측으로 밀어냄 */
+  .chat-msg .chat-msg-time { color: #aaa; font-size: 10px; margin-left: auto; padding-left: 6px; }
   .chat-msg.mine { background: #E6F1FB; }
   
-  /* ⭐ 완벽한 타원형(알약형) 🚨경고! 뱃지 스타일 추가 */
+  /* 타원형 🚨경고! 뱃지 스타일 */
   .badge-siren-text {
     display: inline-flex;
     align-items: center;
@@ -108,7 +108,7 @@
   .chat-refresh-btn { background: none; border: 0.5px solid #e0dfd8; border-radius: 6px; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #888780; }
   .chat-refresh-btn:hover { background: #f1efea; }
   
-  /* 관리자 제어 패널 배치 설정 */
+  /* 관리자 패널 */
   .admin-panel { display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
   .admin-btn { background: none; border: 0.5px solid #e0dfd8; border-radius: 6px; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 12px; }
   .admin-btn:hover { background: #f1efea; }
@@ -342,8 +342,6 @@ function tick(){
     sub.textContent='퇴근까지';setsVal.childNodes[0].textContent=completed;
   }
 }
-tick();
-setInterval(tick,1000);
 
 // --- 일하기 싫다 카운터 ---
 const today = new Date().toISOString().slice(0,10);
@@ -415,10 +413,10 @@ async function ensureNickname(){
   document.getElementById('my-nickname').textContent=myNickname;
 }
 
-// ⭐ 날짜 포맷 변경 원형 보존 후 연도만 축소 (2026 -> 26)
+// 자바스크립트 주석(//)으로 변경 완료! 연도 축소 처리 부분
 function fmtChatTime(ts){
   const d=new Date(ts*1000);
-  const year=String(d.getFullYear()).slice(-2); # 뒤쪽 두 자리만 슬라이싱
+  const year=String(d.getFullYear()).slice(-2);
   const month=String(d.getMonth()+1).padStart(2,'0');
   const date=String(d.getDate()).padStart(2,'0');
   const h=d.getHours();
@@ -445,7 +443,6 @@ function escapeHtml(str){
   return div.innerHTML;
 }
 
-// ⭐ 원본의 안전한 이스케이프 구조 그대로 유지하면서 알약 뱃지 장착 조립
 function renderPage(){
   const total=allMessages.length;
   const totalPages=Math.ceil(total/PAGE_SIZE);
@@ -465,14 +462,12 @@ function renderPage(){
     const body=document.createElement('div');
     body.className='chat-msg-body';
     
-    // ⭐ 독립된 알약 뱃지 문자열 세팅
     const sirenHtml = m.has_siren ? '<span class="badge-siren-text">🚨경고!</span>' : '';
     
     body.innerHTML='<span class="chat-msg-nick">'+escapeHtml(displayNick)+'</span>'+
       escapeHtml(m.text) + sirenHtml + '<span class="chat-msg-time">'+fmtChatTime(m.ts)+'</span>';
     div.appendChild(body);
     
-    // ⭐ 관리자 패널 통합 제어 처리 (🚨 와 🗑️ 버튼 둘 다 제공)
     if(isAdmin){
       const adminPanel = document.createElement('div');
       adminPanel.className = 'admin-panel';
@@ -502,7 +497,6 @@ function renderPage(){
   pageNextEl.disabled=currentPage>=totalPages-1;
 }
 
-// ⭐ 추가: 백엔드 통신용 경고 뱃지 부여 함수
 async function setSiren(id) {
   if(!confirm('이 댓글에 🚨 경고 뱃지를 부여할까요?')) return;
   try {
@@ -587,7 +581,18 @@ document.getElementById('chat-input').addEventListener('keydown',(e)=>{
 });
 document.getElementById('chat-refresh').addEventListener('click',loadGuestbook);
 
-ensureNickname().then(loadGuestbook);
+// 초기화 안정성 보완: 타이머 루프를 먼저 가동해 화면 먹통 방지
+tick();
+setInterval(tick, 1000);
+
+// 방명록 비동기 데이터 수신
+ensureNickname()
+  .then(loadGuestbook)
+  .catch(err => {
+    console.error("서버 연결 실패:", err);
+    document.getElementById('my-nickname').textContent = '익명';
+    chatMessagesEl.innerHTML = '<div class="chat-empty">서버와 연결할 수 없습니다.</div>';
+  });
 </script>
 </body>
 </html>
