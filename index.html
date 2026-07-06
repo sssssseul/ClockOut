@@ -1,269 +1,593 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>일하기 싫다 방명록</title>
-  <style>
-    body {
-      font-family: 'Noto Sans KR', sans-serif;
-      background-color: #f5f6f7;
-      margin: 0;
-      padding: 20px;
-    }
-    .chat-container {
-      max-width: 600px;
-      margin: 0 auto;
-      background: #fff;
-      border-radius: 8px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-      padding: 20px;
-    }
-    .chat-msg {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 12px 10px;
-      border-bottom: 1px solid #edf0f2;
-    }
-    
-    /* 부모 레이아웃 정렬 강제 */
-    .chat-msg-body {
-      flex: 1;
-      min-width: 0;
-      display: flex;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 6px;
-    }
-    .chat-msg-nick {
-      font-weight: bold;
-      color: #333;
-    }
-    .chat-msg-content {
-      color: #555;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ClockOut</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🍀</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #f5f5f3; font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif; display: flex; justify-content: center; align-items: flex-start; min-height: 100vh; padding: 2rem 1rem; }
+  .wrap { width: 100%; max-width: 480px; }
+  .cards { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px; align-items: stretch; }
+  .card { background: #fff; border: 0.5px solid #e0dfd8; border-radius: 12px; padding: 12px 14px; display: flex; flex-direction: column; }
+  .card-full { grid-column: 1 / -1; }
+  .card-label { font-size: 11px; color: #888780; margin-bottom: 6px; display: flex; align-items: center; gap: 5px; }
+  .card-value { font-size: 26px; font-weight: 500; color: #1a1a18; font-variant-numeric: tabular-nums; letter-spacing: -1px; line-height: 1; }
+  .hate-btn { width: 100%; margin-top: 8px; padding: 5px 4px; background: #fff0f0; border: 1px solid #f4c0c0; border-radius: 8px; font-size: 10px; color: #c0392b; cursor: pointer; font-family: 'Noto Sans KR', sans-serif; font-weight: 500; }
+  .hate-btn:active { background: #ffe0e0; }
+  .hate-btn.pressed { background: #f5f5f5; border-color: #ddd; color: #aaa; cursor: default; }
+  .card-sub-row { display: flex; align-items: center; gap: 6px; margin-top: 4px; }
+  .card-sub { font-size: 12px; color: #888780; }
+  .muted { font-size: 16px; font-weight: 400; color: #888780; }
+  .badge { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 99px; font-family: 'Noto Sans KR', sans-serif; }
+  .badge-work { background: #E6F1FB; color: #185FA5; }
+  .badge-done { background: #EAF3DE; color: #3B6D11; }
+  .badge-before { background: #FAEEDA; color: #854F0B; }
+  .badge-lunch { background: #f1efea; color: #5F5E5A; border: 0.5px solid #e0dfd8; }
+  .blocks-card { background: #fff; border: 0.5px solid #e0dfd8; border-radius: 12px; padding: 12px 14px; margin-bottom: 8px; }
+  .blocks-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+  .blocks-label { font-size: 11px; color: #888780; }
+  .lunch-toggle label { font-size: 11px; color: #888780; cursor: pointer; display: flex; align-items: center; gap: 4px; }
+  .lunch-toggle input[type="checkbox"] { appearance: none; -webkit-appearance: none; width: 12px; height: 12px; border: 1px solid #888780; border-radius: 3px; margin: 0; cursor: pointer; position: relative; flex-shrink: 0; }
+  .lunch-toggle input[type="checkbox"]:checked { background: #185FA5; border-color: #185FA5; }
+  .lunch-toggle input[type="checkbox"]:checked::after { content: ''; position: absolute; left: 2px; top: 0px; width: 4px; height: 7px; border: 1.5px solid #fff; border-top: none; border-left: none; transform: rotate(45deg); }
+  .blocks-wrap { display: grid; grid-template-columns: repeat(9, 1fr); gap: 4px; }
+  .block { border-radius: 5px; height: 24px; }
+  .block.done { background: #F4C0D1; border: 1px solid #993556; }
+  .block.current { background: #E6F1FB; border: 1px solid #185FA5; }
+  .block.remaining { background: #f1efea; border: 1px solid #888780; opacity: 0.4; }
+  .block.lunch { background: #D3D1C7; border: 1px solid #444441; }
+  .block.lunch.done { background: #B4B2A9; border: 1px solid #2C2C2A; }
+  .legend { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 8px; }
+  .leg { display: flex; align-items: center; gap: 4px; font-size: 11px; color: #888780; }
+  .leg-dot { width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0; }
+  .dot-done { background: #F4C0D1; border: 1px solid #993556; }
+  .dot-current { background: #E6F1FB; border: 1px solid #185FA5; }
+  .dot-rem { background: #f1efea; border: 1px solid #888780; opacity: 0.4; }
+  .dot-lunch { background: #D3D1C7; border: 1px solid #444441; }
+  .settings-card { background: #fff; border: 0.5px solid #e0dfd8; border-radius: 12px; padding: 12px 14px; margin-bottom: 8px; }
+  .settings-label { font-size: 11px; color: #888780; margin-bottom: 8px; }
+  .preset-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+  .preset-option { position: relative; }
+  .preset-option input[type="radio"] { position: absolute; opacity: 0; width: 100%; height: 100%; margin: 0; cursor: pointer; }
+  .preset-option label { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; padding: 8px 4px; border: 1px solid #e0dfd8; border-radius: 8px; cursor: pointer; font-size: 10.5px; color: #888780; line-height: 1.3; text-align: center; font-family: 'Noto Sans KR', sans-serif; transition: all 0.15s; }
+  .preset-option input[type="radio"]:checked + label { border-color: #185FA5; background: #E6F1FB; color: #185FA5; font-weight: 500; }
+  .custom-card { background: #fff; border: 0.5px solid #e0dfd8; border-radius: 12px; padding: 12px 14px; display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+  .custom-card label { font-size: 12px; color: #888780; white-space: nowrap; display: flex; align-items: center; gap: 4px; flex-shrink: 0; width: 38px; font-family: 'Noto Sans KR', sans-serif; }
+  .custom-card select { flex: 1; min-width: 0; font-size: 12px; color: #888780; border: 0.5px solid #e0dfd8; border-radius: 6px; padding: 4px 8px; background: #f9f9f7; outline: none; font-family: 'Noto Sans KR', sans-serif; cursor: pointer; }
+  .custom-card select:focus { border-color: #185FA5; }
+  
+  /* 방명록 카드 베이스 */
+  .chat-card { background: #fff; border: 0.5px solid #e0dfd8; border-radius: 12px; padding: 12px 14px; margin-top: 8px; }
+  .chat-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; gap: 6px; }
+  .placard { background: #fffbe6; border: 1px dashed #e0c040; border-radius: 4px; padding: 6px 20px; font-size: 11px; font-weight: 500; color: #5c4500; text-align: center; margin-bottom: 8px; }
+  .chat-nickname { font-size: 11px; color: #185FA5; background: #E6F1FB; padding: 2px 8px; border-radius: 99px; font-family: 'Noto Sans KR', sans-serif; }
+  .chat-messages { display: flex; flex-direction: column; gap: 6px; margin-bottom: 8px; }
+  .chat-pagination { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+  .chat-pagination button { background: none; border: 0.5px solid #e0dfd8; border-radius: 6px; padding: 4px 10px; font-size: 11px; color: #888780; cursor: pointer; font-family: 'Noto Sans KR', sans-serif; }
+  .chat-pagination button:hover { background: #f1efea; }
+  .chat-pagination button:disabled { opacity: 0.3; cursor: default; }
+  .chat-pagination .page-info { font-size: 11px; color: #888780; }
+  
+  /* 개별 방명록 한 행 구조 정렬 조정 */
+  .chat-msg { font-size: 12px; line-height: 1.4; background: #f9f9f7; border-radius: 8px; padding: 6px 10px; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  .chat-msg-body { flex: 1; min-width: 0; display: flex; align-items: center; flex-wrap: wrap; gap: 4px; }
+  .chat-msg .chat-msg-nick { color: #185FA5; font-weight: 500; margin-right: 4px; }
+  .chat-msg .chat-msg-time { color: #aaa; font-size: 10px; margin-left: auto; padding-left: 6px; } /* 날짜를 항상 본문 맨 우측으로 밀어냄 */
+  .chat-msg.mine { background: #E6F1FB; }
+  
+  /* ⭐ 완벽한 타원형(알약형) 🚨경고! 뱃지 스타일 추가 */
+  .badge-siren-text {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #ffebeb !important;
+    color: #e74c3c !important;
+    font-size: 10px;
+    font-weight: bold;
+    padding: 1px 7px;
+    border-radius: 99px;
+    white-space: nowrap;
+    border: 1px solid #f9d5d5;
+    line-height: 1.1;
+    vertical-align: middle;
+    margin-left: 4px;
+  }
 
-    /* ⭐ 완벽한 알약 모양의 🚨경고! 뱃지 스타일 */
-    .badge-siren-text {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      background-color: #ffebeb !important;
-      color: #e74c3c !important;
-      font-size: 10px;
-      font-weight: bold;
-      padding: 2px 8px;
-      border-radius: 99px;
-      white-space: nowrap;
-      border: 1px solid #f9d5d5;
-      line-height: 1;
-      vertical-align: middle;
-    }
-
-    /* ⭐ 요청하신 컴팩트한 날짜 스타일 */
-    .chat-msg-time {
-      font-size: 10px;
-      color: #aaa;
-      margin-left: auto; /* 시간은 최대한 오른쪽 정렬 */
-    }
-
-    /* 관리자 액션 패널 */
-    .admin-actions {
-      display: flex;
-      gap: 6px;
-      margin-left: 10px;
-    }
-    .siren-btn, .delete-btn {
-      background: none;
-      border: none;
-      cursor: pointer;
-      font-size: 12px;
-      padding: 2px;
-    }
-    .siren-btn:hover, .delete-btn:hover {
-      opacity: 0.6;
-    }
-    
-    .chat-empty { text-align: center; color: #999; padding: 20px; }
-    .pagination { display: flex; justify-content: center; align-items: center; gap: 10px; margin-top: 20px; }
-    .pagination button { padding: 5px 10px; }
-  </style>
+  .chat-empty { font-size: 12px; color: #aaa; text-align: center; padding: 12px 0; }
+  .chat-input-row { display: flex; gap: 6px; }
+  .chat-input-row input { flex: 1; min-width: 0; font-size: 12px; color: #5F5E5A; border: 0.5px solid #e0dfd8; border-radius: 6px; padding: 6px 10px; background: #f9f9f7; outline: none; font-family: 'Noto Sans KR', sans-serif; }
+  .chat-input-row input:focus { border-color: #185FA5; }
+  .chat-input-row button { background: #185FA5; color: #fff; border: none; border-radius: 6px; width: 32px; flex-shrink: 0; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+  .chat-input-row button:hover { background: #144d87; }
+  .chat-refresh-btn { background: none; border: 0.5px solid #e0dfd8; border-radius: 6px; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #888780; }
+  .chat-refresh-btn:hover { background: #f1efea; }
+  
+  /* 관리자 제어 패널 배치 설정 */
+  .admin-panel { display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
+  .admin-btn { background: none; border: 0.5px solid #e0dfd8; border-radius: 6px; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 12px; }
+  .admin-btn:hover { background: #f1efea; }
+  .siren-btn { background: none; border: none; cursor: pointer; font-size: 12px; padding: 0 2px; flex-shrink: 0; line-height: 1; }
+  .delete-btn { background: none; border: none; color: #ccc; cursor: pointer; font-size: 12px; padding: 0 2px; flex-shrink: 0; line-height: 1; }
+  .delete-btn:hover { color: #e05a5a; }
+</style>
 </head>
 <body>
+<div class="wrap">
+  <div class="cards">
+    <div class="card">
+      <div class="card-label"><i class="ti ti-stack" style="font-size:13px"></i> 진행 세트</div>
+      <div class="card-value" id="sets-val">--<span class="muted" id="sets-total"></span></div>
+      <div class="card-sub-row">
+        <span class="card-sub">30분 단위</span>
+        <span class="badge badge-work" id="badge">로딩 중</span>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-label"><i class="ti ti-clock" style="font-size:13px"></i> 남은 시간</div>
+      <div class="card-sub-row" style="align-items:baseline; gap:6px; flex-wrap:nowrap;">
+        <div class="card-value" id="countdown">--:--:--</div>
+        <span class="card-sub" id="now-clock" style="white-space:nowrap;"></span>
+      </div>
+      <div class="card-sub-row">
+        <span class="card-sub" id="sublabel">퇴근까지</span>
+      </div>
+    </div>
+    <div class="card card-full" style="flex-direction:row; align-items:center; justify-content:space-between;">
+      <div>
+        <div class="card-label"><i class="ti ti-thumb-down" style="font-size:13px"></i> 일하기 싫은 사람</div>
+        <div class="card-value"><span id="hate-count">--</span><span class="muted" style="font-size:14px;"> 명</span></div>
+      </div>
+      <button class="hate-btn" id="hate-btn" style="width:auto; margin-top:0; padding: 6px 14px;">그건 바로 나 😩</button>
+    </div>
+  </div>
 
-<div class="chat-container">
-  <div id="chatMessages"></div>
-  
-  <div class="pagination" id="pagination" style="display: none;">
-    <button id="pagePrev">이전</button>
-    <span id="pageInfo">1 / 1</span>
-    <button id="pageNext">다음</button>
+  <div class="blocks-card">
+    <div class="blocks-top">
+      <span class="blocks-label">30분 블록</span>
+      <div class="lunch-toggle">
+        <label>
+          <input type="checkbox" id="lunch-alt"> 점심 12:00~13:00
+        </label>
+      </div>
+    </div>
+    <div class="blocks-wrap" id="blocks"></div>
+    <div class="legend">
+      <div class="leg"><div class="leg-dot dot-done"></div>완료</div>
+      <div class="leg"><div class="leg-dot dot-current"></div>진행 중</div>
+      <div class="leg"><div class="leg-dot dot-rem"></div>남은 세트</div>
+      <div class="leg"><div class="leg-dot dot-lunch"></div>점심</div>
+    </div>
+  </div>
+
+  <div class="settings-card">
+    <div class="settings-label">근무 시간 선택</div>
+    <div class="preset-grid" id="preset-grid"></div>
+  </div>
+
+  <div class="custom-card">
+    <label><i class="ti ti-clock" style="font-size:13px"></i> 출근</label>
+    <select id="start-time"></select>
+    <label><i class="ti ti-home" style="font-size:13px"></i> 퇴근</label>
+    <select id="end-time"></select>
+  </div>
+
+  <div class="chat-card">
+    <div class="chat-header">
+      <span class="settings-label" style="margin:0;"><i class="ti ti-notebook" style="font-size:13px"></i> 방명록</span>
+      <div style="display:flex; align-items:center; gap:6px;">
+        <span class="chat-nickname" id="my-nickname">익명</span>
+        <button id="admin-btn" class="admin-btn" title="관리자">🔑</button>
+        <button id="chat-refresh" class="chat-refresh-btn"><i class="ti ti-refresh" style="font-size:13px"></i></button>
+      </div>
+    </div>
+    <div class="placard">📢 심한 욕 쓰면!!! 삭제해버립니다 !!! - 관리자 -</div>
+    <div class="chat-messages" id="chat-messages"></div>
+    <div class="chat-pagination" id="chat-pagination" style="display:none;">
+      <button id="page-prev">← 이전</button>
+      <span class="page-info" id="page-info"></span>
+      <button id="page-next">다음 →</button>
+    </div>
+    <div class="chat-input-row">
+      <input type="text" id="chat-input" placeholder="한마디 남겨보세요" maxlength="200">
+      <button id="chat-send"><i class="ti ti-send" style="font-size:14px"></i></button>
+    </div>
   </div>
 </div>
 
 <script>
-  let allMessages = [];
-  let currentPage = 0;
-  const PAGE_SIZE = 10;
-  let myNickname = "";
-  let isAdmin = false; 
-  let adminPassword = "";
+const LUNCH_DEFAULT = {start: 11*60+30, end: 13*60};
+const LUNCH_ALT     = {start: 12*60,    end: 13*60};
 
-  const chatMessagesEl = document.getElementById('chatMessages');
-  const paginationEl = document.getElementById('pagination');
-  const pageInfoEl = document.getElementById('pageInfo');
-  const pagePrevEl = document.getElementById('pagePrev');
-  const pageNextEl = document.getElementById('pageNext');
+const PRESETS=[
+  {start:'08:00', end:'17:00'},
+  {start:'08:30', end:'17:30'},
+  {start:'09:00', end:'18:00'},
+  {start:'09:30', end:'18:30'},
+  {start:'10:00', end:'19:00'}
+];
 
-  // 보안용 HTML 탈출 함수
-  function escapeHtml(str) {
-    if (!str) return '';
-    return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+function getMins(str){const[h,m]=str.split(':').map(Number);return h*60+m;}
+function fmt(s){const h=Math.floor(s/3600),m=Math.floor((s%3600)/60),ss=s%60;return[h,m,ss].map(n=>String(n).padStart(2,'0')).join(':');}
+function fmtLabel(t){
+  const [h,m]=t.split(':').map(Number);
+  const ampm=h<12?'오전':'오후';
+  const hh=h===0?12:h>12?h-12:h;
+  return ampm+' '+hh+':'+String(m).padStart(2,'0');
+}
+
+// 드롭다운 옵션 생성
+function buildOptions(selectEl, defaultVal){
+  for(let t=0;t<24*60;t+=30){
+    const h=Math.floor(t/60),m=t%60;
+    const val=String(h).padStart(2,'0')+':'+String(m).padStart(2,'0');
+    const opt=document.createElement('option');
+    opt.value=val; opt.textContent=fmtLabel(val);
+    if(val===defaultVal)opt.selected=true;
+    selectEl.appendChild(opt);
   }
+}
 
-  // ⭐ 날짜 포맷 변경 (2026-07-04 -> 26-07-04)
-  function fmtChatTime(ts) {
-    const d = new Date(ts * 1000);
-    const yy = String(d.getFullYear()).slice(-2); // 연도 뒤 2자리 추출
-    const mm = String(d.getMonth() + 1).padStart(2, '0');
-    const dd = String(d.getDate()).padStart(2, '0');
+const startSelect=document.getElementById('start-time');
+const endSelect=document.getElementById('end-time');
+const savedStart=localStorage.getItem('clockout-start')||'09:00';
+const savedEnd=localStorage.getItem('clockout-end')||'18:00';
+buildOptions(startSelect, savedStart);
+buildOptions(endSelect, savedEnd);
+
+// 점심 체크박스 상태 복원
+const lunchAltEl = document.getElementById('lunch-alt');
+lunchAltEl.checked = localStorage.getItem('clockout-lunch-alt') === 'true';
+lunchAltEl.addEventListener('change', ()=>{
+  localStorage.setItem('clockout-lunch-alt', lunchAltEl.checked);
+  tick();
+});
+
+// 근무 프리셋
+const presetGrid=document.getElementById('preset-grid');
+function findMatchingPresetIdx(s,e){return PRESETS.findIndex(p=>p.start===s&&p.end===e);}
+let selectedIdx=findMatchingPresetIdx(savedStart,savedEnd);
+PRESETS.forEach((p,i)=>{
+  const wrap=document.createElement('div'); wrap.className='preset-option';
+  const id='preset-'+i;
+  const input=document.createElement('input');
+  input.type='radio'; input.name='preset'; input.id=id; input.value=i;
+  if(i===selectedIdx)input.checked=true;
+  const label=document.createElement('label');
+  label.setAttribute('for',id);
+  label.innerHTML=fmtLabel(p.start)+'<br>~ '+fmtLabel(p.end);
+  wrap.appendChild(input); wrap.appendChild(label); presetGrid.appendChild(wrap);
+  input.addEventListener('change',()=>{startSelect.value=p.start;endSelect.value=p.end;saveAndTick();});
+});
+
+function uncheckPresets(){document.querySelectorAll('input[name="preset"]').forEach(r=>r.checked=false);}
+function syncPresetCheck(){
+  const idx=findMatchingPresetIdx(startSelect.value,endSelect.value);
+  uncheckPresets();
+  if(idx!==-1){const t=document.getElementById('preset-'+idx);if(t)t.checked=true;}
+}
+function saveAndTick(){
+  localStorage.setItem('clockout-start',startSelect.value);
+  localStorage.setItem('clockout-end',endSelect.value);
+  syncPresetCheck(); tick();
+}
+startSelect.addEventListener('change',saveAndTick);
+endSelect.addEventListener('change',saveAndTick);
+
+function tick(){
+  const now=new Date();
+  const nowMins=now.getHours()*60+now.getMinutes();
+  const nowSecs=now.getHours()*3600+now.getMinutes()*60+now.getSeconds();
+
+  const nowClockEl=document.getElementById('now-clock');
+  const curH=now.getHours();
+  const curAmPm=curH<12?'오전':'오후';
+  const curHH=curH===0?12:curH>12?curH-12:curH;
+  nowClockEl.textContent='('+curAmPm+' '+curHH+':'+String(now.getMinutes()).padStart(2,'0')+')';
+
+  const lunch = lunchAltEl.checked ? LUNCH_ALT : LUNCH_DEFAULT;
+  const LUNCH_START_MINS = lunch.start;
+  const LUNCH_END_MINS   = lunch.end;
+
+  const startMins=getMins(startSelect.value);
+  const endMins=getMins(endSelect.value);
+  const startSecs=startMins*60, endSecs=endMins*60;
+
+  const blocks=[];
+  for(let t=startMins;t<endMins;t+=30)blocks.push({start:t,end:Math.min(t+30,endMins)});
+
+  const blocksEl=document.getElementById('blocks');
+  blocksEl.innerHTML='';
+  let completed=0,total=0;
+  blocks.forEach(b=>{
+    const div=document.createElement('div');
+    const mid=(b.start+b.end)/2;
+    const isLunch=mid>=LUNCH_START_MINS&&mid<=LUNCH_END_MINS;
+    if(!isLunch)total++;
+    if(isLunch){div.className=nowMins>=b.end?'block lunch done':'block lunch';}
+    else if(nowMins>=b.end){div.className='block done';completed++;}
+    else if(nowMins>=b.start&&nowMins<b.end){div.className='block current';}
+    else{div.className='block remaining';}
+    blocksEl.appendChild(div);
+  });
+
+  const isLunch=nowMins>=LUNCH_START_MINS&&nowMins<LUNCH_END_MINS;
+  const cdEl=document.getElementById('countdown');
+  const badge=document.getElementById('badge');
+  const sub=document.getElementById('sublabel');
+  const setsVal=document.getElementById('sets-val');
+  const setsTotal=document.getElementById('sets-total');
+  setsTotal.textContent=' / '+total;
+
+  if(nowMins<startMins){
+    cdEl.textContent=fmt(Math.max(0,startSecs-nowSecs));
+    badge.className='badge badge-before';badge.textContent='출근 전';
+    sub.textContent='출근까지';setsVal.childNodes[0].textContent='--';setsTotal.textContent='';
+  }else if(nowSecs>=endSecs){
+    cdEl.textContent='퇴근!';
+    badge.className='badge badge-done';badge.textContent='완료';
+    sub.textContent='수고하셨습니다';setsVal.childNodes[0].textContent=total;
+  }else if(isLunch){
+    cdEl.textContent=fmt(Math.max(0,endSecs-nowSecs));
+    badge.className='badge badge-lunch';badge.textContent='점심시간';
+    sub.textContent='퇴근까지';setsVal.childNodes[0].textContent=completed;
+  }else{
+    cdEl.textContent=fmt(Math.max(0,endSecs-nowSecs));
+    badge.className='badge badge-work';badge.textContent='근무 중';
+    sub.textContent='퇴근까지';setsVal.childNodes[0].textContent=completed;
+  }
+}
+tick();
+setInterval(tick,1000);
+
+// --- 일하기 싫다 카운터 ---
+const today = new Date().toISOString().slice(0,10);
+const hateKey = 'clockout-hate-' + today;
+const hateBtn = document.getElementById('hate-btn');
+const hateCount = document.getElementById('hate-count');
+
+async function loadHate(){
+  try{
+    const res = await fetch('/api/hate');
+    const data = await res.json();
+    hateCount.textContent = data.count;
+  }catch(e){ hateCount.textContent = '?'; }
+}
+
+async function pressHate(){
+  if(localStorage.getItem(hateKey)) return;
+  try{
+    const res = await fetch('/api/hate', {method:'POST'});
+    const data = await res.json();
+    hateCount.textContent = data.count;
+    localStorage.setItem(hateKey, 'true');
+    hateBtn.textContent = '퇴근하세요ㅋ';
+    hateBtn.classList.add('pressed');
+  }catch(e){}
+}
+
+if(localStorage.getItem(hateKey)){
+  hateBtn.textContent = '퇴근하세요ㅋ';
+  hateBtn.classList.add('pressed');
+}
+hateBtn.addEventListener('click', pressHate);
+loadHate();
+
+// --- 익명 방명록 ---
+const ANIMAL_EMOJI = {
+  "돼지":"🐷","다람쥐":"🐿️","펭귄":"🐧","햄스터":"🐹",
+  "여우":"🦊","고래":"🐳","토끼":"🐰","부엉이":"🦉",
+  "거북이":"🐢","수달":"🦦","코알라":"🐨","사자":"🦁",
+  "너구리":"🦝","오리":"🦆","곰":"🐻","강아지":"🐶",
+  "물개":"🦭","기린":"🦒","판다":"🐼","라마":"🦙"
+};
+
+function addEmojiToNickname(nickname){
+  if(!nickname)return nickname;
+  const firstChar=nickname.codePointAt(0);
+  if(firstChar>0x1F000)return nickname;
+  for(const noun in ANIMAL_EMOJI){
+    if(nickname.includes(noun))return ANIMAL_EMOJI[noun]+' '+nickname;
+  }
+  return nickname;
+}
+
+let myNickname=localStorage.getItem('clockout-nickname');
+if(myNickname){
+  const withEmoji=addEmojiToNickname(myNickname);
+  if(withEmoji!==myNickname){myNickname=withEmoji;localStorage.setItem('clockout-nickname',myNickname);}
+}
+
+async function ensureNickname(){
+  if(!myNickname){
+    try{
+      const res=await fetch('/api/nickname');
+      const data=await res.json();
+      myNickname=data.nickname;
+      localStorage.setItem('clockout-nickname',myNickname);
+    }catch(e){myNickname='익명';}
+  }
+  document.getElementById('my-nickname').textContent=myNickname;
+}
+
+// ⭐ 날짜 포맷 변경 원형 보존 후 연도만 축소 (2026 -> 26)
+function fmtChatTime(ts){
+  const d=new Date(ts*1000);
+  const year=String(d.getFullYear()).slice(-2); # 뒤쪽 두 자리만 슬라이싱
+  const month=String(d.getMonth()+1).padStart(2,'0');
+  const date=String(d.getDate()).padStart(2,'0');
+  const h=d.getHours();
+  const ampm=h<12?'오전':'오후';
+  const hh=h===0?12:h>12?h-12:h;
+  return year+'-'+month+'-'+date+' '+ampm+' '+hh+':'+String(d.getMinutes()).padStart(2,'0');
+}
+
+const chatMessagesEl=document.getElementById('chat-messages');
+const paginationEl=document.getElementById('chat-pagination');
+const pageInfoEl=document.getElementById('page-info');
+const pagePrevEl=document.getElementById('page-prev');
+const pageNextEl=document.getElementById('page-next');
+
+const PAGE_SIZE=5;
+let allMessages=[];
+let currentPage=0;
+let isAdmin=false;
+let adminPassword='';
+
+function escapeHtml(str){
+  const div=document.createElement('div');
+  div.textContent=str;
+  return div.innerHTML;
+}
+
+// ⭐ 원본의 안전한 이스케이프 구조 그대로 유지하면서 알약 뱃지 장착 조립
+function renderPage(){
+  const total=allMessages.length;
+  const totalPages=Math.ceil(total/PAGE_SIZE);
+  const start=currentPage*PAGE_SIZE;
+  const pageItems=allMessages.slice(start,start+PAGE_SIZE);
+  if(total===0){
+    chatMessagesEl.innerHTML='<div class="chat-empty">아직 방명록이 비어있어요. 첫 글을 남겨보세요!</div>';
+    paginationEl.style.display='none';
+    return;
+  }
+  chatMessagesEl.innerHTML='';
+  pageItems.forEach(m=>{
+    const displayNick=addEmojiToNickname(m.nickname);
+    const mine=displayNick===myNickname;
+    const div=document.createElement('div');
+    div.className='chat-msg'+(mine?' mine':'');
+    const body=document.createElement('div');
+    body.className='chat-msg-body';
     
-    let hh = d.getHours();
-    const ampm = hh >= 12 ? '오후' : '오전';
-    hh = hh % 12;
-    hh = hh ? hh : 12; 
-    const min = String(d.getMinutes()).padStart(2, '0');
-
-    return `${yy}-${mm}-${dd} ${ampm} ${hh}:${min}`;
-  }
-
-  function addEmojiToNickname(nick) { return nick; }
-
-  // 데이터 로드 함수
-  async function loadGuestbook() {
-    try {
-      const res = await fetch('/api/guestbook');
-      if (res.ok) {
-        const data = await res.getJson();
-        allMessages = data.messages || [];
-        renderPage();
+    // ⭐ 독립된 알약 뱃지 문자열 세팅
+    const sirenHtml = m.has_siren ? '<span class="badge-siren-text">🚨경고!</span>' : '';
+    
+    body.innerHTML='<span class="chat-msg-nick">'+escapeHtml(displayNick)+'</span>'+
+      escapeHtml(m.text) + sirenHtml + '<span class="chat-msg-time">'+fmtChatTime(m.ts)+'</span>';
+    div.appendChild(body);
+    
+    // ⭐ 관리자 패널 통합 제어 처리 (🚨 와 🗑️ 버튼 둘 다 제공)
+    if(isAdmin){
+      const adminPanel = document.createElement('div');
+      adminPanel.className = 'admin-panel';
+      
+      if(!m.has_siren) {
+        const sirenBtn = document.createElement('button');
+        sirenBtn.className = 'siren-btn';
+        sirenBtn.textContent = '🚨';
+        sirenBtn.title = '경고 부여';
+        sirenBtn.addEventListener('click', () => setSiren(m.id));
+        adminPanel.appendChild(sirenBtn);
       }
-    } catch (e) {
-      console.error("방명록 로드 실패", e);
+      
+      const delBtn=document.createElement('button');
+      delBtn.className='delete-btn';
+      delBtn.textContent='🗑️';
+      delBtn.addEventListener('click',()=>deleteMsg(m.id));
+      adminPanel.appendChild(delBtn);
+      
+      div.appendChild(adminPanel);
     }
-  }
+    chatMessagesEl.appendChild(div);
+  });
+  paginationEl.style.display=totalPages>1?'flex':'none';
+  pageInfoEl.textContent=(currentPage+1)+' / '+totalPages;
+  pagePrevEl.disabled=currentPage===0;
+  pageNextEl.disabled=currentPage>=totalPages-1;
+}
 
-  // 화면 렌더링 함수 (구조 안전 분리 완료)
-  function renderPage(){
-    const total = allMessages.length;
-    const totalPages = Math.ceil(total / PAGE_SIZE);
-    const start = currentPage * PAGE_SIZE;
-    const pageItems = allMessages.slice(start, start + PAGE_SIZE);
-    
-    if(total === 0){
-      chatMessagesEl.innerHTML = '<div class="chat-empty">아직 방명록이 비어있어요. 첫 글을 남겨보세요!</div>';
-      paginationEl.style.display = 'none';
-      return;
-    }
-    
-    chatMessagesEl.innerHTML = '';
-    pageItems.forEach(m => {
-      const displayNick = addEmojiToNickname(m.nickname);
-      const mine = displayNick === myNickname;
-      
-      const div = document.createElement('div');
-      div.className = 'chat-msg' + (mine ? ' mine' : '');
-      
-      const body = document.createElement('div');
-      body.className = 'chat-msg-body';
-      
-      // 알약 뱃지 문자열 바인딩 방지 및 독립 생성
-      const sirenHtml = m.has_siren ? '<span class="badge-siren-text">🚨경고!</span>' : '';
-      
-      // 구조 조립: 닉네임 + 본문 + 뱃지 + 시간
-      body.innerHTML = '<span class="chat-msg-nick">' + escapeHtml(displayNick) + '</span>' +
-                       '<span class="chat-msg-content">' + escapeHtml(m.text) + '</span>' +
-                       sirenHtml +
-                       '<span class="chat-msg-time">' + fmtChatTime(m.ts) + '</span>';
-      div.appendChild(body);
-      
-      // 관리자 전용 액션 버튼들
-      if(isAdmin){
-        const actionsDiv = document.createElement('div');
-        actionsDiv.className = 'admin-actions';
-
-        if(!m.has_siren) {
-          const sirenBtn = document.createElement('button');
-          sirenBtn.className = 'siren-btn';
-          sirenBtn.textContent = '🚨';
-          sirenBtn.title = '경고 주기';
-          sirenBtn.addEventListener('click', () => setSiren(m.id));
-          actionsDiv.appendChild(sirenBtn);
-        }
-        
-        const delBtn = document.createElement('button');
-        delBtn.className = 'delete-btn';
-        delBtn.textContent = '🗑️';
-        delBtn.title = '삭제하기';
-        delBtn.addEventListener('click', () => deleteMsg(m.id));
-        actionsDiv.appendChild(delBtn);
-        
-        div.appendChild(actionsDiv);
-      }
-      chatMessagesEl.appendChild(div);
+// ⭐ 추가: 백엔드 통신용 경고 뱃지 부여 함수
+async function setSiren(id) {
+  if(!confirm('이 댓글에 🚨 경고 뱃지를 부여할까요?')) return;
+  try {
+    const res = await fetch('/api/guestbook/'+id+'/siren', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({password: adminPassword})
     });
-    
-    paginationEl.style.display = totalPages > 1 ? 'flex' : 'none';
-    pageInfoEl.textContent = (currentPage + 1) + ' / ' + totalPages;
-    pagePrevEl.disabled = currentPage === 0;
-    pageNextEl.disabled = currentPage >= totalPages - 1;
+    if(res.ok) loadGuestbook();
+    else alert('경고 처리 실패');
+  } catch(e) { alert('오류 발생'); }
+}
+
+async function deleteMsg(id){
+  if(!confirm('이 댓글을 삭제할까요?'))return;
+  try{
+    const res=await fetch('/api/guestbook/'+id,{
+      method:'DELETE',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({password:adminPassword})
+    });
+    if(res.ok)loadGuestbook();
+    else alert('삭제 실패');
+  }catch(e){alert('오류 발생');}
+}
+
+document.getElementById('admin-btn').addEventListener('click',()=>{
+  if(isAdmin){
+    isAdmin=false;adminPassword='';
+    document.getElementById('admin-btn').textContent='🔑';
+    renderPage();return;
   }
+  const pw=prompt('관리자 비밀번호를 입력하세요:');
+  if(pw===null)return;
+  adminPassword=pw;isAdmin=true;
+  document.getElementById('admin-btn').textContent='🔓';
+  renderPage();
+});
 
-  // ⭐ 백엔드와 연동되는 🚨 경고 부여 함수
-  async function setSiren(id) {
-    if(!confirm('이 댓글에 🚨 경고 뱃지를 달까요?')) return;
-    try {
-      const res = await fetch('/api/guestbook/' + id + '/siren', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ password: adminPassword })
-      });
-      if(res.ok) {
-        loadGuestbook();
-      } else {
-        alert('뱃지 달기에 실패했습니다.');
-      }
-    } catch(e) { 
-      alert('통신 오류가 발생했습니다.');
-    }
+pagePrevEl.addEventListener('click',()=>{if(currentPage>0){currentPage--;renderPage();}});
+pageNextEl.addEventListener('click',()=>{currentPage++;renderPage();});
+
+async function loadGuestbook(){
+  chatMessagesEl.innerHTML='<div class="chat-empty">불러오는 중...</div>';
+  try{
+    const res=await fetch('/api/guestbook');
+    const data=await res.json();
+    allMessages=data.messages||[];
+    currentPage=0;
+    renderPage();
+  }catch(e){
+    chatMessagesEl.innerHTML='<div class="chat-empty">불러오기 실패. 새로고침 버튼을 눌러주세요.</div>';
   }
+}
 
-  // 백엔드와 연동되는 댓글 삭제 함수
-  async function deleteMsg(id) {
-    if(!confirm('정말 삭제하시겠습니까?')) return;
-    try {
-      const res = await fetch('/api/guestbook/' + id, {
-        method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ password: adminPassword })
-      });
-      if(res.ok) {
-        loadGuestbook();
-      } else {
-        alert('삭제에 실패했습니다.');
-      }
-    } catch(e) {
-      alert('통신 오류가 발생했습니다.');
-    }
-  }
+async function sendChat(){
+  const input=document.getElementById('chat-input');
+  const text=input.value.trim();
+  if(!text)return;
+  input.value='';
+  try{
+    await fetch('/api/guestbook',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({nickname:myNickname,text})
+    });
+    loadGuestbook();
+  }catch(e){input.value=text;}
+}
 
-  // 페이징 버튼 이벤트
-  pagePrevEl.addEventListener('click', () => { if(currentPage > 0) { currentPage--; renderPage(); } });
-  pageNextEl.addEventListener('click', () => { if(currentPage < Math.ceil(allMessages.length / PAGE_SIZE) - 1) { currentPage++; renderPage(); } });
+let sending=false;
+async function safeSendChat(){
+  if(sending)return;
+  sending=true;
+  await sendChat();
+  sending=false;
+}
 
-  // 최초 페이지 로드 시 데이터 읽어오기
-  loadGuestbook();
+document.getElementById('chat-send').addEventListener('click',safeSendChat);
+document.getElementById('chat-input').addEventListener('keydown',(e)=>{
+  if(e.key==='Enter'){e.preventDefault();safeSendChat();}
+});
+document.getElementById('chat-refresh').addEventListener('click',loadGuestbook);
+
+ensureNickname().then(loadGuestbook);
 </script>
 </body>
 </html>
