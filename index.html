@@ -13,10 +13,13 @@
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { background: #f5f5f3; font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif; display: flex; justify-content: center; align-items: flex-start; min-height: 100vh; padding: 2rem 1rem; }
   .wrap { width: 100%; max-width: 480px; }
-  .cards { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px; }
-  .card { background: #fff; border: 0.5px solid #e0dfd8; border-radius: 12px; padding: 12px 14px; }
+  .cards { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 8px; align-items: stretch; }
+  .card { background: #fff; border: 0.5px solid #e0dfd8; border-radius: 12px; padding: 12px 14px; display: flex; flex-direction: column; }
   .card-label { font-size: 11px; color: #888780; margin-bottom: 6px; display: flex; align-items: center; gap: 5px; }
-  .card-value { font-size: 26px; font-weight: 500; color: #1a1a18; font-variant-numeric: tabular-nums; letter-spacing: -1px; line-height: 1; }
+  .card-value { font-size: 17px; font-weight: 500; color: #1a1a18; font-variant-numeric: tabular-nums; letter-spacing: -1px; line-height: 1; }
+  .hate-btn { width: 100%; margin-top: 8px; padding: 5px 4px; background: #fff0f0; border: 1px solid #f4c0c0; border-radius: 8px; font-size: 10px; color: #c0392b; cursor: pointer; font-family: 'Noto Sans KR', sans-serif; font-weight: 500; }
+  .hate-btn:active { background: #ffe0e0; }
+  .hate-btn.pressed { background: #f5f5f5; border-color: #ddd; color: #aaa; cursor: default; }
   .card-sub-row { display: flex; align-items: center; gap: 6px; margin-top: 4px; }
   .card-sub { font-size: 12px; color: #888780; }
   .muted { font-size: 16px; font-weight: 400; color: #888780; }
@@ -106,6 +109,12 @@
       <div class="card-sub-row">
         <span class="card-sub" id="sublabel">퇴근까지</span>
       </div>
+    </div>
+    <div class="card">
+      <div class="card-label">😩 일하기 싫은 사람</div>
+      <div class="card-value"><span id="hate-count">--</span><span class="muted" style="font-size:14px;"> 명</span></div>
+      <div class="card-sub" style="height:0;"></div>
+      <button class="hate-btn" id="hate-btn">그건 바로 나 😩</button>
     </div>
   </div>
 
@@ -306,6 +315,39 @@ function tick(){
 }
 tick();
 setInterval(tick,1000);
+
+// --- 일하기 싫다 카운터 ---
+const today = new Date().toISOString().slice(0,10);
+const hateKey = 'clockout-hate-' + today;
+const hateBtn = document.getElementById('hate-btn');
+const hateCount = document.getElementById('hate-count');
+
+async function loadHate(){
+  try{
+    const res = await fetch('/api/hate');
+    const data = await res.json();
+    hateCount.textContent = data.count;
+  }catch(e){ hateCount.textContent = '?'; }
+}
+
+async function pressHate(){
+  if(localStorage.getItem(hateKey)) return;
+  try{
+    const res = await fetch('/api/hate', {method:'POST'});
+    const data = await res.json();
+    hateCount.textContent = data.count;
+    localStorage.setItem(hateKey, 'true');
+    hateBtn.textContent = '✓ 눌렀음';
+    hateBtn.classList.add('pressed');
+  }catch(e){}
+}
+
+if(localStorage.getItem(hateKey)){
+  hateBtn.textContent = '✓ 눌렀음';
+  hateBtn.classList.add('pressed');
+}
+hateBtn.addEventListener('click', pressHate);
+loadHate();
 
 // --- 익명 방명록 ---
 const ANIMAL_EMOJI = {
