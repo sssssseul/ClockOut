@@ -11,15 +11,7 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    background: #f5f5f3;
-    font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    min-height: 100vh;
-    padding: 2rem 1rem;
-  }
+  body { background: #f5f5f3; font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif; display: flex; justify-content: center; align-items: flex-start; min-height: 100vh; padding: 2rem 1rem; }
   .wrap { width: 100%; max-width: 480px; }
   .cards { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px; }
   .card { background: #fff; border: 0.5px solid #e0dfd8; border-radius: 12px; padding: 12px 14px; }
@@ -34,7 +26,10 @@
   .badge-before { background: #FAEEDA; color: #854F0B; }
   .badge-lunch { background: #f1efea; color: #5F5E5A; border: 0.5px solid #e0dfd8; }
   .blocks-card { background: #fff; border: 0.5px solid #e0dfd8; border-radius: 12px; padding: 12px 14px; margin-bottom: 8px; }
-  .blocks-label { font-size: 11px; color: #888780; margin-bottom: 8px; }
+  .blocks-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+  .blocks-label { font-size: 11px; color: #888780; }
+  .lunch-toggle label { font-size: 11px; color: #888780; cursor: pointer; display: flex; align-items: center; gap: 4px; }
+  .lunch-toggle input[type="checkbox"] { margin: 0; cursor: pointer; }
   .blocks-wrap { display: grid; grid-template-columns: repeat(9, 1fr); gap: 4px; }
   .block { border-radius: 5px; height: 24px; }
   .block.done { background: #F4C0D1; border: 1px solid #993556; }
@@ -56,14 +51,14 @@
   .preset-option input[type="radio"] { position: absolute; opacity: 0; width: 100%; height: 100%; margin: 0; cursor: pointer; }
   .preset-option label { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; padding: 8px 4px; border: 1px solid #e0dfd8; border-radius: 8px; cursor: pointer; font-size: 10.5px; color: #888780; line-height: 1.3; text-align: center; font-family: 'Noto Sans KR', sans-serif; transition: all 0.15s; }
   .preset-option input[type="radio"]:checked + label { border-color: #185FA5; background: #E6F1FB; color: #185FA5; font-weight: 500; }
-  .custom-card { background: #fff; border: 0.5px solid #e0dfd8; border-radius: 12px; padding: 12px 14px; display: flex; align-items: center; gap: 8px; }
+  .custom-card { background: #fff; border: 0.5px solid #e0dfd8; border-radius: 12px; padding: 12px 14px; display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
   .custom-card label { font-size: 12px; color: #888780; white-space: nowrap; display: flex; align-items: center; gap: 4px; flex-shrink: 0; width: 38px; font-family: 'Noto Sans KR', sans-serif; }
   .custom-card select { flex: 1; min-width: 0; font-size: 12px; color: #888780; border: 0.5px solid #e0dfd8; border-radius: 6px; padding: 4px 8px; background: #f9f9f7; outline: none; font-family: 'Noto Sans KR', sans-serif; cursor: pointer; }
   .custom-card select:focus { border-color: #185FA5; }
   .chat-card { background: #fff; border: 0.5px solid #e0dfd8; border-radius: 12px; padding: 12px 14px; margin-top: 8px; }
   .chat-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
   .chat-nickname { font-size: 11px; color: #185FA5; background: #E6F1FB; padding: 2px 8px; border-radius: 99px; font-family: 'Noto Sans KR', sans-serif; }
-  .chat-messages { display: flex; flex-direction: column; gap: 6px; margin-bottom: 8px; padding-right: 2px; }
+  .chat-messages { display: flex; flex-direction: column; gap: 6px; margin-bottom: 8px; }
   .chat-pagination { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
   .chat-pagination button { background: none; border: 0.5px solid #e0dfd8; border-radius: 6px; padding: 4px 10px; font-size: 11px; color: #888780; cursor: pointer; font-family: 'Noto Sans KR', sans-serif; }
   .chat-pagination button:hover { background: #f1efea; }
@@ -82,7 +77,7 @@
   .chat-input-row button:hover { background: #144d87; }
   .chat-refresh-btn { background: none; border: 0.5px solid #e0dfd8; border-radius: 6px; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #888780; }
   .chat-refresh-btn:hover { background: #f1efea; }
-  .admin-btn { background: none; border: 0.5px solid #e0dfd8; border-radius: 6px; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #888780; font-size: 12px; }
+  .admin-btn { background: none; border: 0.5px solid #e0dfd8; border-radius: 6px; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 12px; }
   .admin-btn:hover { background: #f1efea; }
   .delete-btn { background: none; border: none; color: #ccc; cursor: pointer; font-size: 12px; padding: 0 2px; flex-shrink: 0; line-height: 1; }
   .delete-btn:hover { color: #e05a5a; }
@@ -112,7 +107,14 @@
   </div>
 
   <div class="blocks-card">
-    <div class="blocks-label">30분 블록 · 점심 11:30~13:00 고정</div>
+    <div class="blocks-top">
+      <span class="blocks-label">30분 블록</span>
+      <div class="lunch-toggle">
+        <label>
+          <input type="checkbox" id="lunch-alt"> 점심 12:00~13:00
+        </label>
+      </div>
+    </div>
     <div class="blocks-wrap" id="blocks"></div>
     <div class="legend">
       <div class="leg"><div class="leg-dot dot-done"></div>완료</div>
@@ -157,7 +159,8 @@
 </div>
 
 <script>
-const LUNCH_START=11*60+30, LUNCH_END=13*60;
+const LUNCH_DEFAULT = {start: 11*60+30, end: 13*60};
+const LUNCH_ALT     = {start: 12*60,    end: 13*60};
 
 const PRESETS=[
   {start:'08:00', end:'17:00'},
@@ -167,6 +170,8 @@ const PRESETS=[
   {start:'10:00', end:'19:00'}
 ];
 
+function getMins(str){const[h,m]=str.split(':').map(Number);return h*60+m;}
+function fmt(s){const h=Math.floor(s/3600),m=Math.floor((s%3600)/60),ss=s%60;return[h,m,ss].map(n=>String(n).padStart(2,'0')).join(':');}
 function fmtLabel(t){
   const [h,m]=t.split(':').map(Number);
   const ampm=h<12?'오전':'오후';
@@ -174,16 +179,13 @@ function fmtLabel(t){
   return ampm+' '+hh+':'+String(m).padStart(2,'0');
 }
 
-function getMins(str){const[h,m]=str.split(':').map(Number);return h*60+m;}
-function fmt(s){const h=Math.floor(s/3600),m=Math.floor((s%3600)/60),ss=s%60;return[h,m,ss].map(n=>String(n).padStart(2,'0')).join(':');}
-
+// 드롭다운 옵션 생성
 function buildOptions(selectEl, defaultVal){
   for(let t=0;t<24*60;t+=30){
     const h=Math.floor(t/60),m=t%60;
     const val=String(h).padStart(2,'0')+':'+String(m).padStart(2,'0');
     const opt=document.createElement('option');
-    opt.value=val;
-    opt.textContent=fmtLabel(val);
+    opt.value=val; opt.textContent=fmtLabel(val);
     if(val===defaultVal)opt.selected=true;
     selectEl.appendChild(opt);
   }
@@ -196,63 +198,74 @@ const savedEnd=localStorage.getItem('clockout-end')||'18:00';
 buildOptions(startSelect, savedStart);
 buildOptions(endSelect, savedEnd);
 
+// 점심 체크박스 상태 복원
+const lunchAltEl = document.getElementById('lunch-alt');
+lunchAltEl.checked = localStorage.getItem('clockout-lunch-alt') === 'true';
+lunchAltEl.addEventListener('change', ()=>{
+  localStorage.setItem('clockout-lunch-alt', lunchAltEl.checked);
+  tick();
+});
+
+// 근무 프리셋
 const presetGrid=document.getElementById('preset-grid');
-
-function findMatchingPresetIdx(start, end){
-  return PRESETS.findIndex(p=>p.start===start && p.end===end);
-}
-
-let selectedIdx=findMatchingPresetIdx(savedStart, savedEnd);
-
+function findMatchingPresetIdx(s,e){return PRESETS.findIndex(p=>p.start===s&&p.end===e);}
+let selectedIdx=findMatchingPresetIdx(savedStart,savedEnd);
 PRESETS.forEach((p,i)=>{
-  const wrap=document.createElement('div');
-  wrap.className='preset-option';
+  const wrap=document.createElement('div'); wrap.className='preset-option';
   const id='preset-'+i;
   const input=document.createElement('input');
   input.type='radio'; input.name='preset'; input.id=id; input.value=i;
-  if(i===selectedIdx) input.checked=true;
+  if(i===selectedIdx)input.checked=true;
   const label=document.createElement('label');
-  label.setAttribute('for', id);
+  label.setAttribute('for',id);
   label.innerHTML=fmtLabel(p.start)+'<br>~ '+fmtLabel(p.end);
   wrap.appendChild(input); wrap.appendChild(label); presetGrid.appendChild(wrap);
-  input.addEventListener('change', ()=>{ startSelect.value=p.start; endSelect.value=p.end; saveAndTick(); });
+  input.addEventListener('change',()=>{startSelect.value=p.start;endSelect.value=p.end;saveAndTick();});
 });
 
-function uncheckPresets(){ document.querySelectorAll('input[name="preset"]').forEach(r=>r.checked=false); }
+function uncheckPresets(){document.querySelectorAll('input[name="preset"]').forEach(r=>r.checked=false);}
 function syncPresetCheck(){
-  const idx=findMatchingPresetIdx(startSelect.value, endSelect.value);
+  const idx=findMatchingPresetIdx(startSelect.value,endSelect.value);
   uncheckPresets();
-  if(idx!==-1){ const t=document.getElementById('preset-'+idx); if(t) t.checked=true; }
+  if(idx!==-1){const t=document.getElementById('preset-'+idx);if(t)t.checked=true;}
 }
 function saveAndTick(){
-  localStorage.setItem('clockout-start', startSelect.value);
-  localStorage.setItem('clockout-end', endSelect.value);
+  localStorage.setItem('clockout-start',startSelect.value);
+  localStorage.setItem('clockout-end',endSelect.value);
   syncPresetCheck(); tick();
 }
-startSelect.addEventListener('change', saveAndTick);
-endSelect.addEventListener('change', saveAndTick);
+startSelect.addEventListener('change',saveAndTick);
+endSelect.addEventListener('change',saveAndTick);
 
 function tick(){
   const now=new Date();
   const nowMins=now.getHours()*60+now.getMinutes();
   const nowSecs=now.getHours()*3600+now.getMinutes()*60+now.getSeconds();
+
   const nowClockEl=document.getElementById('now-clock');
   const curH=now.getHours();
   const curAmPm=curH<12?'오전':'오후';
   const curHH=curH===0?12:curH>12?curH-12:curH;
   nowClockEl.textContent='('+curAmPm+' '+curHH+':'+String(now.getMinutes()).padStart(2,'0')+')';
+
+  const lunch = lunchAltEl.checked ? LUNCH_ALT : LUNCH_DEFAULT;
+  const LUNCH_START_MINS = lunch.start;
+  const LUNCH_END_MINS   = lunch.end;
+
   const startMins=getMins(startSelect.value);
   const endMins=getMins(endSelect.value);
-  const startSecs=startMins*60,endSecs=endMins*60;
+  const startSecs=startMins*60, endSecs=endMins*60;
+
   const blocks=[];
   for(let t=startMins;t<endMins;t+=30)blocks.push({start:t,end:Math.min(t+30,endMins)});
+
   const blocksEl=document.getElementById('blocks');
   blocksEl.innerHTML='';
   let completed=0,total=0;
   blocks.forEach(b=>{
     const div=document.createElement('div');
     const mid=(b.start+b.end)/2;
-    const isLunch=mid>=LUNCH_START&&mid<=LUNCH_END;
+    const isLunch=mid>=LUNCH_START_MINS&&mid<=LUNCH_END_MINS;
     if(!isLunch)total++;
     if(isLunch){div.className=nowMins>=b.end?'block lunch done':'block lunch';}
     else if(nowMins>=b.end){div.className='block done';completed++;}
@@ -260,13 +273,15 @@ function tick(){
     else{div.className='block remaining';}
     blocksEl.appendChild(div);
   });
-  const isLunch=nowMins>=LUNCH_START&&nowMins<LUNCH_END;
+
+  const isLunch=nowMins>=LUNCH_START_MINS&&nowMins<LUNCH_END_MINS;
   const cdEl=document.getElementById('countdown');
   const badge=document.getElementById('badge');
   const sub=document.getElementById('sublabel');
   const setsVal=document.getElementById('sets-val');
   const setsTotal=document.getElementById('sets-total');
   setsTotal.textContent=' / '+total;
+
   if(nowMins<startMins){
     cdEl.textContent=fmt(Math.max(0,startSecs-nowSecs));
     badge.className='badge badge-before';badge.textContent='출근 전';
@@ -290,185 +305,176 @@ setInterval(tick,1000);
 
 // --- 익명 방명록 ---
 const ANIMAL_EMOJI = {
-  "돼지": "🐷", "다람쥐": "🐿️", "펭귄": "🐧", "햄스터": "🐹",
-  "여우": "🦊", "고래": "🐳", "토끼": "🐰", "부엉이": "🦉",
-  "거북이": "🐢", "수달": "🦦", "코알라": "🐨", "사자": "🦁",
-  "너구리": "🦝", "오리": "🦆", "곰": "🐻", "강아지": "🐶",
-  "물개": "🦭", "기린": "🦒", "판다": "🐼", "라마": "🦙"
+  "돼지":"🐷","다람쥐":"🐿️","펭귄":"🐧","햄스터":"🐹",
+  "여우":"🦊","고래":"🐳","토끼":"🐰","부엉이":"🦉",
+  "거북이":"🐢","수달":"🦦","코알라":"🐨","사자":"🦁",
+  "너구리":"🦝","오리":"🦆","곰":"🐻","강아지":"🐶",
+  "물개":"🦭","기린":"🦒","판다":"🐼","라마":"🦙"
 };
 
 function addEmojiToNickname(nickname){
-  if(!nickname) return nickname;
-  const firstChar = nickname.codePointAt(0);
-  if(firstChar > 0x1F000) return nickname;
+  if(!nickname)return nickname;
+  const firstChar=nickname.codePointAt(0);
+  if(firstChar>0x1F000)return nickname;
   for(const noun in ANIMAL_EMOJI){
-    if(nickname.includes(noun)) return ANIMAL_EMOJI[noun] + ' ' + nickname;
+    if(nickname.includes(noun))return ANIMAL_EMOJI[noun]+' '+nickname;
   }
   return nickname;
 }
 
-let myNickname = localStorage.getItem('clockout-nickname');
+let myNickname=localStorage.getItem('clockout-nickname');
 if(myNickname){
-  const withEmoji = addEmojiToNickname(myNickname);
-  if(withEmoji !== myNickname){ myNickname = withEmoji; localStorage.setItem('clockout-nickname', myNickname); }
+  const withEmoji=addEmojiToNickname(myNickname);
+  if(withEmoji!==myNickname){myNickname=withEmoji;localStorage.setItem('clockout-nickname',myNickname);}
 }
 
 async function ensureNickname(){
   if(!myNickname){
     try{
-      const res = await fetch('/api/nickname');
-      const data = await res.json();
-      myNickname = data.nickname;
-      localStorage.setItem('clockout-nickname', myNickname);
-    }catch(e){ myNickname = '익명'; }
+      const res=await fetch('/api/nickname');
+      const data=await res.json();
+      myNickname=data.nickname;
+      localStorage.setItem('clockout-nickname',myNickname);
+    }catch(e){myNickname='익명';}
   }
-  document.getElementById('my-nickname').textContent = myNickname;
+  document.getElementById('my-nickname').textContent=myNickname;
 }
 
 function fmtChatTime(ts){
-  const d = new Date(ts*1000);
-  const year = d.getFullYear();
-  const month = String(d.getMonth()+1).padStart(2,'0');
-  const date = String(d.getDate()).padStart(2,'0');
-  const h = d.getHours();
-  const ampm = h<12?'오전':'오후';
-  const hh = h===0?12:h>12?h-12:h;
+  const d=new Date(ts*1000);
+  const year=d.getFullYear();
+  const month=String(d.getMonth()+1).padStart(2,'0');
+  const date=String(d.getDate()).padStart(2,'0');
+  const h=d.getHours();
+  const ampm=h<12?'오전':'오후';
+  const hh=h===0?12:h>12?h-12:h;
   return year+'-'+month+'-'+date+' '+ampm+' '+hh+':'+String(d.getMinutes()).padStart(2,'0');
 }
 
-const chatMessagesEl = document.getElementById('chat-messages');
-const paginationEl = document.getElementById('chat-pagination');
-const pageInfoEl = document.getElementById('page-info');
-const pagePrevEl = document.getElementById('page-prev');
-const pageNextEl = document.getElementById('page-next');
+const chatMessagesEl=document.getElementById('chat-messages');
+const paginationEl=document.getElementById('chat-pagination');
+const pageInfoEl=document.getElementById('page-info');
+const pagePrevEl=document.getElementById('page-prev');
+const pageNextEl=document.getElementById('page-next');
 
-const PAGE_SIZE = 5;
-let allMessages = [];
-let currentPage = 0;
-let isAdmin = false;
-let adminPassword = '';
+const PAGE_SIZE=5;
+let allMessages=[];
+let currentPage=0;
+let isAdmin=false;
+let adminPassword='';
 
 function escapeHtml(str){
-  const div = document.createElement('div');
-  div.textContent = str;
+  const div=document.createElement('div');
+  div.textContent=str;
   return div.innerHTML;
 }
 
 function renderPage(){
-  const total = allMessages.length;
-  const totalPages = Math.ceil(total / PAGE_SIZE);
-  const start = currentPage * PAGE_SIZE;
-  const pageItems = allMessages.slice(start, start + PAGE_SIZE);
-
-  if(total === 0){
-    chatMessagesEl.innerHTML = '<div class="chat-empty">아직 방명록이 비어있어요. 첫 글을 남겨보세요!</div>';
-    paginationEl.style.display = 'none';
+  const total=allMessages.length;
+  const totalPages=Math.ceil(total/PAGE_SIZE);
+  const start=currentPage*PAGE_SIZE;
+  const pageItems=allMessages.slice(start,start+PAGE_SIZE);
+  if(total===0){
+    chatMessagesEl.innerHTML='<div class="chat-empty">아직 방명록이 비어있어요. 첫 글을 남겨보세요!</div>';
+    paginationEl.style.display='none';
     return;
   }
-
-  chatMessagesEl.innerHTML = '';
+  chatMessagesEl.innerHTML='';
   pageItems.forEach(m=>{
-    const displayNick = addEmojiToNickname(m.nickname);
-    const mine = displayNick === myNickname;
-    const div = document.createElement('div');
-    div.className = 'chat-msg' + (mine ? ' mine' : '');
-
-    const body = document.createElement('div');
-    body.className = 'chat-msg-body';
-    body.innerHTML = '<span class="chat-msg-nick">'+escapeHtml(displayNick)+'</span>'+
-      escapeHtml(m.text)+
-      '<span class="chat-msg-time">'+fmtChatTime(m.ts)+'</span>';
+    const displayNick=addEmojiToNickname(m.nickname);
+    const mine=displayNick===myNickname;
+    const div=document.createElement('div');
+    div.className='chat-msg'+(mine?' mine':'');
+    const body=document.createElement('div');
+    body.className='chat-msg-body';
+    body.innerHTML='<span class="chat-msg-nick">'+escapeHtml(displayNick)+'</span>'+
+      escapeHtml(m.text)+'<span class="chat-msg-time">'+fmtChatTime(m.ts)+'</span>';
     div.appendChild(body);
-
     if(isAdmin){
-      const delBtn = document.createElement('button');
-      delBtn.className = 'delete-btn';
-      delBtn.textContent = '🗑️';
-      delBtn.addEventListener('click', ()=> deleteMsg(m.id));
+      const delBtn=document.createElement('button');
+      delBtn.className='delete-btn';
+      delBtn.textContent='🗑️';
+      delBtn.addEventListener('click',()=>deleteMsg(m.id));
       div.appendChild(delBtn);
     }
     chatMessagesEl.appendChild(div);
   });
-
-  paginationEl.style.display = totalPages > 1 ? 'flex' : 'none';
-  pageInfoEl.textContent = (currentPage+1) + ' / ' + totalPages;
-  pagePrevEl.disabled = currentPage === 0;
-  pageNextEl.disabled = currentPage >= totalPages - 1;
+  paginationEl.style.display=totalPages>1?'flex':'none';
+  pageInfoEl.textContent=(currentPage+1)+' / '+totalPages;
+  pagePrevEl.disabled=currentPage===0;
+  pageNextEl.disabled=currentPage>=totalPages-1;
 }
 
 async function deleteMsg(id){
-  if(!confirm('이 댓글을 삭제할까요?')) return;
+  if(!confirm('이 댓글을 삭제할까요?'))return;
   try{
-    const res = await fetch('/api/guestbook/'+id, {
-      method: 'DELETE',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({password: adminPassword})
+    const res=await fetch('/api/guestbook/'+id,{
+      method:'DELETE',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({password:adminPassword})
     });
-    if(res.ok) loadGuestbook();
+    if(res.ok)loadGuestbook();
     else alert('삭제 실패');
-  }catch(e){ alert('오류 발생'); }
+  }catch(e){alert('오류 발생');}
 }
 
-document.getElementById('admin-btn').addEventListener('click', ()=>{
+document.getElementById('admin-btn').addEventListener('click',()=>{
   if(isAdmin){
-    isAdmin = false;
-    adminPassword = '';
-    document.getElementById('admin-btn').textContent = '🔑';
-    renderPage();
-    return;
+    isAdmin=false;adminPassword='';
+    document.getElementById('admin-btn').textContent='🔑';
+    renderPage();return;
   }
-  const pw = prompt('관리자 비밀번호를 입력하세요:');
-  if(pw === null) return;
-  adminPassword = pw;
-  isAdmin = true;
-  document.getElementById('admin-btn').textContent = '🔓';
+  const pw=prompt('관리자 비밀번호를 입력하세요:');
+  if(pw===null)return;
+  adminPassword=pw;isAdmin=true;
+  document.getElementById('admin-btn').textContent='🔓';
   renderPage();
 });
 
-pagePrevEl.addEventListener('click', ()=>{ if(currentPage > 0){ currentPage--; renderPage(); } });
-pageNextEl.addEventListener('click', ()=>{ currentPage++; renderPage(); });
+pagePrevEl.addEventListener('click',()=>{if(currentPage>0){currentPage--;renderPage();}});
+pageNextEl.addEventListener('click',()=>{currentPage++;renderPage();});
 
 async function loadGuestbook(){
-  chatMessagesEl.innerHTML = '<div class="chat-empty">불러오는 중...</div>';
+  chatMessagesEl.innerHTML='<div class="chat-empty">불러오는 중...</div>';
   try{
-    const res = await fetch('/api/guestbook');
-    const data = await res.json();
-    allMessages = data.messages || [];
-    currentPage = 0;
+    const res=await fetch('/api/guestbook');
+    const data=await res.json();
+    allMessages=data.messages||[];
+    currentPage=0;
     renderPage();
   }catch(e){
-    chatMessagesEl.innerHTML = '<div class="chat-empty">불러오기 실패. 새로고침 버튼을 눌러주세요.</div>';
+    chatMessagesEl.innerHTML='<div class="chat-empty">불러오기 실패. 새로고침 버튼을 눌러주세요.</div>';
   }
 }
 
 async function sendChat(){
-  const input = document.getElementById('chat-input');
-  const text = input.value.trim();
-  if(!text) return;
-  input.value = '';
+  const input=document.getElementById('chat-input');
+  const text=input.value.trim();
+  if(!text)return;
+  input.value='';
   try{
-    await fetch('/api/guestbook', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({nickname: myNickname, text})
+    await fetch('/api/guestbook',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({nickname:myNickname,text})
     });
     loadGuestbook();
-  }catch(e){ input.value = text; }
+  }catch(e){input.value=text;}
 }
 
-let sending = false;
+let sending=false;
 async function safeSendChat(){
-  if(sending) return;
-  sending = true;
+  if(sending)return;
+  sending=true;
   await sendChat();
-  sending = false;
+  sending=false;
 }
 
-document.getElementById('chat-send').addEventListener('click', safeSendChat);
-document.getElementById('chat-input').addEventListener('keydown', (e)=>{
-  if(e.key === 'Enter'){ e.preventDefault(); safeSendChat(); }
+document.getElementById('chat-send').addEventListener('click',safeSendChat);
+document.getElementById('chat-input').addEventListener('keydown',(e)=>{
+  if(e.key==='Enter'){e.preventDefault();safeSendChat();}
 });
-document.getElementById('chat-refresh').addEventListener('click', loadGuestbook);
+document.getElementById('chat-refresh').addEventListener('click',loadGuestbook);
 
 ensureNickname().then(loadGuestbook);
 </script>
