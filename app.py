@@ -8,6 +8,7 @@ app = Flask(__name__)
 
 DATABASE_URL = os.environ.get('DATABASE_URL')
 
+# --- 익명 닉네임 생성용 단어 ---
 ADJ = ["졸린", "배고픈", "신난", "지친", "느긋한", "용감한", "조용한", "엉뚱한",
        "행복한", "느린", "빠른", "수줍은", "단호한", "차분한", "엉성한", "튼튼한",
        "졸음많은", "커피사랑", "야근싫은", "퇴근직전"]
@@ -88,6 +89,9 @@ def post_guestbook():
     conn.close()
     return jsonify({"ok": True})
 
+if __name__ == '__main__':
+    app.run()
+
 @app.route('/api/guestbook/<int:msg_id>', methods=['DELETE'])
 def delete_guestbook(msg_id):
     pw = request.get_json(force=True).get('password', '')
@@ -101,5 +105,43 @@ def delete_guestbook(msg_id):
     conn.close()
     return jsonify({"ok": True})
 
-if __name__ == '__main__':
-    app.run()
+# --- 일하기 싫다 카운터 ---
+@app.route('/api/hate', methods=['GET'])
+def get_hate():
+    conn = get_db()
+    cur = conn.cursor()
+    today = __import__('datetime').date.today().isoformat()
+    cur.execute('''
+        CREATE TABLE IF NOT EXISTS hate_count (
+            date TEXT PRIMARY KEY,
+            count INTEGER DEFAULT 0
+        )
+    ''')
+    conn.commit()
+    cur.execute('SELECT count FROM hate_count WHERE date = %s', (today,))
+    row = cur.fetchone()
+    cur.close()
+    conn.close()
+    return jsonify({"count": row[0] if row else 0, "date": today})
+
+@app.route('/api/hate', methods=['POST'])
+def post_hate():
+    conn = get_db()
+    cur = conn.cursor()
+    today = __import__('datetime').date.today().isoformat()
+    cur.execute('''
+        CREATE TABLE IF NOT EXISTS hate_count (
+            date TEXT PRIMARY KEY,
+            count INTEGER DEFAULT 0
+        )
+    ''')
+    cur.execute('''
+        INSERT INTO hate_count (date, count) VALUES (%s, 1)
+        ON CONFLICT (date) DO UPDATE SET count = hate_count.count + 1
+    ''', (today,))
+    conn.commit()
+    cur.execute('SELECT count FROM hate_count WHERE date = %s', (today,))
+    row = cur.fetchone()
+    cur.close()
+    conn.close()
+    return jsonify({"count": row[0] if row else 1})
