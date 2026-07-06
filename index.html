@@ -74,14 +74,38 @@
   .chat-pagination button:disabled { opacity: 0.3; cursor: default; }
   .chat-pagination .page-info { font-size: 11px; color: #888780; }
   
-  /* 개별 방명록 구조 */
-  .chat-msg { font-size: 12px; line-height: 1.4; background: #f9f9f7; border-radius: 8px; padding: 6px 10px; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
-  .chat-msg-body { flex: 1; min-width: 0; display: flex; align-items: center; flex-wrap: wrap; gap: 4px; }
-  .chat-msg .chat-msg-nick { color: #185FA5; font-weight: 500; margin-right: 4px; }
-  .chat-msg .chat-msg-time { color: #aaa; font-size: 10px; margin-left: auto; padding-left: 6px; }
+  /* 개별 방명록 구조 개선 */
+  .chat-msg { font-size: 12px; background: #f9f9f7; border-radius: 8px; padding: 8px 10px; display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
   .chat-msg.mine { background: #E6F1FB; }
+
+  .chat-msg-body {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 4px;
+  }
   
- /* 타원형 🚨경고! 뱃지 스타일 수정 */
+  /* 닉네임, 날짜 첫 줄 양끝 고정 라인 */
+  .chat-msg-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+  }
+  
+  /* 댓글 내용과 경고 뱃지가 인라인으로 이어지는 하단 라인 */
+  .chat-msg-bottom {
+    font-size: 12px;
+    line-height: 1.4;
+    color: #1a1a18;
+    word-break: break-all;
+    display: block; /* 텍스트와 뱃지가 한 덩어리로 흐르도록 설정 */
+  }
+
+  .chat-msg .chat-msg-nick { color: #185FA5; font-weight: 500; }
+  .chat-msg .chat-msg-time { color: #aaa; font-size: 10px; flex-shrink: 0; }
+  
+  /* 타원형 🚨경고! 뱃지 스타일 (위아래 여백 넓히고 중앙정렬 완료) */
   .badge-siren-text {
     display: inline-flex;
     align-items: center;
@@ -90,11 +114,11 @@
     color: #e74c3c !important;
     font-size: 10px;
     font-weight: bold;
-    padding: 3px 8px;          /* 💡 위아래(3px), 좌우(8px) 여백을 넉넉하게 조정 */
+    padding: 3px 8px;
     border-radius: 99px;
     white-space: nowrap;
     border: 1px solid #f9d5d5;
-    line-height: 1;            /* 💡 글씨가 위로 치우치지 않게 1로 고정 */
+    line-height: 1;
     vertical-align: middle;
     margin-left: 4px;
   }
@@ -109,7 +133,7 @@
   .chat-refresh-btn:hover { background: #f1efea; }
   
   /* 관리자 패널 */
-  .admin-panel { display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
+  .admin-panel { display: flex; align-items: center; gap: 4px; flex-shrink: 0; margin-left: 6px; margin-top: 2px; }
   .admin-btn { background: none; border: 0.5px solid #e0dfd8; border-radius: 6px; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 12px; }
   .admin-btn:hover { background: #f1efea; }
   .siren-btn { background: none; border: none; cursor: pointer; font-size: 12px; padding: 0 2px; flex-shrink: 0; line-height: 1; }
@@ -413,7 +437,6 @@ async function ensureNickname(){
   document.getElementById('my-nickname').textContent=myNickname;
 }
 
-// 자바스크립트 주석(//)으로 변경 완료! 연도 축소 처리 부분
 function fmtChatTime(ts){
   const d=new Date(ts*1000);
   const year=String(d.getFullYear()).slice(-2);
@@ -459,13 +482,23 @@ function renderPage(){
     const mine=displayNick===myNickname;
     const div=document.createElement('div');
     div.className='chat-msg'+(mine?' mine':'');
+    
     const body=document.createElement('div');
     body.className='chat-msg-body';
     
-    const sirenHtml = m.has_siren ? '<span class="badge-siren-text">🚨경고!</span>' : '';
+    const sirenHtml = m.has_siren ? `<span class="badge-siren-text">🚨경고!</span>` : '';
     
-    body.innerHTML='<span class="chat-msg-nick">'+escapeHtml(displayNick)+'</span>'+
-      escapeHtml(m.text) + sirenHtml + '<span class="chat-msg-time">'+fmtChatTime(m.ts)+'</span>';
+    // 구조 리팩토링: 상단엔 닉네임과 날짜 고정 / 하단 텍스트 뒤에 뱃지가 바로 인라인으로 이어짐
+    body.innerHTML = `
+      <div class="chat-msg-top">
+        <span class="chat-msg-nick">${escapeHtml(displayNick)}</span>
+        <span class="chat-msg-time">${fmtChatTime(m.ts)}</span>
+      </div>
+      <div class="chat-msg-bottom">
+        <span>${escapeHtml(m.text)}</span>${sirenHtml}
+      </div>
+    `;
+    
     div.appendChild(body);
     
     if(isAdmin){
@@ -581,11 +614,10 @@ document.getElementById('chat-input').addEventListener('keydown',(e)=>{
 });
 document.getElementById('chat-refresh').addEventListener('click',loadGuestbook);
 
-// 초기화 안정성 보완: 타이머 루프를 먼저 가동해 화면 먹통 방지
+// 초기화 가동
 tick();
 setInterval(tick, 1000);
 
-// 방명록 비동기 데이터 수신
 ensureNickname()
   .then(loadGuestbook)
   .catch(err => {
