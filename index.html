@@ -3,9 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>방명록</title>
+  <title>일하기 싫다 방명록</title>
   <style>
-    /* 기본 앱 스타일 */
     body {
       font-family: 'Noto Sans KR', sans-serif;
       background-color: #f5f6f7;
@@ -24,11 +23,11 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 10px;
+      padding: 12px 10px;
       border-bottom: 1px solid #edf0f2;
     }
     
-    /* 부모 박스 정렬: 요소들을 일렬로 이쁘게 배치 */
+    /* 부모 레이아웃 정렬 강제 */
     .chat-msg-body {
       flex: 1;
       min-width: 0;
@@ -45,13 +44,13 @@
       color: #555;
     }
 
-    /* ⭐ 요청하신 완벽한 알약 모양의 🚨경고! 뱃지 스타일 */
+    /* ⭐ 완벽한 알약 모양의 🚨경고! 뱃지 스타일 */
     .badge-siren-text {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      background-color: #ffebeb;
-      color: #e74c3c;
+      background-color: #ffebeb !important;
+      color: #e74c3c !important;
       font-size: 10px;
       font-weight: bold;
       padding: 2px 8px;
@@ -59,17 +58,21 @@
       white-space: nowrap;
       border: 1px solid #f9d5d5;
       line-height: 1;
+      vertical-align: middle;
     }
 
+    /* ⭐ 요청하신 컴팩트한 날짜 스타일 */
     .chat-msg-time {
       font-size: 10px;
       color: #aaa;
+      margin-left: auto; /* 시간은 최대한 오른쪽 정렬 */
     }
 
-    /* 관리자 버튼 스타일 */
+    /* 관리자 액션 패널 */
     .admin-actions {
       display: flex;
-      gap: 4px;
+      gap: 6px;
+      margin-left: 10px;
     }
     .siren-btn, .delete-btn {
       background: none;
@@ -78,10 +81,10 @@
       font-size: 12px;
       padding: 2px;
     }
-    .siren-btn:hover { opacity: 0.7; }
-    .delete-btn:hover { opacity: 0.7; }
+    .siren-btn:hover, .delete-btn:hover {
+      opacity: 0.6;
+    }
     
-    /* 빈 화면 및 페이징 */
     .chat-empty { text-align: center; color: #999; padding: 20px; }
     .pagination { display: flex; justify-content: center; align-items: center; gap: 10px; margin-top: 20px; }
     .pagination button { padding: 5px 10px; }
@@ -100,16 +103,12 @@
 </div>
 
 <script>
-  // 상태 변수 (테스트용 예시 데이터 포함)
-  let allMessages = [
-    { id: 12, nickname: "🐻 야근싫은 곰", text: "야근할거같아요 불닭소스 사람들 눈에 뿌릴까요", ts: 1783322340, has_siren: true },
-    { id: 11, nickname: "🐨 배고픈 코알라", text: "매콤한 눈알 spicy~", ts: 1783322580, has_siren: false }
-  ];
+  let allMessages = [];
   let currentPage = 0;
-  const PAGE_SIZE = 5;
+  const PAGE_SIZE = 10;
   let myNickname = "";
-  let isAdmin = true; // 관리자 모드 활성화 상태 (테스트용)
-  let adminPassword = "0530";
+  let isAdmin = false; 
+  let adminPassword = "";
 
   const chatMessagesEl = document.getElementById('chatMessages');
   const paginationEl = document.getElementById('pagination');
@@ -117,16 +116,16 @@
   const pagePrevEl = document.getElementById('pagePrev');
   const pageNextEl = document.getElementById('pageNext');
 
-  // 보안을 위한 텍스트 이스케이프 함수
+  // 보안용 HTML 탈출 함수
   function escapeHtml(str) {
     if (!str) return '';
     return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
   }
 
-  // ⭐ 요청하신 날짜 형식 변경 (2026-07-04 -> 26-07-04)
+  // ⭐ 날짜 포맷 변경 (2026-07-04 -> 26-07-04)
   function fmtChatTime(ts) {
     const d = new Date(ts * 1000);
-    const yy = String(d.getFullYear()).slice(-2); // 뒤의 2자리만 컷 (26)
+    const yy = String(d.getFullYear()).slice(-2); // 연도 뒤 2자리 추출
     const mm = String(d.getMonth() + 1).padStart(2, '0');
     const dd = String(d.getDate()).padStart(2, '0');
     
@@ -141,7 +140,21 @@
 
   function addEmojiToNickname(nick) { return nick; }
 
-  // 화면 렌더링 함수
+  // 데이터 로드 함수
+  async function loadGuestbook() {
+    try {
+      const res = await fetch('/api/guestbook');
+      if (res.ok) {
+        const data = await res.getJson();
+        allMessages = data.messages || [];
+        renderPage();
+      }
+    } catch (e) {
+      console.error("방명록 로드 실패", e);
+    }
+  }
+
+  // 화면 렌더링 함수 (구조 안전 분리 완료)
   function renderPage(){
     const total = allMessages.length;
     const totalPages = Math.ceil(total / PAGE_SIZE);
@@ -165,17 +178,17 @@
       const body = document.createElement('div');
       body.className = 'chat-msg-body';
       
-      // 알약 뱃지 태그 생성
+      // 알약 뱃지 문자열 바인딩 방지 및 독립 생성
       const sirenHtml = m.has_siren ? '<span class="badge-siren-text">🚨경고!</span>' : '';
       
-      // 순수 태그와 이스케이프할 텍스트를 완벽하게 분리하여 매칭
+      // 구조 조립: 닉네임 + 본문 + 뱃지 + 시간
       body.innerHTML = '<span class="chat-msg-nick">' + escapeHtml(displayNick) + '</span>' +
                        '<span class="chat-msg-content">' + escapeHtml(m.text) + '</span>' +
                        sirenHtml +
                        '<span class="chat-msg-time">' + fmtChatTime(m.ts) + '</span>';
       div.appendChild(body);
       
-      // 관리자용 액션 버튼 제어
+      // 관리자 전용 액션 버튼들
       if(isAdmin){
         const actionsDiv = document.createElement('div');
         actionsDiv.className = 'admin-actions';
@@ -207,7 +220,7 @@
     pageNextEl.disabled = currentPage >= totalPages - 1;
   }
 
-  // 백엔드 연동용 경고 부여 함수
+  // ⭐ 백엔드와 연동되는 🚨 경고 부여 함수
   async function setSiren(id) {
     if(!confirm('이 댓글에 🚨 경고 뱃지를 달까요?')) return;
     try {
@@ -217,33 +230,40 @@
         body: JSON.stringify({ password: adminPassword })
       });
       if(res.ok) {
-        // 실제 운영 환경에서는 loadGuestbook() 호출
-        const msg = allMessages.find(m => m.id === id);
-        if(msg) msg.has_siren = true;
-        renderPage();
+        loadGuestbook();
       } else {
         alert('뱃지 달기에 실패했습니다.');
       }
     } catch(e) { 
-      // 로컬 테스트용 가상 작동
-      const msg = allMessages.find(m => m.id === id);
-      if(msg) msg.has_siren = true;
-      renderPage();
+      alert('통신 오류가 발생했습니다.');
     }
   }
 
-  function deleteMsg(id) {
+  // 백엔드와 연동되는 댓글 삭제 함수
+  async function deleteMsg(id) {
     if(!confirm('정말 삭제하시겠습니까?')) return;
-    allMessages = allMessages.filter(m => m.id !== id);
-    renderPage();
+    try {
+      const res = await fetch('/api/guestbook/' + id, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: adminPassword })
+      });
+      if(res.ok) {
+        loadGuestbook();
+      } else {
+        alert('삭제에 실패했습니다.');
+      }
+    } catch(e) {
+      alert('통신 오류가 발생했습니다.');
+    }
   }
 
-  // 페이징 이벤트 핸들러
+  // 페이징 버튼 이벤트
   pagePrevEl.addEventListener('click', () => { if(currentPage > 0) { currentPage--; renderPage(); } });
   pageNextEl.addEventListener('click', () => { if(currentPage < Math.ceil(allMessages.length / PAGE_SIZE) - 1) { currentPage++; renderPage(); } });
 
-  // 초기 로드
-  renderPage();
+  // 최초 페이지 로드 시 데이터 읽어오기
+  loadGuestbook();
 </script>
 </body>
 </html>
