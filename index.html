@@ -522,12 +522,14 @@ document.getElementById('admin-btn').addEventListener('click',()=>{
     isAdmin=false;adminPassword='';
     document.getElementById('admin-btn').textContent='🔑';
     noticeEditBtn.style.display='none';
+    if(!noticeInner.textContent.trim()) noticeWrap.style.display='none';
     renderPage();return;
   }
   const pw=prompt('관리자 비밀번호를 입력하세요:');
   if(pw===null)return;
   adminPassword=pw;isAdmin=true;
   document.getElementById('admin-btn').textContent='🔓';
+  noticeWrap.style.display='block';
   noticeEditBtn.style.display='block';
   renderPage();
 });
