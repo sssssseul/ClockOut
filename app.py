@@ -42,10 +42,13 @@ def init_db():
             nickname TEXT NOT NULL,
             text TEXT NOT NULL,
             ts DOUBLE PRECISION NOT NULL,
-            has_siren BOOLEAN DEFAULT FALSE
+            has_siren BOOLEAN DEFAULT FALSE,
+            has_boom BOOLEAN DEFAULT FALSE
         )
     ''')
     cur.execute('ALTER TABLE guestbook ADD COLUMN IF NOT EXISTS has_siren BOOLEAN DEFAULT FALSE;')
+    # 🆕 붐업 컬럼 추가 알터 스크립트 활성화
+    cur.execute('ALTER TABLE guestbook ADD COLUMN IF NOT EXISTS has_boom BOOLEAN DEFAULT FALSE;')
     cur.execute('''
         CREATE TABLE IF NOT EXISTS hate_count (
             date TEXT PRIMARY KEY,
@@ -77,7 +80,8 @@ def api_nickname():
 def get_guestbook():
     conn = get_db()
     cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-    cur.execute('SELECT id, nickname, text, ts, has_siren FROM guestbook ORDER BY id DESC LIMIT 100')
+    # 🆕 조회 필드에 has_boom 연동 추가
+    cur.execute('SELECT id, nickname, text, ts, has_siren, has_boom FROM guestbook ORDER BY id DESC LIMIT 100')
     rows = cur.fetchall()
     cur.close()
     conn.close()
@@ -92,7 +96,8 @@ def post_guestbook():
         return jsonify({"error": "empty"}), 400
     conn = get_db()
     cur = conn.cursor()
-    cur.execute('INSERT INTO guestbook (nickname, text, ts, has_siren) VALUES (%s, %s, %s, FALSE)',
+    # 🆕 신규 입력 시 has_boom 기본값 FALSE 탑재
+    cur.execute('INSERT INTO guestbook (nickname, text, ts, has_siren, has_boom) VALUES (%s, %s, %s, FALSE, FALSE)',
                 (nickname, text, time.time()))
     conn.commit()
     cur.close()
@@ -120,6 +125,20 @@ def siren_guestbook(msg_id):
     conn = get_db()
     cur = conn.cursor()
     cur.execute('UPDATE guestbook SET has_siren = TRUE WHERE id = %s', (msg_id,))
+    conn.commit()
+    cur.close()
+    conn.close()
+    return jsonify({"ok": True})
+
+# 🆕 관리자용 붐업 뱃지 부여 라우터 파이프라인 신설
+@app.route('/api/guestbook/<int:msg_id>/boom', methods=['POST'])
+def boom_guestbook(msg_id):
+    pw = request.get_json(force=True).get('password', '')
+    if pw != '0530':
+        return jsonify({"error": "unauthorized"}), 401
+    conn = get_db()
+    cur = conn.cursor()
+    cur.execute('UPDATE guestbook SET has_boom = TRUE WHERE id = %s', (msg_id,))
     conn.commit()
     cur.close()
     conn.close()
