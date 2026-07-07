@@ -91,13 +91,13 @@
   /* 🚨 경고 뱃지 스타일 */
   .badge-siren-text { display: inline-flex; align-items: center; justify-content: center; background-color: #ffebeb; color: #e74c3c; font-size: 10px; font-weight: bold; padding: 3px 8px; border-radius: 99px; white-space: nowrap; border: 1px solid #f9d5d5; line-height: 1; vertical-align: middle; }
   
-  /* 💛 지정해주신 색상을 정확하게 매칭한 붐업 뱃지 스타일 */
+  /* 💛 노란색 채워진 붐업 뱃지 스타일 */
   .badge-boom-text { 
     display: inline-flex; 
     align-items: center; 
     justify-content: center; 
-    background-color: #FAECC5; /* 픽셀 배경색 지정 */
-    color: #FFE08C;            /* 픽셀 글씨색 지정 */
+    background-color: #FAECC5; /* 지정 배경색 */
+    color: #a37c00;            /* 노란끼도는 가독성 좋은 글씨색 */
     font-size: 10px; 
     font-weight: bold; 
     padding: 3px 8px; 
@@ -106,7 +106,7 @@
     border: 1px solid #FFE08C; 
     line-height: 1; 
     vertical-align: middle; 
-    gap: 2px; 
+    gap: 4px; 
   }
 
   .chat-empty { font-size: 12px; color: #aaa; text-align: center; padding: 12px 0; }
@@ -486,7 +486,8 @@ function renderPage(){
     body.className='chat-msg-body';
     
     const sirenHtml=m.has_siren?`<span class="badge-siren-text">🚨경고</span>`:'';
-    const boomHtml=m.has_boom?`<span class="badge-boom-text"><i class="ti ti-thumb-up" style="font-size:11px"></i>붐업</span>`:'';
+    // 🆕 따봉 이모지가 들어간 노란색 붐업 뱃지 렌더링
+    const boomHtml=m.has_boom?`<span class="badge-boom-text">👍 붐업</span>`:'';
     
     body.innerHTML=`
       <div class="chat-msg-top">
