@@ -1,14 +1,11 @@
 from flask import Flask, send_file, request, jsonify
-import random, time, os
+import random, time, os, datetime
 import psycopg2
 import psycopg2.extras
-from urllib.parse import urlparse
 
 app = Flask(__name__)
-
 DATABASE_URL = os.environ.get('DATABASE_URL')
 
-# --- 익명 닉네임 생성용 단어 ---
 ADJ = ["졸린", "배고픈", "신난", "지친", "느긋한", "용감한", "조용한", "엉뚱한",
        "행복한", "느린", "빠른", "수줍은", "단호한", "차분한", "엉성한", "튼튼한",
        "졸음많은", "커피사랑", "야근싫은", "퇴근직전"]
@@ -25,20 +22,20 @@ NOUN = list(ANIMAL_EMOJI.keys())
 def gen_nickname():
     adj = random.choice(ADJ)
     noun = random.choice(NOUN)
-    emoji = ANIMAL_EMOJI[noun]
-    return emoji + " " + adj + " " + noun
+    return ANIMAL_EMOJI[noun] + " " + adj + " " + noun
 
 def get_db():
-    conn = psycopg2.connect(DATABASE_URL, sslmode='require')
-    return conn
+    return psycopg2.connect(DATABASE_URL, sslmode='require')
+
+def get_kst_today():
+    return (datetime.datetime.utcnow() + datetime.timedelta(hours=9)).strftime('%Y-%m-%d')
 
 def init_db():
     if not DATABASE_URL:
-        print("WARNING: DATABASE_URL not set, guestbook won't work")
+        print("WARNING: DATABASE_URL not set")
         return
     conn = get_db()
     cur = conn.cursor()
-    # ⭐ has_siren 컬럼 포함하여 테이블 생성
     cur.execute('''
         CREATE TABLE IF NOT EXISTS guestbook (
             id SERIAL PRIMARY KEY,
@@ -48,8 +45,20 @@ def init_db():
             has_siren BOOLEAN DEFAULT FALSE
         )
     ''')
-    # ⭐ 기존 DB 유저분들을 위해 컬럼이 없으면 안전하게 추가하는 쿼리 실행
     cur.execute('ALTER TABLE guestbook ADD COLUMN IF NOT EXISTS has_siren BOOLEAN DEFAULT FALSE;')
+    cur.execute('''
+        CREATE TABLE IF NOT EXISTS hate_count (
+            date TEXT PRIMARY KEY,
+            count INTEGER DEFAULT 0
+        )
+    ''')
+    cur.execute('''
+        CREATE TABLE IF NOT EXISTS admin_notice (
+            id INTEGER PRIMARY KEY,
+            text TEXT NOT NULL,
+            updated_at DOUBLE PRECISION NOT NULL
+        )
+    ''')
     conn.commit()
     cur.close()
     conn.close()
@@ -68,13 +77,11 @@ def api_nickname():
 def get_guestbook():
     conn = get_db()
     cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-    # ⭐ has_siren 컬럼도 함께 SELECT 하도록 수정
     cur.execute('SELECT id, nickname, text, ts, has_siren FROM guestbook ORDER BY id DESC LIMIT 100')
     rows = cur.fetchall()
     cur.close()
     conn.close()
-    messages = [dict(r) for r in rows]
-    return jsonify({"messages": messages})
+    return jsonify({"messages": [dict(r) for r in rows]})
 
 @app.route('/api/guestbook', methods=['POST'])
 def post_guestbook():
@@ -85,32 +92,12 @@ def post_guestbook():
         return jsonify({"error": "empty"}), 400
     conn = get_db()
     cur = conn.cursor()
-    # ⭐ 신규 글 저장 시 기본값 FALSE로 명시적 저장
-    cur.execute(
-        'INSERT INTO guestbook (nickname, text, ts, has_siren) VALUES (%s, %s, %s, FALSE)',
-        (nickname, text, time.time())
-    )
+    cur.execute('INSERT INTO guestbook (nickname, text, ts, has_siren) VALUES (%s, %s, %s, FALSE)',
+                (nickname, text, time.time()))
     conn.commit()
     cur.close()
     conn.close()
     return jsonify({"ok": True})
-
-# ⭐ 신규 추가: 관리자용 🚨 경고 뱃지 처리 API (비밀번호: 0530)
-@app.route('/api/guestbook/<int:msg_id>/siren', methods=['POST'])
-def siren_guestbook(msg_id):
-    pw = request.get_json(force=True).get('password', '')
-    if pw != '0530':
-        return jsonify({"error": "unauthorized"}), 401
-    conn = get_db()
-    cur = conn.cursor()
-    cur.execute('UPDATE guestbook SET has_siren = TRUE WHERE id = %s', (msg_id,))
-    conn.commit()
-    cur.close()
-    conn.close()
-    return jsonify({"ok": True})
-
-if __name__ == '__main__':
-    app.run()
 
 @app.route('/api/guestbook/<int:msg_id>', methods=['DELETE'])
 def delete_guestbook(msg_id):
@@ -125,36 +112,35 @@ def delete_guestbook(msg_id):
     conn.close()
     return jsonify({"ok": True})
 
-# --- 일하기 싫다 카운터 ---
+@app.route('/api/guestbook/<int:msg_id>/siren', methods=['POST'])
+def siren_guestbook(msg_id):
+    pw = request.get_json(force=True).get('password', '')
+    if pw != '0530':
+        return jsonify({"error": "unauthorized"}), 401
+    conn = get_db()
+    cur = conn.cursor()
+    cur.execute('UPDATE guestbook SET has_siren = TRUE WHERE id = %s', (msg_id,))
+    conn.commit()
+    cur.close()
+    conn.close()
+    return jsonify({"ok": True})
+
 @app.route('/api/hate', methods=['GET'])
 def get_hate():
     conn = get_db()
     cur = conn.cursor()
-    today = (__import__('datetime').datetime.utcnow() + __import__('datetime').timedelta(hours=9)).strftime('%Y-%m-%d')
-    cur.execute('''
-        CREATE TABLE IF NOT EXISTS hate_count (
-            date TEXT PRIMARY KEY,
-            count INTEGER DEFAULT 0
-        )
-    ''')
-    conn.commit()
+    today = get_kst_today()
     cur.execute('SELECT count FROM hate_count WHERE date = %s', (today,))
     row = cur.fetchone()
     cur.close()
     conn.close()
-    return jsonify({"count": row[0] if row else 0, "date": today})
+    return jsonify({"count": row[0] if row else 0})
 
 @app.route('/api/hate', methods=['POST'])
 def post_hate():
     conn = get_db()
     cur = conn.cursor()
-    today = (__import__('datetime').datetime.utcnow() + __import__('datetime').timedelta(hours=9)).strftime('%Y-%m-%d')
-    cur.execute('''
-        CREATE TABLE IF NOT EXISTS hate_count (
-            date TEXT PRIMARY KEY,
-            count INTEGER DEFAULT 0
-        )
-    ''')
+    today = get_kst_today()
     cur.execute('''
         INSERT INTO hate_count (date, count) VALUES (%s, 1)
         ON CONFLICT (date) DO UPDATE SET count = hate_count.count + 1
@@ -165,3 +151,33 @@ def post_hate():
     cur.close()
     conn.close()
     return jsonify({"count": row[0] if row else 1})
+
+@app.route('/api/notice', methods=['GET'])
+def get_notice():
+    conn = get_db()
+    cur = conn.cursor()
+    cur.execute('SELECT text FROM admin_notice WHERE id = 1')
+    row = cur.fetchone()
+    cur.close()
+    conn.close()
+    return jsonify({"text": row[0] if row else ""})
+
+@app.route('/api/notice', methods=['POST'])
+def post_notice():
+    data = request.get_json(force=True)
+    if data.get('password', '') != '0530':
+        return jsonify({"error": "unauthorized"}), 401
+    text = (data.get('text') or '').strip()[:100]
+    conn = get_db()
+    cur = conn.cursor()
+    cur.execute('''
+        INSERT INTO admin_notice (id, text, updated_at) VALUES (1, %s, %s)
+        ON CONFLICT (id) DO UPDATE SET text = EXCLUDED.text, updated_at = EXCLUDED.updated_at
+    ''', (text, time.time()))
+    conn.commit()
+    cur.close()
+    conn.close()
+    return jsonify({"ok": True, "text": text})
+
+if __name__ == '__main__':
+    app.run()
