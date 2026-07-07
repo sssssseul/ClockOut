@@ -61,11 +61,15 @@
   .custom-card label { font-size: 12px; color: #888780; white-space: nowrap; display: flex; align-items: center; gap: 4px; flex-shrink: 0; width: 38px; font-family: 'Noto Sans KR', sans-serif; }
   .custom-card select { flex: 1; min-width: 0; font-size: 12px; color: #888780; border: 0.5px solid #e0dfd8; border-radius: 6px; padding: 4px 8px; background: #f9f9f7; outline: none; font-family: 'Noto Sans KR', sans-serif; cursor: pointer; }
   .custom-card select:focus { border-color: #185FA5; }
-  
-  /* 방명록 카드 스타일 */
   .chat-card { background: #fff; border: 0.5px solid #e0dfd8; border-radius: 12px; padding: 12px 14px; margin-top: 8px; }
   .chat-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; gap: 6px; }
   .placard { background: #fffbe6; border: 1px dashed #e0c040; border-radius: 4px; padding: 6px 20px; font-size: 11.5px; font-weight: 500; color: #5c4500; text-align: center; margin-bottom: 8px; }
+  /* 핑크 마퀴 공지 */
+  .notice-wrap { background: #fff5f5; border: 1px dashed #fca5a5; border-radius: 8px; padding: 7px 0; overflow: hidden; margin-bottom: 8px; display: none; position: relative; }
+  .notice-inner { display: inline-block; white-space: nowrap; font-size: 12px; font-weight: 500; color: #7f1d1d; padding: 0 30px; }
+  .notice-inner span { display: inline-block; animation: wave 1.5s ease-in-out infinite; }
+  .notice-edit-btn { position: absolute; right: 6px; top: 50%; transform: translateY(-50%); background: none; border: 1px solid #fca5a5; border-radius: 4px; color: #7f1d1d; font-size: 10px; padding: 1px 5px; cursor: pointer; display: none; }
+  @keyframes wave { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-4px)} }
   .chat-nickname { font-size: 11px; color: #185FA5; background: #E6F1FB; padding: 2px 8px; border-radius: 99px; font-family: 'Noto Sans KR', sans-serif; }
   .chat-messages { display: flex; flex-direction: column; gap: 6px; margin-bottom: 8px; }
   .chat-pagination { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
@@ -73,62 +77,15 @@
   .chat-pagination button:hover { background: #f1efea; }
   .chat-pagination button:disabled { opacity: 0.3; cursor: default; }
   .chat-pagination .page-info { font-size: 11px; color: #888780; }
-  
-  /* 개별 방명록 구조 개선 */
   .chat-msg { font-size: 12px; background: #f9f9f7; border-radius: 8px; padding: 8px 10px; display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
   .chat-msg.mine { background: #E6F1FB; }
-
-  .chat-msg-body {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    gap: 6px;
-  }
-  
-  /* 닉네임라인과 날짜 첫 줄 고정 양끝 라인 */
-  .chat-msg-top {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-  }
-  
-  /* 닉네임과 뱃지가 함께 묶이는 그룹 */
-  .chat-msg-nick-group {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-  }
-  
-  /* 댓글 내용이 뿜어져 나오는 하단 라인 */
-  .chat-msg-bottom {
-    font-size: 12px;
-    line-height: 1.4;
-    color: #1a1a18;
-    word-break: break-all;
-    display: block;
-  }
-
+  .chat-msg-body { display: flex; flex-direction: column; width: 100%; gap: 6px; }
+  .chat-msg-top { display: flex; justify-content: space-between; align-items: center; width: 100%; }
+  .chat-msg-nick-group { display: flex; align-items: center; gap: 4px; }
+  .chat-msg-bottom { font-size: 12px; line-height: 1.4; color: #1a1a18; word-break: break-all; display: block; }
   .chat-msg .chat-msg-nick { color: #185FA5; font-weight: 500; }
   .chat-msg .chat-msg-time { color: #aaa; font-size: 10px; flex-shrink: 0; }
-  
-  /* 타원형 🚨경고! 뱃지 스타일 (여백 및 중앙정렬 보완) */
-  .badge-siren-text {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    background-color: #ffebeb !important;
-    color: #e74c3c !important;
-    font-size: 10px;
-    font-weight: bold;
-    padding: 3px 8px;
-    border-radius: 99px;
-    white-space: nowrap;
-    border: 1px solid #f9d5d5;
-    line-height: 1;
-    vertical-align: middle;
-  }
-
+  .badge-siren-text { display: inline-flex; align-items: center; justify-content: center; background-color: #ffebeb; color: #e74c3c; font-size: 10px; font-weight: bold; padding: 3px 8px; border-radius: 99px; white-space: nowrap; border: 1px solid #f9d5d5; line-height: 1; vertical-align: middle; }
   .chat-empty { font-size: 12px; color: #aaa; text-align: center; padding: 12px 0; }
   .chat-input-row { display: flex; gap: 6px; }
   .chat-input-row input { flex: 1; min-width: 0; font-size: 12px; color: #5F5E5A; border: 0.5px solid #e0dfd8; border-radius: 6px; padding: 6px 10px; background: #f9f9f7; outline: none; font-family: 'Noto Sans KR', sans-serif; }
@@ -137,8 +94,6 @@
   .chat-input-row button:hover { background: #144d87; }
   .chat-refresh-btn { background: none; border: 0.5px solid #e0dfd8; border-radius: 6px; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #888780; }
   .chat-refresh-btn:hover { background: #f1efea; }
-  
-  /* 관리자 패널 */
   .admin-panel { display: flex; align-items: center; gap: 4px; flex-shrink: 0; margin-left: 6px; }
   .admin-btn { background: none; border: 0.5px solid #e0dfd8; border-radius: 6px; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 12px; }
   .admin-btn:hover { background: #f1efea; }
@@ -181,9 +136,7 @@
     <div class="blocks-top">
       <span class="blocks-label">30분 블록</span>
       <div class="lunch-toggle">
-        <label>
-          <input type="checkbox" id="lunch-alt"> 점심 12:00~13:00
-        </label>
+        <label><input type="checkbox" id="lunch-alt"> 점심 12:00~13:00</label>
       </div>
     </div>
     <div class="blocks-wrap" id="blocks"></div>
@@ -216,7 +169,11 @@
         <button id="chat-refresh" class="chat-refresh-btn"><i class="ti ti-refresh" style="font-size:13px"></i></button>
       </div>
     </div>
-    <div class="placard">📢 심한 욕 쓰면!!! 삭제해버립니다 !!! - 관리자 -</div>
+    <div class="placard">📢 심한 욕 쓰면!!! 삭제해버립니다 !!!</div>
+    <div class="notice-wrap" id="notice-wrap">
+      <div class="notice-inner" id="notice-inner"></div>
+      <button class="notice-edit-btn" id="notice-edit-btn">✏️</button>
+    </div>
     <div class="chat-messages" id="chat-messages"></div>
     <div class="chat-pagination" id="chat-pagination" style="display:none;">
       <button id="page-prev">← 이전</button>
@@ -233,19 +190,16 @@
 <script>
 const LUNCH_DEFAULT = {start: 11*60+30, end: 13*60};
 const LUNCH_ALT     = {start: 12*60,    end: 13*60};
-
 const PRESETS=[
-  {start:'08:00', end:'17:00'},
-  {start:'08:30', end:'17:30'},
-  {start:'09:00', end:'18:00'},
-  {start:'09:30', end:'18:30'},
+  {start:'08:00', end:'17:00'},{start:'08:30', end:'17:30'},
+  {start:'09:00', end:'18:00'},{start:'09:30', end:'18:30'},
   {start:'10:00', end:'19:00'}
 ];
 
 function getMins(str){const[h,m]=str.split(':').map(Number);return h*60+m;}
 function fmt(s){const h=Math.floor(s/3600),m=Math.floor((s%3600)/60),ss=s%60;return[h,m,ss].map(n=>String(n).padStart(2,'0')).join(':');}
 function fmtLabel(t){
-  const [h,m]=t.split(':').map(Number);
+  const[h,m]=t.split(':').map(Number);
   const ampm=h<12?'오전':'오후';
   const hh=h===0?12:h>12?h-12:h;
   return ampm+' '+hh+':'+String(m).padStart(2,'0');
@@ -256,7 +210,7 @@ function buildOptions(selectEl, defaultVal){
     const h=Math.floor(t/60),m=t%60;
     const val=String(h).padStart(2,'0')+':'+String(m).padStart(2,'0');
     const opt=document.createElement('option');
-    opt.value=val; opt.textContent=fmtLabel(val);
+    opt.value=val;opt.textContent=fmtLabel(val);
     if(val===defaultVal)opt.selected=true;
     selectEl.appendChild(opt);
   }
@@ -266,29 +220,28 @@ const startSelect=document.getElementById('start-time');
 const endSelect=document.getElementById('end-time');
 const savedStart=localStorage.getItem('clockout-start')||'09:00';
 const savedEnd=localStorage.getItem('clockout-end')||'18:00';
-buildOptions(startSelect, savedStart);
-buildOptions(endSelect, savedEnd);
+buildOptions(startSelect,savedStart);
+buildOptions(endSelect,savedEnd);
 
-const lunchAltEl = document.getElementById('lunch-alt');
-lunchAltEl.checked = localStorage.getItem('clockout-lunch-alt') === 'true';
-lunchAltEl.addEventListener('change', ()=>{
-  localStorage.setItem('clockout-lunch-alt', lunchAltEl.checked);
-  tick();
+const lunchAltEl=document.getElementById('lunch-alt');
+lunchAltEl.checked=localStorage.getItem('clockout-lunch-alt')==='true';
+lunchAltEl.addEventListener('change',()=>{
+  localStorage.setItem('clockout-lunch-alt',lunchAltEl.checked);tick();
 });
 
 const presetGrid=document.getElementById('preset-grid');
 function findMatchingPresetIdx(s,e){return PRESETS.findIndex(p=>p.start===s&&p.end===e);}
 let selectedIdx=findMatchingPresetIdx(savedStart,savedEnd);
 PRESETS.forEach((p,i)=>{
-  const wrap=document.createElement('div'); wrap.className='preset-option';
+  const wrap=document.createElement('div');wrap.className='preset-option';
   const id='preset-'+i;
   const input=document.createElement('input');
-  input.type='radio'; input.name='preset'; input.id=id; input.value=i;
+  input.type='radio';input.name='preset';input.id=id;input.value=i;
   if(i===selectedIdx)input.checked=true;
   const label=document.createElement('label');
   label.setAttribute('for',id);
   label.innerHTML=fmtLabel(p.start)+'<br>~ '+fmtLabel(p.end);
-  wrap.appendChild(input); wrap.appendChild(label); presetGrid.appendChild(wrap);
+  wrap.appendChild(input);wrap.appendChild(label);presetGrid.appendChild(wrap);
   input.addEventListener('change',()=>{startSelect.value=p.start;endSelect.value=p.end;saveAndTick();});
 });
 
@@ -301,7 +254,7 @@ function syncPresetCheck(){
 function saveAndTick(){
   localStorage.setItem('clockout-start',startSelect.value);
   localStorage.setItem('clockout-end',endSelect.value);
-  syncPresetCheck(); tick();
+  syncPresetCheck();tick();
 }
 startSelect.addEventListener('change',saveAndTick);
 endSelect.addEventListener('change',saveAndTick);
@@ -310,24 +263,17 @@ function tick(){
   const now=new Date();
   const nowMins=now.getHours()*60+now.getMinutes();
   const nowSecs=now.getHours()*3600+now.getMinutes()*60+now.getSeconds();
-
   const nowClockEl=document.getElementById('now-clock');
   const curH=now.getHours();
   const curAmPm=curH<12?'오전':'오후';
   const curHH=curH===0?12:curH>12?curH-12:curH;
   nowClockEl.textContent='('+curAmPm+' '+curHH+':'+String(now.getMinutes()).padStart(2,'0')+')';
-
-  const lunch = lunchAltEl.checked ? LUNCH_ALT : LUNCH_DEFAULT;
-  const LUNCH_START_MINS = lunch.start;
-  const LUNCH_END_MINS   = lunch.end;
-
-  const startMins=getMins(startSelect.value);
-  const endMins=getMins(endSelect.value);
-  const startSecs=startMins*60, endSecs=endMins*60;
-
+  const lunch=lunchAltEl.checked?LUNCH_ALT:LUNCH_DEFAULT;
+  const LUNCH_START_MINS=lunch.start,LUNCH_END_MINS=lunch.end;
+  const startMins=getMins(startSelect.value),endMins=getMins(endSelect.value);
+  const startSecs=startMins*60,endSecs=endMins*60;
   const blocks=[];
   for(let t=startMins;t<endMins;t+=30)blocks.push({start:t,end:Math.min(t+30,endMins)});
-
   const blocksEl=document.getElementById('blocks');
   blocksEl.innerHTML='';
   let completed=0,total=0;
@@ -342,7 +288,6 @@ function tick(){
     else{div.className='block remaining';}
     blocksEl.appendChild(div);
   });
-
   const isLunch=nowMins>=LUNCH_START_MINS&&nowMins<LUNCH_END_MINS;
   const cdEl=document.getElementById('countdown');
   const badge=document.getElementById('badge');
@@ -350,7 +295,6 @@ function tick(){
   const setsVal=document.getElementById('sets-val');
   const setsTotal=document.getElementById('sets-total');
   setsTotal.textContent=' / '+total;
-
   if(nowMins<startMins){
     cdEl.textContent=fmt(Math.max(0,startSecs-nowSecs));
     badge.className='badge badge-before';badge.textContent='출근 전';
@@ -370,41 +314,78 @@ function tick(){
   }
 }
 
-// --- 일하기 싫다 카운터 ---
-const todayKST = new Date(new Date().getTime() + 9*60*60*1000).toISOString().slice(0,10);
-const hateKey = 'clockout-hate-' + todayKST;
-const hateBtn = document.getElementById('hate-btn');
-const hateCount = document.getElementById('hate-count');
+// --- 일하기 싫다 ---
+const todayKST=new Date(new Date().getTime()+9*60*60*1000).toISOString().slice(0,10);
+const hateKey='clockout-hate-'+todayKST;
+const hateBtn=document.getElementById('hate-btn');
+const hateCount=document.getElementById('hate-count');
 
 async function loadHate(){
-  try{
-    const res = await fetch('/api/hate');
-    const data = await res.json();
-    hateCount.textContent = data.count;
-  }catch(e){ hateCount.textContent = '?'; }
+  try{const res=await fetch('/api/hate');const data=await res.json();hateCount.textContent=data.count;}
+  catch(e){hateCount.textContent='?';}
 }
-
 async function pressHate(){
-  if(localStorage.getItem(hateKey)) return;
+  if(localStorage.getItem(hateKey))return;
   try{
-    const res = await fetch('/api/hate', {method:'POST'});
-    const data = await res.json();
-    hateCount.textContent = data.count;
-    localStorage.setItem(hateKey, 'true');
-    hateBtn.textContent = '퇴근하세요ㅋ';
+    const res=await fetch('/api/hate',{method:'POST'});
+    const data=await res.json();
+    hateCount.textContent=data.count;
+    localStorage.setItem(hateKey,'true');
+    hateBtn.textContent='퇴근하세요ㅋ';
     hateBtn.classList.add('pressed');
   }catch(e){}
 }
-
-if(localStorage.getItem(hateKey)){
-  hateBtn.textContent = '퇴근하세요ㅋ';
-  hateBtn.classList.add('pressed');
-}
-hateBtn.addEventListener('click', pressHate);
+if(localStorage.getItem(hateKey)){hateBtn.textContent='퇴근하세요ㅋ';hateBtn.classList.add('pressed');}
+hateBtn.addEventListener('click',pressHate);
 loadHate();
 
+// --- 관리자 공지 (핑크 마퀴) ---
+const noticeWrap=document.getElementById('notice-wrap');
+const noticeInner=document.getElementById('notice-inner');
+const noticeEditBtn=document.getElementById('notice-edit-btn');
+
+function buildMarquee(text){
+  noticeInner.innerHTML='';
+  const chars=[...('📣 '+text)];
+  let delay=0;
+  chars.forEach(ch=>{
+    const span=document.createElement('span');
+    span.textContent=ch===' '?'\u00A0':ch;
+    span.style.animationDelay=delay+'s';
+    noticeInner.appendChild(span);
+    if(ch!==' ')delay+=0.07;
+  });
+}
+
+async function loadNotice(){
+  try{
+    const res=await fetch('/api/notice');
+    const data=await res.json();
+    if(data.text){
+      buildMarquee(data.text);
+      noticeWrap.style.display='block';
+    }else{
+      noticeWrap.style.display='none';
+    }
+  }catch(e){}
+}
+
+noticeEditBtn.addEventListener('click',async()=>{
+  const current=noticeInner.textContent.replace('📣\u00A0','').replace(/\u00A0/g,' ').trim();
+  const newText=prompt('공지 입력 (비우면 삭제):',current);
+  if(newText===null)return;
+  try{
+    await fetch('/api/notice',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({password:adminPassword,text:newText})
+    });
+    loadNotice();
+  }catch(e){alert('저장 실패');}
+});
+
 // --- 익명 방명록 ---
-const ANIMAL_EMOJI = {
+const ANIMAL_EMOJI={
   "돼지":"🐷","다람쥐":"🐿️","펭귄":"🐧","햄스터":"🐹",
   "여우":"🦊","고래":"🐳","토끼":"🐰","부엉이":"🦉",
   "거북이":"🐢","수달":"🦦","코알라":"🐨","사자":"🦁",
@@ -456,17 +437,11 @@ const paginationEl=document.getElementById('chat-pagination');
 const pageInfoEl=document.getElementById('page-info');
 const pagePrevEl=document.getElementById('page-prev');
 const pageNextEl=document.getElementById('page-next');
-
 const PAGE_SIZE=10;
-let allMessages=[];
-let currentPage=0;
-let isAdmin=false;
-let adminPassword='';
+let allMessages=[],currentPage=0,isAdmin=false,adminPassword='';
 
 function escapeHtml(str){
-  const div=document.createElement('div');
-  div.textContent=str;
-  return div.innerHTML;
+  const div=document.createElement('div');div.textContent=str;return div.innerHTML;
 }
 
 function renderPage(){
@@ -476,8 +451,7 @@ function renderPage(){
   const pageItems=allMessages.slice(start,start+PAGE_SIZE);
   if(total===0){
     chatMessagesEl.innerHTML='<div class="chat-empty">아직 방명록이 비어있어요. 첫 글을 남겨보세요!</div>';
-    paginationEl.style.display='none';
-    return;
+    paginationEl.style.display='none';return;
   }
   chatMessagesEl.innerHTML='';
   pageItems.forEach(m=>{
@@ -485,46 +459,32 @@ function renderPage(){
     const mine=displayNick===myNickname;
     const div=document.createElement('div');
     div.className='chat-msg'+(mine?' mine':'');
-    
     const body=document.createElement('div');
     body.className='chat-msg-body';
-    
-    const sirenHtml = m.has_siren ? `<span class="badge-siren-text">🚨경고</span>` : '';
-    
-    // 최종 확정 구조: 첫 줄에 닉네임 바로 옆 sirenHtml 배치, 날짜는 혼자 오른쪽 끝 고정!
-    body.innerHTML = `
+    const sirenHtml=m.has_siren?`<span class="badge-siren-text">🚨경고</span>`:'';
+    body.innerHTML=`
       <div class="chat-msg-top">
         <div class="chat-msg-nick-group">
           <span class="chat-msg-nick">${escapeHtml(displayNick)}</span>${sirenHtml}
         </div>
         <span class="chat-msg-time">${fmtChatTime(m.ts)}</span>
       </div>
-      <div class="chat-msg-bottom">
-        <span>${escapeHtml(m.text)}</span>
-      </div>
+      <div class="chat-msg-bottom"><span>${escapeHtml(m.text)}</span></div>
     `;
-    
     div.appendChild(body);
-    
     if(isAdmin){
-      const adminPanel = document.createElement('div');
-      adminPanel.className = 'admin-panel';
-      
-      if(!m.has_siren) {
-        const sirenBtn = document.createElement('button');
-        sirenBtn.className = 'siren-btn';
-        sirenBtn.textContent = '🚨';
-        sirenBtn.title = '경고 부여';
-        sirenBtn.addEventListener('click', () => setSiren(m.id));
+      const adminPanel=document.createElement('div');
+      adminPanel.className='admin-panel';
+      if(!m.has_siren){
+        const sirenBtn=document.createElement('button');
+        sirenBtn.className='siren-btn';sirenBtn.textContent='🚨';
+        sirenBtn.addEventListener('click',()=>setSiren(m.id));
         adminPanel.appendChild(sirenBtn);
       }
-      
       const delBtn=document.createElement('button');
-      delBtn.className='delete-btn';
-      delBtn.textContent='🗑️';
+      delBtn.className='delete-btn';delBtn.textContent='🗑️';
       delBtn.addEventListener('click',()=>deleteMsg(m.id));
       adminPanel.appendChild(delBtn);
-      
       div.appendChild(adminPanel);
     }
     chatMessagesEl.appendChild(div);
@@ -535,29 +495,25 @@ function renderPage(){
   pageNextEl.disabled=currentPage>=totalPages-1;
 }
 
-async function setSiren(id) {
-  if(!confirm('이 댓글에 🚨 경고 뱃지를 부여할까요?')) return;
-  try {
-    const res = await fetch('/api/guestbook/'+id+'/siren', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({password: adminPassword})
+async function setSiren(id){
+  if(!confirm('이 댓글에 🚨 경고 뱃지를 부여할까요?'))return;
+  try{
+    const res=await fetch('/api/guestbook/'+id+'/siren',{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({password:adminPassword})
     });
-    if(res.ok) loadGuestbook();
-    else alert('경고 처리 실패');
-  } catch(e) { alert('오류 발생'); }
+    if(res.ok)loadGuestbook();else alert('경고 처리 실패');
+  }catch(e){alert('오류 발생');}
 }
 
 async function deleteMsg(id){
   if(!confirm('이 댓글을 삭제할까요?'))return;
   try{
     const res=await fetch('/api/guestbook/'+id,{
-      method:'DELETE',
-      headers:{'Content-Type':'application/json'},
+      method:'DELETE',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({password:adminPassword})
     });
-    if(res.ok)loadGuestbook();
-    else alert('삭제 실패');
+    if(res.ok)loadGuestbook();else alert('삭제 실패');
   }catch(e){alert('오류 발생');}
 }
 
@@ -565,12 +521,14 @@ document.getElementById('admin-btn').addEventListener('click',()=>{
   if(isAdmin){
     isAdmin=false;adminPassword='';
     document.getElementById('admin-btn').textContent='🔑';
+    noticeEditBtn.style.display='none';
     renderPage();return;
   }
   const pw=prompt('관리자 비밀번호를 입력하세요:');
   if(pw===null)return;
   adminPassword=pw;isAdmin=true;
   document.getElementById('admin-btn').textContent='🔓';
+  noticeEditBtn.style.display='block';
   renderPage();
 });
 
@@ -582,9 +540,7 @@ async function loadGuestbook(){
   try{
     const res=await fetch('/api/guestbook');
     const data=await res.json();
-    allMessages=data.messages||[];
-    currentPage=0;
-    renderPage();
+    allMessages=data.messages||[];currentPage=0;renderPage();
   }catch(e){
     chatMessagesEl.innerHTML='<div class="chat-empty">불러오기 실패. 새로고침 버튼을 눌러주세요.</div>';
   }
@@ -597,8 +553,7 @@ async function sendChat(){
   input.value='';
   try{
     await fetch('/api/guestbook',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
+      method:'POST',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({nickname:myNickname,text})
     });
     loadGuestbook();
@@ -607,10 +562,7 @@ async function sendChat(){
 
 let sending=false;
 async function safeSendChat(){
-  if(sending)return;
-  sending=true;
-  await sendChat();
-  sending=false;
+  if(sending)return;sending=true;await sendChat();sending=false;
 }
 
 document.getElementById('chat-send').addEventListener('click',safeSendChat);
@@ -620,14 +572,14 @@ document.getElementById('chat-input').addEventListener('keydown',(e)=>{
 document.getElementById('chat-refresh').addEventListener('click',loadGuestbook);
 
 tick();
-setInterval(tick, 1000);
+setInterval(tick,1000);
 
 ensureNickname()
-  .then(loadGuestbook)
-  .catch(err => {
-    console.error("서버 연결 실패:", err);
-    document.getElementById('my-nickname').textContent = '익명';
-    chatMessagesEl.innerHTML = '<div class="chat-empty">서버와 연결할 수 없습니다.</div>';
+  .then(()=>{loadGuestbook();loadNotice();})
+  .catch(err=>{
+    console.error('서버 연결 실패:',err);
+    document.getElementById('my-nickname').textContent='익명';
+    chatMessagesEl.innerHTML='<div class="chat-empty">서버와 연결할 수 없습니다.</div>';
   });
 </script>
 </body>
