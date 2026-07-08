@@ -17,7 +17,7 @@
   .card { background: #fff; border: 0.5px solid #e0dfd8; border-radius: 12px; padding: 12px 14px; display: flex; flex-direction: column; min-width: 0; }
   .card-full { grid-column: 1 / -1; }
   .card-label { font-size: 11px; color: #888780; margin-bottom: 6px; display: flex; align-items: center; gap: 5px; }
-  .card-value { font-size: 26px; font-weight: 500; color: #1a1a18; font-variant-numeric: tabular-nums; letter-spacing: -1px; line-height: 1; }
+  .card-value { font-size: 24px; font-weight: 500; color: #1a1a18; font-variant-numeric: tabular-nums; letter-spacing: -1px; line-height: 1; }
   .hate-btn { width: 100%; margin-top: 8px; padding: 5px 4px; background: #fff0f0; border: 1px solid #f4c0c0; border-radius: 8px; font-size: 10px; color: #c0392b; cursor: pointer; font-family: 'Noto Sans KR', sans-serif; font-weight: 500; }
   .hate-btn:active { background: #ffe0e0; }
   .hate-btn.pressed { background: #f5f5f5; border-color: #ddd; color: #aaa; cursor: default; }
@@ -110,25 +110,25 @@
   <div class="cards">
     <div class="card">
       <div class="card-label"><i class="ti ti-stack" style="font-size:13px"></i> 진행 세트</div>
-      <div class="card-value" id="sets-val">--<span class="muted" id="sets-total"></span></div>
-      <div class="card-sub-row">
+      <div class="card-value" id="sets-val" style="flex:1;">--<span class="muted" id="sets-total"></span></div>
+      <div class="card-sub-row" style="margin-top:auto;">
         <span class="card-sub">30분 단위</span>
         <span class="badge badge-work" id="badge">로딩 중</span>
       </div>
     </div>
     <div class="card">
       <div class="card-label"><i class="ti ti-clock" style="font-size:13px"></i> 남은 시간</div>
-      <div class="card-sub-row" style="align-items:baseline; gap:6px; flex-wrap:nowrap;">
+      <div class="card-sub-row" style="align-items:baseline; gap:6px; flex-wrap:nowrap; flex:1;">
         <div class="card-value" id="countdown">--:--:--</div>
         <span class="card-sub" id="now-clock" style="white-space:nowrap;"></span>
       </div>
-      <div class="card-sub-row">
+      <div class="card-sub-row" style="margin-top:auto;">
         <span class="card-sub" id="sublabel">퇴근까지</span>
       </div>
     </div>
     <div class="card">
       <div class="card-label"><i class="ti ti-thumb-down" style="font-size:13px"></i> 일하기 싫은 사람</div>
-      <div class="card-value" style="flex:1; margin-bottom:4px;"><span id="hate-count">--</span><span class="muted" style="font-size:14px;"> 명</span></div>
+      <div class="card-value" style="flex:1; margin-bottom:4px;"><span id="hate-count">--</span><span class="muted" style="font-size:12px;"> 명</span></div>
       <button class="hate-btn" id="hate-btn" style="margin-top:auto;">그건 바로 나 😩</button>
     </div>
     <div class="card">
