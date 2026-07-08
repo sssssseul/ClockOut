@@ -110,7 +110,7 @@
   <div class="cards">
     <div class="card">
       <div class="card-label"><i class="ti ti-stack" style="font-size:13px"></i> 진행 세트</div>
-      <div class="card-value" id="sets-val" style="flex:1; margin-bottom:4px;">--<span class="muted" id="sets-total"></span></div>
+      <div style="flex:1; margin-bottom:4px; display:flex; align-items:baseline; gap:2px;"><span class="card-value" id="sets-val">--</span><span class="muted" id="sets-total"></span></div>
       <div class="card-sub-row" style="margin-top:auto;">
         <span class="card-sub">30분 단위</span>
         <span class="badge badge-work" id="badge">로딩 중</span>
@@ -128,12 +128,12 @@
     </div>
     <div class="card">
       <div class="card-label"><i class="ti ti-thumb-down" style="font-size:13px"></i> 일하기 싫은 사람</div>
-      <div class="card-value" style="flex:1; margin-bottom:4px;"><span id="hate-count">--</span><span class="muted" style="font-size:12px;"> 명</span></div>
+      <div style="flex:1; margin-bottom:4px; display:flex; align-items:baseline; gap:2px;"><span class="card-value" id="hate-count">--</span><span class="muted" style="font-size:12px;"> 명</span></div>
       <button class="hate-btn" id="hate-btn" style="margin-top:auto;">그건 바로 나 😩</button>
     </div>
     <div class="card">
       <div class="card-label"><i class="ti ti-tools-kitchen-2" style="font-size:13px"></i> 오늘 뭐 먹지?</div>
-      <div class="card-value" id="lunch-result" style="flex:1; margin-bottom:4px; font-size:24px;">?</div>
+      <div style="flex:1; margin-bottom:4px; display:flex; align-items:baseline; gap:4px;"><span class="card-value" id="lunch-result">?</span></div>
       <button class="lunch-btn" id="lunch-btn" style="margin-top:auto;">돌려 돌려 😋</button>
     </div>
   </div>
@@ -377,7 +377,7 @@ lunchBtn.addEventListener('click', ()=>{
       clearInterval(interval);
       const final = MENUS[Math.floor(Math.random()*MENUS.length)];
       if(final === '굶기ㅠ'){
-        lunchResult.innerHTML = '굶기ㅠ <span style="font-size:12px;color:#888780;font-weight:400;">...파이팅!</span>';
+        lunchResult.innerHTML = '굶기ㅠ <span style="font-size:12px;color:#888780;font-weight:400;">... 파이팅!</span>';
       } else {
         lunchResult.innerHTML = final + ' <span style="font-size:12px;color:#888780;font-weight:400;">맛점!</span>';
       }
