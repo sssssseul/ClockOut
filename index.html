@@ -354,7 +354,7 @@ const MENUS = [
   '초밥','라멘','돈까스','우동','소바','규동','오야코동','텐동',
   '파스타','피자','햄버거','샌드위치','샐러드','리조또',
   '김밥','순대','어묵','떡볶이','라볶이',
-  '카레','쌀국수','팟타이','케밥','타코','인도커리','훠궈','굶기 🙂'
+  '카레','쌀국수','팟타이','케밥','타코','인도커리','훠궈','굶기ㅠ'
 ];
 
 const lunchBtn = document.getElementById('lunch-btn');
@@ -376,8 +376,8 @@ lunchBtn.addEventListener('click', ()=>{
     if(count > 20){
       clearInterval(interval);
       const final = MENUS[Math.floor(Math.random()*MENUS.length)];
-      if(final === '굶기 🙂'){
-        lunchResult.innerHTML = '굶기 🙂 <span style="font-size:12px;color:#888780;font-weight:400;">...파이팅!</span>';
+      if(final === '굶기ㅠ'){
+        lunchResult.innerHTML = '굶기ㅠ <span style="font-size:12px;color:#888780;font-weight:400;">...파이팅!</span>';
       } else {
         lunchResult.innerHTML = final + ' <span style="font-size:12px;color:#888780;font-weight:400;">맛점!</span>';
       }
