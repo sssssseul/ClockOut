@@ -21,6 +21,9 @@
   .hate-btn { width: 100%; margin-top: 8px; padding: 5px 4px; background: #fff0f0; border: 1px solid #f4c0c0; border-radius: 8px; font-size: 10px; color: #c0392b; cursor: pointer; font-family: 'Noto Sans KR', sans-serif; font-weight: 500; }
   .hate-btn:active { background: #ffe0e0; }
   .hate-btn.pressed { background: #f5f5f5; border-color: #ddd; color: #aaa; cursor: default; }
+  .lunch-btn { width: 100%; margin-top: 8px; padding: 5px 4px; background: #f0fff4; border: 1px solid #9ae6b4; border-radius: 8px; font-size: 10px; color: #276749; cursor: pointer; font-family: 'Noto Sans KR', sans-serif; font-weight: 500; }
+  .lunch-btn.done { background: #f5f5f5; border-color: #ddd; color: #aaa; }
+  .lunch-result { font-size: 26px; font-weight: 500; color: #1a1a18; margin-top: 4px; min-height: 22px; line-height: 1; }
   .card-sub-row { display: flex; align-items: center; gap: 6px; margin-top: 4px; }
   .card-sub { font-size: 12px; color: #888780; }
   .muted { font-size: 16px; font-weight: 400; color: #888780; }
@@ -64,14 +67,12 @@
   .chat-card { background: #fff; border: 0.5px solid #e0dfd8; border-radius: 12px; padding: 12px 14px; margin-top: 8px; }
   .chat-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; gap: 6px; }
   .placard { background: #fffbe6; border: 1px dashed #e0c040; border-radius: 4px; padding: 0 20px; height: 32px; line-height: 32px; font-size: 11.5px; font-weight: 500; color: #5c4500; text-align: center; margin-bottom: 8px; }
-  
   /* 핑크 마퀴 공지 */
   .notice-wrap { background: #fff5f5; border: 1px dashed #fca5a5; border-radius: 4px; height: 32px; overflow: hidden; margin-bottom: 8px; display: none; position: relative; justify-content: center; align-items: center; box-shadow: 0 0 12px rgba(252,165,165,0.6), inset 0 0 12px rgba(252,165,165,0.2), 0 0 24px rgba(252,165,165,0.3); }
   .notice-inner { display: inline-block; white-space: nowrap; font-size: 11.5px; font-weight: 500; color: #7f1d1d; padding: 0 30px; animation: shake 0.8s ease-in-out infinite; }
   .notice-inner span { display: inline-block; vertical-align: middle; }
   .notice-edit-btn { position: absolute; right: 6px; top: 50%; transform: translateY(-50%); background: none; border: 1px solid #fca5a5; border-radius: 4px; color: #7f1d1d; font-size: 10px; padding: 1px 5px; cursor: pointer; display: none; }
   @keyframes shake { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-3px)} 40%{transform:translateX(3px)} 60%{transform:translateX(-2px)} 80%{transform:translateX(2px)} }
-  
   .chat-nickname { font-size: 11px; color: #185FA5; background: #E6F1FB; padding: 2px 8px; border-radius: 99px; font-family: 'Noto Sans KR', sans-serif; }
   .chat-messages { display: flex; flex-direction: column; gap: 6px; margin-bottom: 8px; }
   .chat-pagination { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
@@ -87,28 +88,7 @@
   .chat-msg-bottom { font-size: 12px; line-height: 1.4; color: #1a1a18; word-break: break-all; display: block; }
   .chat-msg .chat-msg-nick { color: #185FA5; font-weight: 500; }
   .chat-msg .chat-msg-time { color: #aaa; font-size: 10px; flex-shrink: 0; }
-  
-  /* 🚨 경고 뱃지 스타일 */
   .badge-siren-text { display: inline-flex; align-items: center; justify-content: center; background-color: #ffebeb; color: #e74c3c; font-size: 10px; font-weight: bold; padding: 3px 8px; border-radius: 99px; white-space: nowrap; border: 1px solid #f9d5d5; line-height: 1; vertical-align: middle; }
-  
-  /* 💛 노란색 채워진 붐업 뱃지 스타일 */
-  .badge-boom-text { 
-    display: inline-flex; 
-    align-items: center; 
-    justify-content: center; 
-    background-color: #FAECC5; /* 지정 배경색 */
-    color: #a37c00;            /* 노란끼도는 가독성 좋은 글씨색 */
-    font-size: 10px; 
-    font-weight: bold; 
-    padding: 3px 8px; 
-    border-radius: 99px; 
-    white-space: nowrap; 
-    border: 1px solid #FFE08C; 
-    line-height: 1; 
-    vertical-align: middle; 
-    gap: 4px; 
-  }
-
   .chat-empty { font-size: 12px; color: #aaa; text-align: center; padding: 12px 0; }
   .chat-input-row { display: flex; gap: 6px; }
   .chat-input-row input { flex: 1; min-width: 0; font-size: 12px; color: #5F5E5A; border: 0.5px solid #e0dfd8; border-radius: 6px; padding: 6px 10px; background: #f9f9f7; outline: none; font-family: 'Noto Sans KR', sans-serif; }
@@ -120,7 +100,7 @@
   .admin-panel { display: flex; align-items: center; gap: 4px; flex-shrink: 0; margin-left: 6px; }
   .admin-btn { background: none; border: 0.5px solid #e0dfd8; border-radius: 6px; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 12px; }
   .admin-btn:hover { background: #f1efea; }
-  .siren-btn, .boom-btn { background: none; border: none; cursor: pointer; font-size: 12px; padding: 0 2px; flex-shrink: 0; line-height: 1; }
+  .siren-btn { background: none; border: none; cursor: pointer; font-size: 12px; padding: 0 2px; flex-shrink: 0; line-height: 1; }
   .delete-btn { background: none; border: none; color: #ccc; cursor: pointer; font-size: 12px; padding: 0 2px; flex-shrink: 0; line-height: 1; }
   .delete-btn:hover { color: #e05a5a; }
 </style>
@@ -146,12 +126,15 @@
         <span class="card-sub" id="sublabel">퇴근까지</span>
       </div>
     </div>
-    <div class="card card-full" style="flex-direction:row; align-items:center; justify-content:space-between;">
-      <div>
-        <div class="card-label"><i class="ti ti-thumb-down" style="font-size:13px"></i> 일하기 싫은 사람</div>
-        <div class="card-value"><span id="hate-count">--</span><span class="muted" style="font-size:14px;"> 명</span></div>
-      </div>
-      <button class="hate-btn" id="hate-btn" style="width:auto; margin-top:0; padding: 6px 14px;">그건 바로 나 😩</button>
+    <div class="card">
+      <div class="card-label"><i class="ti ti-thumb-down" style="font-size:13px"></i> 일하기 싫은 사람</div>
+      <div class="card-value" style="flex:1; margin-bottom:4px;"><span id="hate-count">--</span><span class="muted" style="font-size:14px;"> 명</span></div>
+      <button class="hate-btn" id="hate-btn" style="margin-top:auto;">그건 바로 나 😩</button>
+    </div>
+    <div class="card">
+      <div class="card-label"><i class="ti ti-bowl-spoon" style="font-size:13px"></i> 오늘 뭐 먹지?</div>
+      <div class="card-value" id="lunch-result" style="flex:1; margin-bottom:4px;">?</div>
+      <button class="lunch-btn" id="lunch-btn" style="margin-top:auto;">돌려 돌려 😋</button>
     </div>
   </div>
 
@@ -362,7 +345,50 @@ if(localStorage.getItem(hateKey)){hateBtn.textContent='퇴근하세요ㅋ';hateB
 hateBtn.addEventListener('click',pressHate);
 loadHate();
 
-// --- 관리자 공지 ---
+// --- 점심 룰렛 ---
+const MENUS = [
+  '김치찌개','된장찌개','순두부찌개','부대찌개','설렁탕','국밥','비빔밥','냉면',
+  '삼겹살','제육볶음','닭갈비','갈비탕','육개장','삼계탕','도시락','쌈밥',
+  '쭈꾸미볶음','오므라이스','덮밥','초계국수','칼국수','수제비','닭볶음탕',
+  '생선구이','비빔국수','짜장면','짬뽕','탕수육','마라탕','마라샹궈',
+  '초밥','라멘','돈까스','우동','소바','규동','오야코동','텐동',
+  '파스타','피자','햄버거','샌드위치','샐러드','리조또',
+  '김밥','순대','어묵','떡볶이','라볶이',
+  '카레','쌀국수','팟타이','케밥','타코','인도커리','훠궈','굶기 🙂'
+];
+
+const lunchBtn = document.getElementById('lunch-btn');
+const lunchResult = document.getElementById('lunch-result');
+
+let lunchSpinning = false;
+
+lunchBtn.addEventListener('click', ()=>{
+  if(lunchSpinning) return;
+  lunchSpinning = true;
+  lunchBtn.classList.remove("done");
+  lunchBtn.textContent = '두근두근...';
+  lunchBtn.disabled = true;
+  
+  let count = 0;
+  const interval = setInterval(()=>{
+    lunchResult.textContent = MENUS[Math.floor(Math.random()*MENUS.length)];
+    count++;
+    if(count > 20){
+      clearInterval(interval);
+      const final = MENUS[Math.floor(Math.random()*MENUS.length)];
+      if(final === '굶기 🙂'){
+        lunchResult.innerHTML = '굶기 🙂 <span style="font-size:12px;color:#888780;font-weight:400;">...파이팅!</span>';
+      } else {
+        lunchResult.innerHTML = final + ' <span style="font-size:12px;color:#888780;font-weight:400;">오늘은 이걸로!</span>';
+      }
+      
+      lunchBtn.textContent = '다시 돌리기 😋';
+      lunchBtn.classList.add('done');
+      lunchBtn.disabled = false;
+      lunchSpinning = false;
+    }
+  }, 80);
+});
 const noticeWrap=document.getElementById('notice-wrap');
 const noticeInner=document.getElementById('notice-inner');
 const noticeEditBtn=document.getElementById('notice-edit-btn');
@@ -484,15 +510,11 @@ function renderPage(){
     div.className='chat-msg'+(mine?' mine':'');
     const body=document.createElement('div');
     body.className='chat-msg-body';
-    
     const sirenHtml=m.has_siren?`<span class="badge-siren-text">🚨경고</span>`:'';
-    // 🆕 따봉 이모지가 들어간 노란색 붐업 뱃지 렌더링
-    const boomHtml=m.has_boom?`<span class="badge-boom-text">👍붐업</span>`:'';
-    
     body.innerHTML=`
       <div class="chat-msg-top">
         <div class="chat-msg-nick-group">
-          <span class="chat-msg-nick">${escapeHtml(displayNick)}</span>${sirenHtml}${boomHtml}
+          <span class="chat-msg-nick">${escapeHtml(displayNick)}</span>${sirenHtml}
         </div>
         <span class="chat-msg-time">${fmtChatTime(m.ts)}</span>
       </div>
@@ -502,23 +524,12 @@ function renderPage(){
     if(isAdmin){
       const adminPanel=document.createElement('div');
       adminPanel.className='admin-panel';
-      
       if(!m.has_siren){
         const sirenBtn=document.createElement('button');
         sirenBtn.className='siren-btn';sirenBtn.textContent='🚨';
-        sirenBtn.title='경고 부여';
         sirenBtn.addEventListener('click',()=>setSiren(m.id));
         adminPanel.appendChild(sirenBtn);
       }
-      
-      if(!m.has_boom){
-        const boomBtn=document.createElement('button');
-        boomBtn.className='boom-btn';boomBtn.textContent='👍';
-        boomBtn.title='붐업 부여';
-        boomBtn.addEventListener('click',()=>setBoom(m.id));
-        adminPanel.appendChild(boomBtn);
-      }
-      
       const delBtn=document.createElement('button');
       delBtn.className='delete-btn';delBtn.textContent='🗑️';
       delBtn.addEventListener('click',()=>deleteMsg(m.id));
@@ -541,17 +552,6 @@ async function setSiren(id){
       body:JSON.stringify({password:adminPassword})
     });
     if(res.ok)loadGuestbook();else alert('경고 처리 실패');
-  }catch(e){alert('오류 발생');}
-}
-
-async function setBoom(id){
-  if(!confirm('이 댓글에 👍 붐업 뱃지를 부여할까요?'))return;
-  try{
-    const res=await fetch('/api/guestbook/'+id+'/boom',{
-      method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({password:adminPassword})
-    });
-    if(res.ok)loadGuestbook();else alert('붐업 처리 실패');
   }catch(e){alert('오류 발생');}
 }
 
