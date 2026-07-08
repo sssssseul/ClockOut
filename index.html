@@ -14,7 +14,7 @@
   body { background: #f5f5f3; font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif; display: flex; justify-content: center; align-items: flex-start; min-height: 100vh; padding: 2rem 1rem; }
   .wrap { width: 100%; max-width: 480px; }
   .cards { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px; align-items: stretch; }
-  .card { background: #fff; border: 0.5px solid #e0dfd8; border-radius: 12px; padding: 12px 14px; display: flex; flex-direction: column; }
+  .card { background: #fff; border: 0.5px solid #e0dfd8; border-radius: 12px; padding: 12px 14px; display: flex; flex-direction: column; min-width: 0; }
   .card-full { grid-column: 1 / -1; }
   .card-label { font-size: 11px; color: #888780; margin-bottom: 6px; display: flex; align-items: center; gap: 5px; }
   .card-value { font-size: 26px; font-weight: 500; color: #1a1a18; font-variant-numeric: tabular-nums; letter-spacing: -1px; line-height: 1; }
@@ -132,7 +132,7 @@
       <button class="hate-btn" id="hate-btn" style="margin-top:auto;">그건 바로 나 😩</button>
     </div>
     <div class="card">
-      <div class="card-label"><i class="ti ti-bowl-spoon" style="font-size:13px"></i> 오늘 뭐 먹지?</div>
+      <div class="card-label"><i class="ti ti-tools-kitchen-2" style="font-size:13px"></i> 오늘 뭐 먹지?</div>
       <div class="card-value" id="lunch-result" style="flex:1; margin-bottom:4px;">?</div>
       <button class="lunch-btn" id="lunch-btn" style="margin-top:auto;">돌려 돌려 😋</button>
     </div>
