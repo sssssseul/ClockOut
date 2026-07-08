@@ -34,7 +34,7 @@
   .badge-lunch { background: #f1efea; color: #5F5E5A; border: 0.5px solid #e0dfd8; }
   .blocks-card { background: #fff; border: 0.5px solid #e0dfd8; border-radius: 12px; padding: 12px 14px; margin-bottom: 8px; }
   .blocks-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
-  .blocks-label { font-size: 11px; color: #888780; }
+  .blocks-label { font-size: 11px; color: #888780; display: flex; align-items: center; gap: 5px; }
   .lunch-toggle label { font-size: 11px; color: #888780; cursor: pointer; display: flex; align-items: center; gap: 4px; }
   .lunch-toggle input[type="checkbox"] { appearance: none; -webkit-appearance: none; width: 12px; height: 12px; border: 1px solid #888780; border-radius: 3px; margin: 0; cursor: pointer; position: relative; flex-shrink: 0; }
   .lunch-toggle input[type="checkbox"]:checked { background: #185FA5; border-color: #185FA5; }
@@ -54,7 +54,7 @@
   .dot-rem { background: #f1efea; border: 1px solid #888780; opacity: 0.4; }
   .dot-lunch { background: #D3D1C7; border: 1px solid #444441; }
   .settings-card { background: #fff; border: 0.5px solid #e0dfd8; border-radius: 12px; padding: 12px 14px; margin-bottom: 8px; }
-  .settings-label { font-size: 11px; color: #888780; margin-bottom: 8px; }
+  .settings-label { font-size: 11px; color: #888780; margin-bottom: 8px; display: flex; align-items: center; gap: 5px; }
   .preset-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
   .preset-option { position: relative; }
   .preset-option input[type="radio"] { position: absolute; opacity: 0; width: 100%; height: 100%; margin: 0; cursor: pointer; }
@@ -140,7 +140,7 @@
 
   <div class="blocks-card">
     <div class="blocks-top">
-      <span class="blocks-label">30분 블록</span>
+      <span class="blocks-label"><i class="ti ti-layout-grid" style="font-size:13px"></i> 30분 블록</span>
       <div class="lunch-toggle">
         <label><input type="checkbox" id="lunch-alt"> 점심 12:00~13:00</label>
       </div>
@@ -155,7 +155,7 @@
   </div>
 
   <div class="settings-card">
-    <div class="settings-label">근무 시간 선택</div>
+    <div class="settings-label"><i class="ti ti-clock" style="font-size:13px"></i> 근무시간 선택</div>
     <div class="preset-grid" id="preset-grid"></div>
   </div>
 
@@ -377,7 +377,7 @@ lunchBtn.addEventListener('click', ()=>{
       clearInterval(interval);
       const final = MENUS[Math.floor(Math.random()*MENUS.length)];
       if(final === '굶기ㅠ'){
-        lunchResult.innerHTML = '굶기ㅠ <span style="font-size:12px;color:#888780;font-weight:400;">... 파이팅!</span>';
+        lunchResult.innerHTML = '굶기ㅠ <span style="font-size:12px;color:#888780;font-weight:400;">...파이팅!</span>';
       } else {
         lunchResult.innerHTML = final + ' <span style="font-size:12px;color:#888780;font-weight:400;">맛점!</span>';
       }
