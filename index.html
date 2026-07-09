@@ -65,7 +65,7 @@
   .custom-card select { flex: 1; min-width: 0; font-size: 12px; color: #888780; border: 0.5px solid #e0dfd8; border-radius: 6px; padding: 4px 8px; background: #f9f9f7; outline: none; font-family: 'Noto Sans KR', sans-serif; cursor: pointer; }
   .custom-card select:focus { border-color: #185FA5; }
   
-  /* 방명록 카드 */
+  /* 방명록 카드 및 레이아웃 */
   .chat-card { background: #fff; border: 0.5px solid #e0dfd8; border-radius: 12px; padding: 12px 14px; margin-top: 8px; }
   .chat-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; gap: 6px; }
   .placard { background: #fffbe6; border: 1px dashed #e0c040; border-radius: 4px; padding: 0 20px; height: 32px; line-height: 32px; font-size: 11.5px; font-weight: 500; color: #5c4500; text-align: center; margin-bottom: 8px; }
@@ -75,15 +75,15 @@
   .notice-edit-btn { position: absolute; right: 6px; top: 50%; transform: translateY(-50%); background: none; border: 1px solid #fca5a5; border-radius: 4px; color: #7f1d1d; font-size: 10px; padding: 1px 5px; cursor: pointer; display: none; }
   @keyframes shake { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-3px)} 40%{transform:translateX(3px)} 60%{transform:translateX(-2px)} 80%{transform:translateX(2px)} }
   .chat-nickname { font-size: 11px; color: #185FA5; background: #E6F1FB; padding: 2px 8px; border-radius: 99px; font-family: 'Noto Sans KR', sans-serif; }
-  .chat-messages { display: flex; flex-direction: column; gap: 8px; margin-bottom: 8px; }
+  .chat-messages { display: flex; flex-direction: column; gap: 12px; margin-bottom: 8px; }
   
-  /* 개별 스레드 그룹 (가이드 라인은 대댓글에만 직접 부여) */
-  .chat-thread-group { display: flex; flex-direction: column; gap: 6px; width: 100%; }
+  /* 개별 스레드 묶음 */
+  .chat-thread-group { display: flex; flex-direction: column; width: 100%; position: relative; }
   
-  /* 🎨 댓글 스타일 정리 */
+  /* 🎨 댓글 디자인 시스템 */
   .chat-msg { 
     font-size: 12px; 
-    background: #f5f5f3; /* 1. 원래 댓글 기본 연한 회색 bg */
+    background: #f5f5f3; /* 기본 댓글: 연한 회색 */
     border-radius: 12px;
     padding: 10px 14px; 
     display: flex; 
@@ -94,26 +94,35 @@
     width: 100%; 
   }
   
-  /* 2. 본인이 쓴 댓글/대댓글은 하늘색 bg 처리 */
-  .chat-msg.mine { background: #e6f1fb; }
+  /* ⭐️ 본인 댓글 및 본인 대댓글은 무조건 하늘색 최우선 적용 */
+  .chat-msg.mine { background: #e6f1fb !important; }
   
-  /* 3. 대댓글은 기본 댓글보다 조금 더 진한 회색 bg */
-  .chat-msg.reply-msg { 
-    background: #e9e9e7; 
-    margin-top: 2px;
-    width: calc(100% - 14px);
-    align-self: flex-end;
+  /* 🎨 대댓글 래퍼 박스 (여러 대댓글을 묶어 수직선을 하나로 관통시킴) */
+  .reply-container {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 6px;
+    padding-left: 20px; /* 대댓글 들여쓰기 */
+    position: relative;
+    width: 100%;
   }
   
-  /* 4. 대댓글 나눌 때 왼쪽에만 세로 회색 가이드 바 선 표시 */
-  .chat-msg.reply-msg::before {
+  /* 대댓글 묶음 전체를 관통하는 정밀한 수직 회색 연결선 */
+  .reply-container::before {
     content: '';
     position: absolute;
-    left: -14px;
-    top: 0;
-    bottom: 0;
-    width: 2px;
+    left: 7px;
+    top: -10px; /* 부모 댓글 하단 부근에서 시작 */
+    bottom: 22px; /* 마지막 대댓글의 'ㄴ' 중심 높이에서 똑 끊기도록 정밀 제어 */
+    width: 1.5px;
     background-color: #cbd5e1;
+  }
+  
+  /* 대댓글 개별 스타일 */
+  .chat-msg.reply-msg { 
+    background: #e9e9e7; /* 대댓글 기본 배경: 조금 진한 회색 */
+    width: 100%;
   }
   
   .chat-msg-body { display: flex; flex-direction: column; width: 100%; gap: 6px; }
@@ -503,7 +512,7 @@ noticeEditBtn.addEventListener('click',async()=>{
   }catch(e){alert('저장 실패');}
 });
 
-// --- 익명 방명록 및 대댓글 엔진 ---
+// --- 익명 방명록 및 대댓글 계층 엔진 ---
 const ANIMAL_EMOJI={
   "돼지":"🐷","다람쥐":"🐿️","펭귄":"🐧","햄스터":"🐹",
   "여우":"🦊","고래":"🐳","토끼":"🐰","부엉이":"🦉",
@@ -561,6 +570,7 @@ const PAGE_SIZE = 10;
 function escapeHtml(str){const div=document.createElement('div');div.textContent=str;return div.innerHTML;}
 
 function renderPage(){
+  // 원글(부모가 없는 최상위 댓글)만 추출
   const rootMessages = allMessages.filter(m => m.parent_id === null || m.parent_id === undefined);
   const totalRoots = rootMessages.length;
   const totalPages = Math.ceil(totalRoots / PAGE_SIZE) || 1;
@@ -576,21 +586,34 @@ function renderPage(){
   
   chatMessagesEl.innerHTML='';
   
+  // 원글 기준 페이지네이션 자르기
   const start = currentPage * PAGE_SIZE;
   const pageRoots = rootMessages.slice(start, start + PAGE_SIZE);
   
   pageRoots.forEach(root => {
+    // 하나의 원글과 하위 대댓글들을 품을 큰 묶음 그룹 생성
     const threadGroup = document.createElement('div');
     threadGroup.className = 'chat-thread-group';
     
+    // 1. 원글 추가
     const rootDiv = buildMessageDOM(root, false);
     threadGroup.appendChild(rootDiv);
     
+    // 2. 해당 원글에 달린 대댓글 목록 필터링 후 오름차순(시간순) 정렬
     const replies = allMessages.filter(m => m.parent_id === root.id).sort((a,b)=> a.id - b.id);
-    replies.forEach(reply => {
-      const replyDiv = buildMessageDOM(reply, true);
-      threadGroup.appendChild(replyDiv);
-    });
+    
+    if(replies.length > 0) {
+      // 대댓글 전체를 감싸서 세로선을 하나의 컴포넌트로 이어줄 컨테이너 박스 생성
+      const replyContainer = document.createElement('div');
+      replyContainer.className = 'reply-container';
+      
+      replies.forEach(reply => {
+        const replyDiv = buildMessageDOM(reply, true);
+        replyContainer.appendChild(replyDiv);
+      });
+      
+      threadGroup.appendChild(replyContainer);
+    }
     
     chatMessagesEl.appendChild(threadGroup);
   });
@@ -606,7 +629,7 @@ function buildMessageDOM(m, isReply) {
   const mine=displayNick===myNickname;
   
   const div=document.createElement('div');
-  // 기본적용 클래스 조립 (mine이면 스타일 우선순위로 하늘색 반영됨)
+  // mine 클래스가 들어가면 CSS 상에서 최우선 순위로 무조건 이쁜 하늘색 배경이 지정됨
   div.className='chat-msg' + (mine?' mine':'') + (isReply?' reply-msg':'');
   
   const body=document.createElement('div');
@@ -615,8 +638,8 @@ function buildMessageDOM(m, isReply) {
   const sirenHtml=m.has_siren?`<span class="badge-siren-text">🚨경고</span>`:'';
   const boomHtml=m.has_boom?`<span class="badge-boom-text">👍붐업</span>`:'';
   
-  // 대댓글일 때만 닉네임 앞에 ㄴ 기호 표시
-  const replyArrow = isReply ? `<span style="color: #888780; margin-right: 4px; font-weight: bold;">ㄴ</span> ` : '';
+  // 대댓글 마크업일 때만 닉네임 왼쪽에 단정하고 직관적인 'ㄴ' 화살표 처리
+  const replyArrow = isReply ? `<span style="color: #888780; margin-right: 4px; font-weight: bold; font-family: sans-serif;">ㄴ</span> ` : '';
   
   body.innerHTML=`
     <div class="chat-msg-top">
@@ -632,6 +655,7 @@ function buildMessageDOM(m, isReply) {
   `;
   div.appendChild(body);
   
+  // 관리자 기능 영역 패널
   if(isAdmin){
     const adminPanel=document.createElement('div');
     adminPanel.className='admin-panel';
