@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ClockOut</title>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🍀</text></svg>">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2280%22>🍀</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500&display=swap" rel="stylesheet">
@@ -82,9 +82,9 @@
   /* 기본 댓글 및 대댓글 박스 속성 */
   .chat-msg { 
     font-size: 12px; 
-    background: #f5f5f3; 
-    border-radius: 12px;
-    padding: 10px 14px; 
+    background: #f9f9f7; 
+    border-radius: 8px;
+    padding: 8px 10px; 
     display: flex; 
     align-items: flex-start; 
     justify-content: space-between; 
@@ -93,35 +93,20 @@
     width: 100%; 
   }
   
-  /* 내가 쓴 글 강조 색상 */
-  .chat-msg.mine { background: #e6f1fb !important; }
+  .chat-msg.mine { background: #E6F1FB !important; }
   
-  /* 대댓글 묶음 박스 */
   .reply-container {
     display: flex;
     flex-direction: column;
     gap: 6px;
     margin-top: 6px;
-    padding-left: 20px; /* 원글로부터의 들여쓰기 크기 */
-    position: relative;
+    padding-left: 14px;
+    border-left: 2px solid #e0dfd8;
     width: 100%;
   }
   
-  /* ⭐️ 수정 핵심: 대댓글을 이어주는 선명하고 굵은 세로 가이드라인 선 보정 
-  .reply-container::before {
-    content: '';
-    position: absolute;
-    left: 7px;             /* 세로선 좌측 정밀 정렬 위치 */
-    top: -12px;            /* 부모 원글 바로 아래에서 이질감 없이 시작하도록 세팅 */
-    bottom: 21px;          /* ⚠️ 마지막 자식 대댓글의 'ㄴ' 기호 위치에서 오차 없이 정확히 끝나도록 제어 */
-    width: 2.5px;            /* 선을 확실하게 더 두껍고 명확하게 수정 */
-    background-color: #cbd5e1; /* 가이드선 색상 */
-  } */
-  
-  /* 대댓글 전용 박스 디자인 */
   .chat-msg.reply-msg { 
-    background: #f5f5f3; 
-    width: 100%;
+    background: #f9f9f7;
   }
   
   .chat-msg-body { display: flex; flex-direction: column; width: 100%; gap: 6px; }
@@ -212,7 +197,7 @@
     </div>
     <div class="card">
       <div class="card-label"><i class="ti ti-tools-kitchen-2" style="font-size:13px"></i> 오늘 뭐 먹지?</div>
-      <div style="flex:1; margin-bottom:4px; display:flex; align-items:baseline; gap:4px;"><span class="lunch-result" id="lunch-result" style="font-size: 24px; font-weight: 500; color: #1a1a18;">?</span></div>
+      <div style="flex:1; margin-bottom:4px; display:flex; align-items:baseline; gap:4px;"><span class="card-value" id="lunch-result">?</span></div>
       <button class="lunch-btn" id="lunch-btn" style="margin-top:auto;">돌려 돌려 😋</button>
     </div>
   </div>
