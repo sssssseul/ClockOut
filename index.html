@@ -65,7 +65,7 @@
   .custom-card select { flex: 1; min-width: 0; font-size: 12px; color: #888780; border: 0.5px solid #e0dfd8; border-radius: 6px; padding: 4px 8px; background: #f9f9f7; outline: none; font-family: 'Noto Sans KR', sans-serif; cursor: pointer; }
   .custom-card select:focus { border-color: #185FA5; }
   
-  /* --- 방명록 대댓글 계층 구조 시스템 --- */
+  /* --- 방명록 대댓글 수직선 완벽 수정 시스템 --- */
   .chat-card { background: #fff; border: 0.5px solid #e0dfd8; border-radius: 12px; padding: 12px 14px; margin-top: 8px; }
   .chat-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; gap: 6px; }
   .placard { background: #fffbe6; border: 1px dashed #e0c040; border-radius: 4px; padding: 0 20px; height: 32px; line-height: 32px; font-size: 11.5px; font-weight: 500; color: #5c4500; text-align: center; margin-bottom: 8px; }
@@ -77,10 +77,9 @@
   .chat-nickname { font-size: 11px; color: #185FA5; background: #E6F1FB; padding: 2px 8px; border-radius: 99px; font-family: 'Noto Sans KR', sans-serif; }
   .chat-messages { display: flex; flex-direction: column; gap: 12px; margin-bottom: 8px; }
   
-  /* 하나의 원댓글과 그 대댓글 무리를 묶는 바구니 */
   .chat-thread-group { display: flex; flex-direction: column; width: 100%; position: relative; }
   
-  /* 기본 댓글 공통 디자인 */
+  /* 기본 댓글 및 대댓글 박스 속성 */
   .chat-msg { 
     font-size: 12px; 
     background: #f5f5f3; 
@@ -94,34 +93,34 @@
     width: 100%; 
   }
   
-  /* ⭐️ 조건 1: 내가 쓴 글(원댓글/대댓글 무관)은 무조건 최우선으로 하늘색 배경 유지 */
+  /* 내가 쓴 글 강조 색상 */
   .chat-msg.mine { background: #e6f1fb !important; }
   
-  /* 대댓글 덩어리 전용 컨테이너 박스 */
+  /* 대댓글 묶음 박스 */
   .reply-container {
     display: flex;
     flex-direction: column;
     gap: 6px;
     margin-top: 6px;
-    padding-left: 22px; /* 원댓글보다 오른쪽으로 적절히 들여쓰기 */
+    padding-left: 20px; /* 원글로부터의 들여쓰기 크기 */
     position: relative;
     width: 100%;
   }
   
-  /* ⭐️ 조건 2: 여러 대댓글을 위아래로 관통하여 꼿꼿하게 이어주는 더 선명하고 굵은 세로 가이드선 */
+  /* ⭐️ 수정 핵심: 대댓글을 이어주는 선명하고 굵은 세로 가이드라인 선 보정 */
   .reply-container::before {
     content: '';
     position: absolute;
-    left: 8px;            /* 선의 가로 축 위치 정밀 조정 */
-    top: -10px;           /* 원댓글 바닥면 근처부터 시작 */
-    bottom: 22px;         /* 마지막 대댓글의 'ㄴ' 기호 정중앙 높이에서 칼같이 끊기도록 보정 */
-    width: 2.5px;         /* 굵기 보정 (기존보다 더 굵고 직관적으로 변경) */
-    background-color: #cbd5e1; /* 연한 회색/블루톤 선색상 */
+    left: 7px;             /* 세로선 좌측 정밀 정렬 위치 */
+    top: -12px;            /* 부모 원글 바로 아래에서 이질감 없이 시작하도록 세팅 */
+    bottom: 21px;          /* ⚠️ 마지막 자식 대댓글의 'ㄴ' 기호 위치에서 오차 없이 정확히 끝나도록 제어 */
+    width: 2.5px;            /* 선을 확실하게 더 두껍고 명확하게 수정 */
+    background-color: #cbd5e1; /* 가이드선 색상 */
   }
   
-  /* 일반 대댓글 박스 배경색 */
+  /* 대댓글 전용 박스 디자인 */
   .chat-msg.reply-msg { 
-    background: #e9e9e7; 
+    background: #f5f5f3; 
     width: 100%;
   }
   
@@ -144,7 +143,7 @@
   .chat-pagination button:disabled { opacity: 0.3; cursor: default; }
   .chat-pagination .page-info { font-size: 11px; color: #888780; }
 
-  /* 입력 창 및 답글 전환 알림 바 */
+  /* 입력 창 및 답글 바 */
   .chat-input-area { display: flex; flex-direction: column; gap: 4px; width: 100%; margin-top: 4px; }
   
   .reply-target-bar { display: none; align-items: center; justify-content: space-between; background: #e2e8f0; padding: 6px 12px; border-radius: 8px; font-size: 11px; color: #475569; }
@@ -213,7 +212,7 @@
     </div>
     <div class="card">
       <div class="card-label"><i class="ti ti-tools-kitchen-2" style="font-size:13px"></i> 오늘 뭐 먹지?</div>
-      <div style="flex:1; margin-bottom:4px; display:flex; align-items:baseline; gap:4px;"><span class="card-value" id="lunch-result">?</span></div>
+      <div style="flex:1; margin-bottom:4px; display:flex; align-items:baseline; gap:4px;"><span class="lunch-result" id="lunch-result" style="font-size: 24px; font-weight: 500; color: #1a1a18;">?</span></div>
       <button class="lunch-btn" id="lunch-btn" style="margin-top:auto;">돌려 돌려 😋</button>
     </div>
   </div>
@@ -409,7 +408,7 @@ function tick(){
   }
 }
 
-// --- 일하기 싫다 시스템 ---
+// --- 일하기 싫다 로직 ---
 const todayKST=new Date(new Date().getTime()+9*60*60*1000).toISOString().slice(0,10);
 const hateKey='clockout-hate-'+todayKST;
 const hateBtn=document.getElementById('hate-btn');
@@ -434,7 +433,7 @@ if(localStorage.getItem(hateKey)){hateBtn.textContent='퇴근하세요ㅋ';hateB
 hateBtn.addEventListener('click',pressHate);
 loadHate();
 
-// --- 점심 메뉴 선택 기능 ---
+// --- 점심 기요틴 룰렛 시스템 ---
 const MENUS = [
   '김치찌개','된장찌개','순두부찌개','부대찌개','설렁탕','국밥','비빔밥','냉면',
   '삼겹살','제육볶음','닭갈비','갈비탕','육개장','삼계탕','도시락','쌈밥',
@@ -466,7 +465,7 @@ lunchBtn.addEventListener('click', ()=>{
       } else {
         lunchResult.innerHTML = final + ' <span style="font-size:12px;color:#888780;font-weight:400;">맛점!</span>';
       }
-      lunchBtn.textContent = '다시 돌려 ㅎㅋ';
+      lunchBtn.textContent = '다시 돌리기';
       lunchBtn.classList.add('done');
       lunchBtn.disabled = false;
       lunchSpinning = false;
@@ -474,7 +473,7 @@ lunchBtn.addEventListener('click', ()=>{
   }, 80);
 });
 
-// --- 공지 사항 대시보드 ---
+// --- 전사 공지 제어판 ---
 const noticeWrap=document.getElementById('notice-wrap');
 const noticeInner=document.getElementById('notice-inner');
 const noticeEditBtn=document.getElementById('notice-edit-btn');
@@ -512,7 +511,7 @@ noticeEditBtn.addEventListener('click',async()=>{
   }catch(e){alert('저장 실패');}
 });
 
-// --- 익명 방명록 렌더링 코어 모듈 ---
+// --- 방명록 데이터 가공기 ---
 const ANIMAL_EMOJI={
   "돼지":"🐷","다람쥐":"🐿️","펭귄":"🐧","햄스터":"🐹",
   "여우":"🦊","고래":"🐳","토끼":"🐰","부엉이":"🦉",
@@ -569,9 +568,8 @@ const PAGE_SIZE = 10;
 
 function escapeHtml(str){const div=document.createElement('div');div.textContent=str;return div.innerHTML;}
 
-// ⭐️ 메인 트리 구조 복합 구현부
+// 메인 방명록 트리 빌드엔진
 function renderPage(){
-  // 원글(최상위 부모가 없는 순수 댓글)만 분류
   const rootMessages = allMessages.filter(m => m.parent_id === null || m.parent_id === undefined);
   const totalRoots = rootMessages.length;
   const totalPages = Math.ceil(totalRoots / PAGE_SIZE) || 1;
@@ -587,24 +585,21 @@ function renderPage(){
   
   chatMessagesEl.innerHTML='';
   
-  // 원글을 페이지 크기만큼 슬라이싱
   const start = currentPage * PAGE_SIZE;
   const pageRoots = rootMessages.slice(start, start + PAGE_SIZE);
   
   pageRoots.forEach(root => {
-    // 묶음 컴포넌트 박스 생성
     const threadGroup = document.createElement('div');
     threadGroup.className = 'chat-thread-group';
     
-    // 1. 원글 주입
+    // 1. 원댓글 추가
     const rootDiv = buildMessageDOM(root, false);
     threadGroup.appendChild(rootDiv);
     
-    // 2. 해당 원글에 딸린 대댓글 리스트 추출 후 오름차순(시간순) 빌드
+    // 2. 대댓글 추출
     const replies = allMessages.filter(m => m.parent_id === root.id).sort((a,b)=> a.id - b.id);
     
     if(replies.length > 0) {
-      // 대댓글 복합 덩어리 박스 생성 (이 태그 내부의 CSS에 정밀 보정된 수직 연결선이 적용됨)
       const replyContainer = document.createElement('div');
       replyContainer.className = 'reply-container';
       
@@ -625,13 +620,12 @@ function renderPage(){
   pageNextEl.disabled = currentPage >= totalPages - 1;
 }
 
-// 개별 DOM 노드 제작 매핑 함수
+// 돔 주입 매핑 유틸리티
 function buildMessageDOM(m, isReply) {
   const displayNick=addEmojiToNickname(m.nickname);
   const mine=displayNick===myNickname;
   
   const div=document.createElement('div');
-  // mine 매핑 클래스가 탑재되면 CSS 강제 우선권(!important)을 부여받아 무조건 하늘색 활성화
   div.className='chat-msg' + (mine?' mine':'') + (isReply?' reply-msg':'');
   
   const body=document.createElement('div');
@@ -640,8 +634,8 @@ function buildMessageDOM(m, isReply) {
   const sirenHtml=m.has_siren?`<span class="badge-siren-text">🚨경고</span>`:'';
   const boomHtml=m.has_boom?`<span class="badge-boom-text">👍붐업</span>`:'';
   
-  // 대댓글 구분에 직관성을 높여주는 ㄴ 화살표 마크 기호 패스
-  const replyArrow = isReply ? `<span style="color: #64748b; margin-right: 5px; font-weight: bold; font-family: sans-serif;">ㄴ</span> ` : '';
+  // ㄴ 모양 수평 정렬 일치용 가이드라인 구조 패스
+  const replyArrow = isReply ? `<span style="color: #94a3b8; margin-right: 5px; font-weight: bold; font-family: sans-serif;">ㄴ</span> ` : '';
   
   body.innerHTML=`
     <div class="chat-msg-top">
@@ -657,7 +651,6 @@ function buildMessageDOM(m, isReply) {
   `;
   div.appendChild(body);
   
-  // 관리자 대시보드 권한 부여용 기능 패널
   if(isAdmin){
     const adminPanel=document.createElement('div');
     adminPanel.className='admin-panel';
