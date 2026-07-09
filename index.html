@@ -80,8 +80,19 @@
   .chat-pagination button:hover { background: #f1efea; }
   .chat-pagination button:disabled { opacity: 0.3; cursor: default; }
   .chat-pagination .page-info { font-size: 11px; color: #888780; }
-  .chat-msg { font-size: 12px; background: #f9f9f7; border-radius: 8px; padding: 8px 10px; display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+  
+  /* 🆕 방명록 구조적 개선 및 대댓글 디자인 연동 */
+  .chat-item-container { display: flex; flex-direction: column; width: 100%; }
+  .chat-msg { font-size: 12px; background: #f9f9f7; border-radius: 8px; padding: 8px 10px; display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; cursor: pointer; transition: background 0.2s; }
+  .chat-msg:hover { background: #f1efea; }
   .chat-msg.mine { background: #E6F1FB; }
+  .chat-msg.mine:hover { background: #d7e8f7; }
+  
+  /* 🆕 대댓글용 스타일 (연청색 연동 배경 및 이미지 디자인 구성) */
+  .chat-msg.reply { background: #f0f4fa; margin-left: 20px; border-left: none; position: relative; margin-top: 2px; }
+  .chat-msg.reply::before { content: "└"; position: absolute; left: -14px; top: 8px; color: #ccc; font-size: 12px; font-weight: bold; }
+  .chat-msg.reply:hover { background: #e2ecf7; }
+
   .chat-msg-body { display: flex; flex-direction: column; width: 100%; gap: 6px; }
   .chat-msg-top { display: flex; justify-content: space-between; align-items: center; width: 100%; }
   .chat-msg-nick-group { display: flex; align-items: center; gap: 4px; }
@@ -187,7 +198,7 @@
       <button id="page-next">다음 →</button>
     </div>
     <div class="chat-input-row">
-      <input type="text" id="chat-input" placeholder="한마디 남겨보세요" maxlength="200">
+      <input type="text" id="chat-input" placeholder="한마디 남겨보세요 (댓글 클릭 시 답글 작성)" maxlength="200">
       <button id="chat-send"><i class="ti ti-send" style="font-size:14px"></i></button>
     </div>
   </div>
@@ -382,7 +393,7 @@ lunchBtn.addEventListener('click', ()=>{
         lunchResult.innerHTML = final + ' <span style="font-size:12px;color:#888780;font-weight:400;">맛점!</span>';
       }
       
-      lunchBtn.textContent = '다시 돌려 ㅎㅋ';
+      lunchBtn.textContent = '다시 돌리기';
       lunchBtn.classList.add('done');
       lunchBtn.disabled = false;
       lunchSpinning = false;
@@ -486,18 +497,27 @@ const paginationEl=document.getElementById('chat-pagination');
 const pageInfoEl=document.getElementById('page-info');
 const pagePrevEl=document.getElementById('page-prev');
 const pageNextEl=document.getElementById('page-next');
+const chatInput=document.getElementById('chat-input');
 const PAGE_SIZE=10;
 let allMessages=[],currentPage=0,isAdmin=false,adminPassword='';
+let replyTargetId=null; # 🆕 현재 답글 작성 대상이 되는 댓글의 부모 ID 추적 변수
 
 function escapeHtml(str){
   const div=document.createElement('div');div.textContent=str;return div.innerHTML;
 }
 
+# 🆕 입력 필드를 지우거나 변경될 때 대댓글 타겟 동기화/검증 해제 처리 로직 조율
+chatInput.addEventListener('input', () => {
+  if (!chatInput.value.startsWith('@')) {
+    replyTargetId = null;
+  }
+});
+
 function renderPage(){
-  const total=allMessages.length;
-  const totalPages=Math.ceil(total/PAGE_SIZE);
-  const start=currentPage*PAGE_SIZE;
-  const pageItems=allMessages.slice(start,start+PAGE_SIZE);
+  const total = allMessages.length;
+  const totalPages = Math.ceil(total/PAGE_SIZE);
+  const start = currentPage*PAGE_SIZE;
+  const pageItems = allMessages.slice(start,start+PAGE_SIZE);
   if(total===0){
     chatMessagesEl.innerHTML='<div class="chat-empty">아직 방명록이 비어있어요. 첫 글을 남겨보세요!</div>';
     paginationEl.style.display='none';return;
@@ -507,7 +527,23 @@ function renderPage(){
     const displayNick=addEmojiToNickname(m.nickname);
     const mine=displayNick===myNickname;
     const div=document.createElement('div');
-    div.className='chat-msg'+(mine?' mine':'');
+    
+    # 🆕 대댓글 여부 분기 디자인 바인딩
+    const isReply = m.parent_id !== null;
+    div.className='chat-msg'+(mine?' mine':'')+(isReply?' reply':'');
+    
+    # 🆕 댓글 클릭 처리: @닉네임 자동 추가 및 대댓글 모드 활성화 
+    div.addEventListener('click', (e) => {
+      # 삭제나 경고 버튼을 눌렀을 때는 작동 방지
+      if (e.target.closest('.admin-panel')) return;
+      
+      const cleanNick = displayNick.replace(/[\u2700-\u27BF]|[\uE000-\uF8FF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|[\u2011-\u26FF]|\uD83E[\uDD00-\uDFFF]/g, '').trim();
+      chatInput.value = `@${cleanNick} `;
+      # 대댓글에 다시 대댓글을 다는 경우 최종 상위 부모글 기준 매핑처리
+      replyTargetId = m.parent_id ? m.parent_id : m.id;
+      chatInput.focus();
+    });
+
     const body=document.createElement('div');
     body.className='chat-msg-body';
     const sirenHtml=m.has_siren?`<span class="badge-siren-text">🚨경고</span>`:'';
@@ -527,12 +563,12 @@ function renderPage(){
       if(!m.has_siren){
         const sirenBtn=document.createElement('button');
         sirenBtn.className='siren-btn';sirenBtn.textContent='🚨';
-        sirenBtn.addEventListener('click',()=>setSiren(m.id));
+        sirenBtn.addEventListener('click',(e)=>{ e.stopPropagation(); setSiren(m.id); });
         adminPanel.appendChild(sirenBtn);
       }
       const delBtn=document.createElement('button');
       delBtn.className='delete-btn';delBtn.textContent='🗑️';
-      delBtn.addEventListener('click',()=>deleteMsg(m.id));
+      delBtn.addEventListener('click',(e)=>{ e.stopPropagation(); deleteMsg(m.id); });
       adminPanel.appendChild(delBtn);
       div.appendChild(adminPanel);
     }
@@ -598,17 +634,23 @@ async function loadGuestbook(){
 }
 
 async function sendChat(){
-  const input=document.getElementById('chat-input');
-  const text=input.value.trim();
+  const text=chatInput.value.trim();
   if(!text)return;
-  input.value='';
+  
+  # 🆕 입력창이 @로 시작되지 않는다면 타겟 ID 강제 비우기 처리 추가
+  if(!text.startsWith('@')) {
+    replyTargetId = null;
+  }
+
+  chatInput.value='';
   try{
     await fetch('/api/guestbook',{
       method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({nickname:myNickname,text})
+      body:JSON.stringify({nickname:myNickname, text, parent_id: replyTargetId}) # 🆕 전송 패킷에 parent_id 연동 탑재
     });
+    replyTargetId = null; # 전송 후 상태 초기화
     loadGuestbook();
-  }catch(e){input.value=text;}
+  }catch(e){chatInput.value=text;}
 }
 
 let sending=false;
@@ -617,7 +659,7 @@ async function safeSendChat(){
 }
 
 document.getElementById('chat-send').addEventListener('click',safeSendChat);
-document.getElementById('chat-input').addEventListener('keydown',(e)=>{
+chatInput.addEventListener('keydown',(e)=>{
   if(e.key==='Enter'){e.preventDefault();safeSendChat();}
 });
 document.getElementById('chat-refresh').addEventListener('click',loadGuestbook);
