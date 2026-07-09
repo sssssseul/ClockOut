@@ -49,7 +49,7 @@ def init_db():
     ''')
     cur.execute('ALTER TABLE guestbook ADD COLUMN IF NOT EXISTS has_siren BOOLEAN DEFAULT FALSE;')
     cur.execute('ALTER TABLE guestbook ADD COLUMN IF NOT EXISTS has_boom BOOLEAN DEFAULT FALSE;')
-    # 🆕 대댓글용 parent_id 컬럼 추가 알터 스크립트
+    # 대댓글용 parent_id 컬럼 추가 알터 스크립트
     cur.execute('ALTER TABLE guestbook ADD COLUMN IF NOT EXISTS parent_id INTEGER REFERENCES guestbook(id) ON DELETE CASCADE;')
     
     cur.execute('''
@@ -83,7 +83,7 @@ def api_nickname():
 def get_guestbook():
     conn = get_db()
     cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-    # 🆕 원본글과 대댓글을 함께 정렬하여 효율적으로 트리를 그리기 위해 COALESCE(parent_id, id) 및 id 기준 정렬
+    # 원본글과 대댓글을 묶어서 올바르게 트리 구조로 나열하기 위한 정렬 쿼리문
     cur.execute('''
         SELECT id, nickname, text, ts, has_siren, has_boom, parent_id 
         FROM guestbook 
@@ -100,13 +100,12 @@ def post_guestbook():
     data = request.get_json(force=True)
     nickname = (data.get('nickname') or '익명').strip()[:20]
     text = (data.get('text') or '').strip()[:200]
-    parent_id = data.get('parent_id') # 🆕 프론트엔드로부터 parent_id 수신 (없으면 None)
+    parent_id = data.get('parent_id') # 프론트로부터 수신 (없으면 None)
     
     if not text:
         return jsonify({"error": "empty"}), 400
     conn = get_db()
     cur = conn.cursor()
-    # 🆕 parent_id 저장 연동
     cur.execute('INSERT INTO guestbook (nickname, text, ts, has_siren, has_boom, parent_id) VALUES (%s, %s, %s, FALSE, FALSE, %s)',
                 (nickname, text, time.time(), parent_id))
     conn.commit()
