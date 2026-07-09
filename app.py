@@ -42,14 +42,15 @@ def init_db():
             nickname TEXT NOT NULL,
             text TEXT NOT NULL,
             ts DOUBLE PRECISION NOT NULL,
+            parent_id INTEGER DEFAULT NULL,
             has_siren BOOLEAN DEFAULT FALSE,
-            has_boom BOOLEAN DEFAULT FALSE,
-            parent_id INTEGER REFERENCES guestbook(id) ON DELETE CASCADE
+            has_boom BOOLEAN DEFAULT FALSE
         )
     ''')
+    # 🆕 대댓글 구조용 parent_id 컬럼 추가 자동화 스크립트
+    cur.execute('ALTER TABLE guestbook ADD COLUMN IF NOT EXISTS parent_id INTEGER DEFAULT NULL;')
     cur.execute('ALTER TABLE guestbook ADD COLUMN IF NOT EXISTS has_siren BOOLEAN DEFAULT FALSE;')
     cur.execute('ALTER TABLE guestbook ADD COLUMN IF NOT EXISTS has_boom BOOLEAN DEFAULT FALSE;')
-    cur.execute('ALTER TABLE guestbook ADD COLUMN IF NOT EXISTS parent_id INTEGER REFERENCES guestbook(id) ON DELETE CASCADE;')
     
     cur.execute('''
         CREATE TABLE IF NOT EXISTS hate_count (
@@ -82,13 +83,8 @@ def api_nickname():
 def get_guestbook():
     conn = get_db()
     cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-    # 대댓글 구조 유지를 위한 쿼리 튜닝
-    cur.execute('''
-        SELECT id, nickname, text, ts, has_siren, has_boom, parent_id 
-        FROM guestbook 
-        ORDER BY COALESCE(parent_id, id) DESC, parent_id IS NOT NULL ASC, id ASC 
-        LIMIT 200
-    ''')
+    # 🆕 조회 필드에 parent_id 연동 추가 및 효율적 정렬을 위해 전체 목록 전송 (프론트에서 역정렬 가공)
+    cur.execute('SELECT id, nickname, text, ts, parent_id, has_siren, has_boom FROM guestbook ORDER BY id DESC LIMIT 300')
     rows = cur.fetchall()
     cur.close()
     conn.close()
@@ -99,13 +95,14 @@ def post_guestbook():
     data = request.get_json(force=True)
     nickname = (data.get('nickname') or '익명').strip()[:20]
     text = (data.get('text') or '').strip()[:200]
-    parent_id = data.get('parent_id')
+    parent_id = data.get('parent_id') # 🆕 프론트에서 보낸 대댓글의 부모 ID 수집
     
     if not text:
         return jsonify({"error": "empty"}), 400
     conn = get_db()
     cur = conn.cursor()
-    cur.execute('INSERT INTO guestbook (nickname, text, ts, has_siren, has_boom, parent_id) VALUES (%s, %s, %s, FALSE, FALSE, %s)',
+    # 🆕 인서트 구문에 parent_id 유동 맵핑 구현
+    cur.execute('INSERT INTO guestbook (nickname, text, ts, parent_id, has_siren, has_boom) VALUES (%s, %s, %s, %s, FALSE, FALSE)',
                 (nickname, text, time.time(), parent_id))
     conn.commit()
     cur.close()
@@ -119,7 +116,8 @@ def delete_guestbook(msg_id):
         return jsonify({"error": "unauthorized"}), 401
     conn = get_db()
     cur = conn.cursor()
-    cur.execute('DELETE FROM guestbook WHERE id = %s', (msg_id,))
+    # 부모 글 삭제 시 자식 대댓글도 함께 밀어버리도록 설계
+    cur.execute('DELETE FROM guestbook WHERE id = %s OR parent_id = %s', (msg_id, msg_id))
     conn.commit()
     cur.close()
     conn.close()
