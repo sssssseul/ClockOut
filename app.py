@@ -49,7 +49,6 @@ def init_db():
     ''')
     cur.execute('ALTER TABLE guestbook ADD COLUMN IF NOT EXISTS has_siren BOOLEAN DEFAULT FALSE;')
     cur.execute('ALTER TABLE guestbook ADD COLUMN IF NOT EXISTS has_boom BOOLEAN DEFAULT FALSE;')
-    # 대댓글용 parent_id 컬럼 추가 알터 스크립트
     cur.execute('ALTER TABLE guestbook ADD COLUMN IF NOT EXISTS parent_id INTEGER REFERENCES guestbook(id) ON DELETE CASCADE;')
     
     cur.execute('''
@@ -83,7 +82,7 @@ def api_nickname():
 def get_guestbook():
     conn = get_db()
     cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-    # 원본글과 대댓글을 묶어서 올바르게 트리 구조로 나열하기 위한 정렬 쿼리문
+    # 대댓글 구조 유지를 위한 쿼리 튜닝
     cur.execute('''
         SELECT id, nickname, text, ts, has_siren, has_boom, parent_id 
         FROM guestbook 
@@ -100,7 +99,7 @@ def post_guestbook():
     data = request.get_json(force=True)
     nickname = (data.get('nickname') or '익명').strip()[:20]
     text = (data.get('text') or '').strip()[:200]
-    parent_id = data.get('parent_id') # 프론트로부터 수신 (없으면 None)
+    parent_id = data.get('parent_id')
     
     if not text:
         return jsonify({"error": "empty"}), 400
