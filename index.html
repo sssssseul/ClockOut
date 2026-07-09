@@ -77,13 +77,13 @@
   .chat-nickname { font-size: 11px; color: #185FA5; background: #E6F1FB; padding: 2px 8px; border-radius: 99px; font-family: 'Noto Sans KR', sans-serif; }
   .chat-messages { display: flex; flex-direction: column; gap: 10px; margin-bottom: 8px; }
   
-  /* ⭐️ [이미지 스타일 매칭] 부모-자식 댓글을 묶어주는 그룹 및 왼쪽 수직 가이드라인 선 */
+  /* 이미지 스레드 구조 맞춤용 가이드라인 선 */
   .chat-thread-group { display: flex; flex-direction: column; border-left: 2px solid #e2e8f0; padding-left: 14px; margin-bottom: 4px; }
   
   /* 원본 댓글 스타일 */
   .chat-msg { font-size: 12px; background: transparent; padding: 4px 0; display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; position: relative; width: 100%; }
   
-  /* ⭐️ [이미지 스타일 매칭] 대댓글 스타일 전면 수정: 부드러운 박스 및 조금 더 진한 회색(#eff1f5) */
+  /* 대댓글 스타일: 부드러운 라운드 그레이 박스 */
   .chat-msg.reply-msg { 
     background: #eff1f5; 
     border-radius: 12px; 
@@ -92,7 +92,7 @@
     width: 100%;
     box-shadow: inset 0 1px 2px rgba(0,0,0,0.02);
   }
-  .chat-msg.reply-msg.mine { background: #e2eaf4; } /* 대댓글 중 내가 쓴 것은 연한 블루회색 */
+  .chat-msg.reply-msg.mine { background: #e2eaf4; }
   
   .chat-msg-body { display: flex; flex-direction: column; width: 100%; gap: 6px; }
   .chat-msg-top { display: flex; justify-content: space-between; align-items: center; width: 100%; }
@@ -106,7 +106,7 @@
   
   .chat-empty { font-size: 12px; color: #aaa; text-align: center; padding: 12px 0; }
   
-  /* ⭐️ 하단 페이지네이션 스타일 복구 */
+  /* 페이지네이션 */
   .chat-pagination { display: flex; align-items: center; justify-content: space-between; margin: 12px 0 8px 0; }
   .chat-pagination button { background: none; border: 0.5px solid #e0dfd8; border-radius: 6px; padding: 4px 10px; font-size: 11px; color: #888780; cursor: pointer; font-family: 'Noto Sans KR', sans-serif; }
   .chat-pagination button:hover { background: #f1efea; }
@@ -115,8 +115,24 @@
 
   /* 입력 폼 및 답글 취소 바 */
   .chat-input-area { display: flex; flex-direction: column; gap: 4px; width: 100%; margin-top: 4px; }
-  .reply-target-bar { display: none; align-items: center; justify-content: space-between; background: #e2e8f0; padding: 4px 10px; border-radius: 6px; font-size: 11px; color: #475569; }
-  .reply-target-bar button { background: none; border: none; color: #ef4444; font-weight: bold; cursor: pointer; }
+  
+  .reply-target-bar { display: none; align-items: center; justify-content: space-between; background: #e2e8f0; padding: 6px 12px; border-radius: 8px; font-size: 11px; color: #475569; }
+  .reply-target-bar button { 
+    background: #fff; 
+    border: 0.5px solid #cbd5e1; 
+    border-radius: 4px; 
+    color: #64748b; 
+    font-size: 10px; 
+    padding: 2px 6px; 
+    cursor: pointer; 
+    font-family: 'Noto Sans KR', sans-serif;
+    transition: all 0.15s;
+  }
+  .reply-target-bar button:hover { 
+    background: #fff5f5; 
+    border-color: #fca5a5; 
+    color: #c0392b; 
+  }
   
   .chat-input-row { display: flex; gap: 6px; }
   .chat-input-row input { flex: 1; min-width: 0; font-size: 12px; color: #5F5E5A; border: 0.5px solid #e0dfd8; border-radius: 6px; padding: 6px 10px; background: #f9f9f7; outline: none; font-family: 'Noto Sans KR', sans-serif; }
@@ -419,7 +435,7 @@ lunchBtn.addEventListener('click', ()=>{
       } else {
         lunchResult.innerHTML = final + ' <span style="font-size:12px;color:#888780;font-weight:400;">맛점!</span>';
       }
-      lunchBtn.textContent = '다시 돌리기';
+      lunchBtn.textContent = '다시 돌려 ㅎㅋ';
       lunchBtn.classList.add('done');
       lunchBtn.disabled = false;
       lunchSpinning = false;
@@ -522,9 +538,7 @@ const PAGE_SIZE = 10;
 
 function escapeHtml(str){const div=document.createElement('div');div.textContent=str;return div.innerHTML;}
 
-// ⭐️ [디자인 튜닝] 이미지 스레드 구조에 맞춰서 페이지네이션 연동 렌더링 함수 설계
 function renderPage(){
-  // 최상위 부모글(parent_id가 없는 글) 기준으로 페이지네이션 계산
   const rootMessages = allMessages.filter(m => m.parent_id === null || m.parent_id === undefined);
   const totalRoots = rootMessages.length;
   const totalPages = Math.ceil(totalRoots / PAGE_SIZE) || 1;
@@ -540,20 +554,16 @@ function renderPage(){
   
   chatMessagesEl.innerHTML='';
   
-  // 현재 페이지의 부모 글 범위 추출
   const start = currentPage * PAGE_SIZE;
   const pageRoots = rootMessages.slice(start, start + PAGE_SIZE);
   
   pageRoots.forEach(root => {
-    // ⭐️ 부모글과 대댓글을 이미지 가이드라인 선으로 감싸줄 단일 쓰레드 컨테이너 생성
     const threadGroup = document.createElement('div');
     threadGroup.className = 'chat-thread-group';
     
-    // 1. 부모 글 추가
     const rootDiv = buildMessageDOM(root, false);
     threadGroup.appendChild(rootDiv);
     
-    // 2. 자식 대댓글 매칭 및 추가 (시간 오름차순 정렬)
     const replies = allMessages.filter(m => m.parent_id === root.id).sort((a,b)=> a.id - b.id);
     replies.forEach(reply => {
       const replyDiv = buildMessageDOM(reply, true);
@@ -569,7 +579,6 @@ function renderPage(){
   pageNextEl.disabled = currentPage >= totalPages - 1;
 }
 
-// 개별 메시지 엘리먼트를 동적으로 만들어 반환하는 순수 헬퍼 함수
 function buildMessageDOM(m, isReply) {
   const displayNick=addEmojiToNickname(m.nickname);
   const mine=displayNick===myNickname;
@@ -583,16 +592,18 @@ function buildMessageDOM(m, isReply) {
   const sirenHtml=m.has_siren?`<span class="badge-siren-text">🚨경고</span>`:'';
   const boomHtml=m.has_boom?`<span class="badge-boom-text">🔥추천</span>`:'';
   
-  // 이미지와 완벽 호환되도록 쓸데없는 'ㄴ' 텍스트 제거 및 깔끔한 답글 링크 버튼 장착
+  // 🆕 여기에 ㄴ 기호를 추가했습니다!
+  const replyArrow = isReply ? `<span style="color: #888780; margin-right: 4px; font-weight: bold;">ㄴ</span> ` : '';
+  
   body.innerHTML=`
     <div class="chat-msg-top">
       <div class="chat-msg-nick-group">
-        <span class="chat-msg-nick">${escapeHtml(displayNick)}</span>${sirenHtml}${boomHtml}
+        ${replyArrow}<span class="chat-msg-nick">${escapeHtml(displayNick)}</span>${sirenHtml}${boomHtml}
       </div>
       <span class="chat-msg-time">${fmtChatTime(m.ts)}</span>
     </div>
     <div class="chat-msg-bottom">
-      <span>${escapeHtml(m.text)}</span>
+      <span style="${isReply ? 'padding-left: 14px; display: inline-block;' : ''}">${escapeHtml(m.text)}</span>
       ${!isReply ? `<button class="msg-action-btn" onclick="initReply(${m.id}, '${escapeHtml(displayNick)}')">답글</button>` : ''}
     </div>
   `;
@@ -622,11 +633,9 @@ function buildMessageDOM(m, isReply) {
   return div;
 }
 
-// 페이지네이션 클릭 이벤트 리스너 지정
 pagePrevEl.addEventListener('click',()=>{if(currentPage>0){currentPage--;renderPage();}});
 pageNextEl.addEventListener('click',()=>{currentPage++;renderPage();});
 
-// 답글 모드 활성화
 window.initReply = function(id, nick) {
   selectedParentId = id;
   const bar = document.getElementById('reply-target-bar');
@@ -636,7 +645,6 @@ window.initReply = function(id, nick) {
   document.getElementById('chat-input').focus();
 };
 
-// 답글 취소
 document.getElementById('cancel-reply-btn').addEventListener('click', () => {
   selectedParentId = null;
   document.getElementById('reply-target-bar').style.display = 'none';
@@ -713,7 +721,7 @@ async function sendChat(){
     });
     selectedParentId = null;
     document.getElementById('reply-target-bar').style.display = 'none';
-    currentPage = 0; // 새 글 작성 시 무조건 첫 페이지로 이동하게끔 변경
+    currentPage = 0; 
     loadGuestbook();
   }catch(e){input.value=text;}
 }
