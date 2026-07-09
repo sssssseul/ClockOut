@@ -43,12 +43,15 @@ def init_db():
             text TEXT NOT NULL,
             ts DOUBLE PRECISION NOT NULL,
             has_siren BOOLEAN DEFAULT FALSE,
-            has_boom BOOLEAN DEFAULT FALSE
+            has_boom BOOLEAN DEFAULT FALSE,
+            parent_id INTEGER REFERENCES guestbook(id) ON DELETE CASCADE
         )
     ''')
     cur.execute('ALTER TABLE guestbook ADD COLUMN IF NOT EXISTS has_siren BOOLEAN DEFAULT FALSE;')
-    # 🆕 붐업 컬럼 추가 알터 스크립트 활성화
     cur.execute('ALTER TABLE guestbook ADD COLUMN IF NOT EXISTS has_boom BOOLEAN DEFAULT FALSE;')
+    # 🆕 대댓글용 parent_id 컬럼 추가 알터 스크립트
+    cur.execute('ALTER TABLE guestbook ADD COLUMN IF NOT EXISTS parent_id INTEGER REFERENCES guestbook(id) ON DELETE CASCADE;')
+    
     cur.execute('''
         CREATE TABLE IF NOT EXISTS hate_count (
             date TEXT PRIMARY KEY,
@@ -80,8 +83,13 @@ def api_nickname():
 def get_guestbook():
     conn = get_db()
     cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-    # 🆕 조회 필드에 has_boom 연동 추가
-    cur.execute('SELECT id, nickname, text, ts, has_siren, has_boom FROM guestbook ORDER BY id DESC LIMIT 100')
+    # 🆕 원본글과 대댓글을 함께 정렬하여 효율적으로 트리를 그리기 위해 COALESCE(parent_id, id) 및 id 기준 정렬
+    cur.execute('''
+        SELECT id, nickname, text, ts, has_siren, has_boom, parent_id 
+        FROM guestbook 
+        ORDER BY COALESCE(parent_id, id) DESC, parent_id IS NOT NULL ASC, id ASC 
+        LIMIT 200
+    ''')
     rows = cur.fetchall()
     cur.close()
     conn.close()
@@ -92,13 +100,15 @@ def post_guestbook():
     data = request.get_json(force=True)
     nickname = (data.get('nickname') or '익명').strip()[:20]
     text = (data.get('text') or '').strip()[:200]
+    parent_id = data.get('parent_id') # 🆕 프론트엔드로부터 parent_id 수신 (없으면 None)
+    
     if not text:
         return jsonify({"error": "empty"}), 400
     conn = get_db()
     cur = conn.cursor()
-    # 🆕 신규 입력 시 has_boom 기본값 FALSE 탑재
-    cur.execute('INSERT INTO guestbook (nickname, text, ts, has_siren, has_boom) VALUES (%s, %s, %s, FALSE, FALSE)',
-                (nickname, text, time.time()))
+    # 🆕 parent_id 저장 연동
+    cur.execute('INSERT INTO guestbook (nickname, text, ts, has_siren, has_boom, parent_id) VALUES (%s, %s, %s, FALSE, FALSE, %s)',
+                (nickname, text, time.time(), parent_id))
     conn.commit()
     cur.close()
     conn.close()
@@ -130,7 +140,6 @@ def siren_guestbook(msg_id):
     conn.close()
     return jsonify({"ok": True})
 
-# 🆕 관리자용 붐업 뱃지 부여 라우터 파이프라인 신설
 @app.route('/api/guestbook/<int:msg_id>/boom', methods=['POST'])
 def boom_guestbook(msg_id):
     pw = request.get_json(force=True).get('password', '')
