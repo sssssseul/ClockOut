@@ -65,7 +65,7 @@
   .custom-card select { flex: 1; min-width: 0; font-size: 12px; color: #888780; border: 0.5px solid #e0dfd8; border-radius: 6px; padding: 4px 8px; background: #f9f9f7; outline: none; font-family: 'Noto Sans KR', sans-serif; cursor: pointer; }
   .custom-card select:focus { border-color: #185FA5; }
   
-  /* 방명록 카드 및 레이아웃 */
+  /* --- 방명록 대댓글 계층 구조 시스템 --- */
   .chat-card { background: #fff; border: 0.5px solid #e0dfd8; border-radius: 12px; padding: 12px 14px; margin-top: 8px; }
   .chat-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; gap: 6px; }
   .placard { background: #fffbe6; border: 1px dashed #e0c040; border-radius: 4px; padding: 0 20px; height: 32px; line-height: 32px; font-size: 11.5px; font-weight: 500; color: #5c4500; text-align: center; margin-bottom: 8px; }
@@ -77,13 +77,13 @@
   .chat-nickname { font-size: 11px; color: #185FA5; background: #E6F1FB; padding: 2px 8px; border-radius: 99px; font-family: 'Noto Sans KR', sans-serif; }
   .chat-messages { display: flex; flex-direction: column; gap: 12px; margin-bottom: 8px; }
   
-  /* 개별 스레드 묶음 */
+  /* 하나의 원댓글과 그 대댓글 무리를 묶는 바구니 */
   .chat-thread-group { display: flex; flex-direction: column; width: 100%; position: relative; }
   
-  /* 🎨 댓글 디자인 시스템 */
+  /* 기본 댓글 공통 디자인 */
   .chat-msg { 
     font-size: 12px; 
-    background: #f5f5f3; /* 기본 댓글: 연한 회색 */
+    background: #f5f5f3; 
     border-radius: 12px;
     padding: 10px 14px; 
     display: flex; 
@@ -94,34 +94,34 @@
     width: 100%; 
   }
   
-  /* ⭐️ 본인 댓글 및 본인 대댓글은 무조건 하늘색 최우선 적용 */
+  /* ⭐️ 조건 1: 내가 쓴 글(원댓글/대댓글 무관)은 무조건 최우선으로 하늘색 배경 유지 */
   .chat-msg.mine { background: #e6f1fb !important; }
   
-  /* 🎨 대댓글 래퍼 박스 (여러 대댓글을 묶어 수직선을 하나로 관통시킴) */
+  /* 대댓글 덩어리 전용 컨테이너 박스 */
   .reply-container {
     display: flex;
     flex-direction: column;
     gap: 6px;
     margin-top: 6px;
-    padding-left: 20px; /* 대댓글 들여쓰기 */
+    padding-left: 22px; /* 원댓글보다 오른쪽으로 적절히 들여쓰기 */
     position: relative;
     width: 100%;
   }
   
-  /* 대댓글 묶음 전체를 관통하는 정밀한 수직 회색 연결선 */
+  /* ⭐️ 조건 2: 여러 대댓글을 위아래로 관통하여 꼿꼿하게 이어주는 더 선명하고 굵은 세로 가이드선 */
   .reply-container::before {
     content: '';
     position: absolute;
-    left: 7px;
-    top: -10px; /* 부모 댓글 하단 부근에서 시작 */
-    bottom: 22px; /* 마지막 대댓글의 'ㄴ' 중심 높이에서 똑 끊기도록 정밀 제어 */
-    width: 1.5px;
-    background-color: #cbd5e1;
+    left: 8px;            /* 선의 가로 축 위치 정밀 조정 */
+    top: -10px;           /* 원댓글 바닥면 근처부터 시작 */
+    bottom: 22px;         /* 마지막 대댓글의 'ㄴ' 기호 정중앙 높이에서 칼같이 끊기도록 보정 */
+    width: 2.5px;         /* 굵기 보정 (기존보다 더 굵고 직관적으로 변경) */
+    background-color: #cbd5e1; /* 연한 회색/블루톤 선색상 */
   }
   
-  /* 대댓글 개별 스타일 */
+  /* 일반 대댓글 박스 배경색 */
   .chat-msg.reply-msg { 
-    background: #e9e9e7; /* 대댓글 기본 배경: 조금 진한 회색 */
+    background: #e9e9e7; 
     width: 100%;
   }
   
@@ -144,7 +144,7 @@
   .chat-pagination button:disabled { opacity: 0.3; cursor: default; }
   .chat-pagination .page-info { font-size: 11px; color: #888780; }
 
-  /* 입력 폼 및 답글 취소 바 */
+  /* 입력 창 및 답글 전환 알림 바 */
   .chat-input-area { display: flex; flex-direction: column; gap: 4px; width: 100%; margin-top: 4px; }
   
   .reply-target-bar { display: none; align-items: center; justify-content: space-between; background: #e2e8f0; padding: 6px 12px; border-radius: 8px; font-size: 11px; color: #475569; }
@@ -409,7 +409,7 @@ function tick(){
   }
 }
 
-// --- 일하기 싫다 ---
+// --- 일하기 싫다 시스템 ---
 const todayKST=new Date(new Date().getTime()+9*60*60*1000).toISOString().slice(0,10);
 const hateKey='clockout-hate-'+todayKST;
 const hateBtn=document.getElementById('hate-btn');
@@ -434,7 +434,7 @@ if(localStorage.getItem(hateKey)){hateBtn.textContent='퇴근하세요ㅋ';hateB
 hateBtn.addEventListener('click',pressHate);
 loadHate();
 
-// --- 점심 룰렛 ---
+// --- 점심 메뉴 선택 기능 ---
 const MENUS = [
   '김치찌개','된장찌개','순두부찌개','부대찌개','설렁탕','국밥','비빔밥','냉면',
   '삼겹살','제육볶음','닭갈비','갈비탕','육개장','삼계탕','도시락','쌈밥',
@@ -474,7 +474,7 @@ lunchBtn.addEventListener('click', ()=>{
   }, 80);
 });
 
-// --- 공지 사항 ---
+// --- 공지 사항 대시보드 ---
 const noticeWrap=document.getElementById('notice-wrap');
 const noticeInner=document.getElementById('notice-inner');
 const noticeEditBtn=document.getElementById('notice-edit-btn');
@@ -512,7 +512,7 @@ noticeEditBtn.addEventListener('click',async()=>{
   }catch(e){alert('저장 실패');}
 });
 
-// --- 익명 방명록 및 대댓글 계층 엔진 ---
+// --- 익명 방명록 렌더링 코어 모듈 ---
 const ANIMAL_EMOJI={
   "돼지":"🐷","다람쥐":"🐿️","펭귄":"🐧","햄스터":"🐹",
   "여우":"🦊","고래":"🐳","토끼":"🐰","부엉이":"🦉",
@@ -569,8 +569,9 @@ const PAGE_SIZE = 10;
 
 function escapeHtml(str){const div=document.createElement('div');div.textContent=str;return div.innerHTML;}
 
+// ⭐️ 메인 트리 구조 복합 구현부
 function renderPage(){
-  // 원글(부모가 없는 최상위 댓글)만 추출
+  // 원글(최상위 부모가 없는 순수 댓글)만 분류
   const rootMessages = allMessages.filter(m => m.parent_id === null || m.parent_id === undefined);
   const totalRoots = rootMessages.length;
   const totalPages = Math.ceil(totalRoots / PAGE_SIZE) || 1;
@@ -586,24 +587,24 @@ function renderPage(){
   
   chatMessagesEl.innerHTML='';
   
-  // 원글 기준 페이지네이션 자르기
+  // 원글을 페이지 크기만큼 슬라이싱
   const start = currentPage * PAGE_SIZE;
   const pageRoots = rootMessages.slice(start, start + PAGE_SIZE);
   
   pageRoots.forEach(root => {
-    // 하나의 원글과 하위 대댓글들을 품을 큰 묶음 그룹 생성
+    // 묶음 컴포넌트 박스 생성
     const threadGroup = document.createElement('div');
     threadGroup.className = 'chat-thread-group';
     
-    // 1. 원글 추가
+    // 1. 원글 주입
     const rootDiv = buildMessageDOM(root, false);
     threadGroup.appendChild(rootDiv);
     
-    // 2. 해당 원글에 달린 대댓글 목록 필터링 후 오름차순(시간순) 정렬
+    // 2. 해당 원글에 딸린 대댓글 리스트 추출 후 오름차순(시간순) 빌드
     const replies = allMessages.filter(m => m.parent_id === root.id).sort((a,b)=> a.id - b.id);
     
     if(replies.length > 0) {
-      // 대댓글 전체를 감싸서 세로선을 하나의 컴포넌트로 이어줄 컨테이너 박스 생성
+      // 대댓글 복합 덩어리 박스 생성 (이 태그 내부의 CSS에 정밀 보정된 수직 연결선이 적용됨)
       const replyContainer = document.createElement('div');
       replyContainer.className = 'reply-container';
       
@@ -624,12 +625,13 @@ function renderPage(){
   pageNextEl.disabled = currentPage >= totalPages - 1;
 }
 
+// 개별 DOM 노드 제작 매핑 함수
 function buildMessageDOM(m, isReply) {
   const displayNick=addEmojiToNickname(m.nickname);
   const mine=displayNick===myNickname;
   
   const div=document.createElement('div');
-  // mine 클래스가 들어가면 CSS 상에서 최우선 순위로 무조건 이쁜 하늘색 배경이 지정됨
+  // mine 매핑 클래스가 탑재되면 CSS 강제 우선권(!important)을 부여받아 무조건 하늘색 활성화
   div.className='chat-msg' + (mine?' mine':'') + (isReply?' reply-msg':'');
   
   const body=document.createElement('div');
@@ -638,8 +640,8 @@ function buildMessageDOM(m, isReply) {
   const sirenHtml=m.has_siren?`<span class="badge-siren-text">🚨경고</span>`:'';
   const boomHtml=m.has_boom?`<span class="badge-boom-text">👍붐업</span>`:'';
   
-  // 대댓글 마크업일 때만 닉네임 왼쪽에 단정하고 직관적인 'ㄴ' 화살표 처리
-  const replyArrow = isReply ? `<span style="color: #888780; margin-right: 4px; font-weight: bold; font-family: sans-serif;">ㄴ</span> ` : '';
+  // 대댓글 구분에 직관성을 높여주는 ㄴ 화살표 마크 기호 패스
+  const replyArrow = isReply ? `<span style="color: #64748b; margin-right: 5px; font-weight: bold; font-family: sans-serif;">ㄴ</span> ` : '';
   
   body.innerHTML=`
     <div class="chat-msg-top">
@@ -655,7 +657,7 @@ function buildMessageDOM(m, isReply) {
   `;
   div.appendChild(body);
   
-  // 관리자 기능 영역 패널
+  // 관리자 대시보드 권한 부여용 기능 패널
   if(isAdmin){
     const adminPanel=document.createElement('div');
     adminPanel.className='admin-panel';
