@@ -95,8 +95,8 @@
   }
   
   .chat-msg.mine { background: #E6F1FB !important; }
-  
-  .reply-container {
+  .chat-msg.reply-msg { background: #f0fdf9; }
+  .chat-msg.reply-msg.mine { background: #E6F1FB !important; }
     display: flex;
     flex-direction: column;
     gap: 6px;
@@ -609,7 +609,7 @@ function renderPage(){
 // 돔 주입 매핑 유틸리티
 function buildMessageDOM(m, isReply) {
   const displayNick=addEmojiToNickname(m.nickname);
-  const mine=displayNick===myNickname;
+  const mine=displayNick===myNickname || m.nickname===myNickname || addEmojiToNickname(m.nickname)===myNickname;
   
   const div=document.createElement('div');
   div.className='chat-msg' + (mine?' mine':'') + (isReply?' reply-msg':'');
