@@ -744,11 +744,13 @@ document.getElementById('admin-btn').addEventListener('click',()=>{
 async function loadGuestbook(){
   try{
     const res=await fetch('/api/guestbook');
+    if(!res.ok) throw new Error('HTTP '+res.status);
     const data=await res.json();
     allMessages=data.messages||[];
     renderPage();
   }catch(e){
-    chatMessagesEl.innerHTML='<div class="chat-empty">불러오기 실패. 새로고침 버튼을 눌러주세요.</div>';
+    console.error('loadGuestbook error:', e);
+    chatMessagesEl.innerHTML='<div class="chat-empty">불러오기 실패: '+e.message+'</div>';
   }
 }
 
