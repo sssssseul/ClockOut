@@ -231,3 +231,13 @@ def post_notice():
 
 if __name__ == '__main__':
     app.run()
+
+@app.route('/api/reset-likes', methods=['POST'])
+def reset_likes():
+    conn = get_db()
+    cur = conn.cursor()
+    cur.execute('UPDATE guestbook_likes SET count = 0')
+    conn.commit()
+    cur.close()
+    conn.close()
+    return jsonify({"ok": True})
