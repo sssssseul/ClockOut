@@ -59,6 +59,12 @@ def init_db():
         )
     ''')
     cur.execute('''
+        CREATE TABLE IF NOT EXISTS guestbook_likes (
+            msg_id INTEGER PRIMARY KEY,
+            count INTEGER DEFAULT 0
+        )
+    ''')
+    cur.execute('''
         CREATE TABLE IF NOT EXISTS admin_notice (
             id INTEGER PRIMARY KEY,
             text TEXT NOT NULL,
@@ -83,8 +89,13 @@ def api_nickname():
 def get_guestbook():
     conn = get_db()
     cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-    # 🆕 조회 필드에 parent_id 연동 추가 및 효율적 정렬을 위해 전체 목록 전송 (프론트에서 역정렬 가공)
-    cur.execute('SELECT id, nickname, text, ts, parent_id, has_siren, has_boom FROM guestbook ORDER BY id DESC LIMIT 300')
+    cur.execute('''
+        SELECT g.id, g.nickname, g.text, g.ts, g.parent_id, g.has_siren, g.has_boom,
+               COALESCE(l.count, 0) as likes
+        FROM guestbook g
+        LEFT JOIN guestbook_likes l ON g.id = l.msg_id
+        ORDER BY g.id DESC LIMIT 300
+    ''')
     rows = cur.fetchall()
     cur.close()
     conn.close()
@@ -130,7 +141,7 @@ def siren_guestbook(msg_id):
         return jsonify({"error": "unauthorized"}), 401
     conn = get_db()
     cur = conn.cursor()
-    cur.execute('UPDATE guestbook SET has_siren = TRUE WHERE id = %s', (msg_id,))
+    cur.execute('UPDATE guestbook SET has_siren = NOT has_siren, has_boom = FALSE WHERE id = %s', (msg_id,))
     conn.commit()
     cur.close()
     conn.close()
@@ -143,11 +154,26 @@ def boom_guestbook(msg_id):
         return jsonify({"error": "unauthorized"}), 401
     conn = get_db()
     cur = conn.cursor()
-    cur.execute('UPDATE guestbook SET has_boom = TRUE WHERE id = %s', (msg_id,))
+    cur.execute('UPDATE guestbook SET has_boom = NOT has_boom, has_siren = FALSE WHERE id = %s', (msg_id,))
     conn.commit()
     cur.close()
     conn.close()
     return jsonify({"ok": True})
+
+@app.route('/api/guestbook/<int:msg_id>/like', methods=['POST'])
+def like_guestbook(msg_id):
+    conn = get_db()
+    cur = conn.cursor()
+    cur.execute('''
+        INSERT INTO guestbook_likes (msg_id, count) VALUES (%s, 1)
+        ON CONFLICT (msg_id) DO UPDATE SET count = guestbook_likes.count + 1
+    ''', (msg_id,))
+    conn.commit()
+    cur.execute('SELECT count FROM guestbook_likes WHERE msg_id = %s', (msg_id,))
+    row = cur.fetchone()
+    cur.close()
+    conn.close()
+    return jsonify({"count": row[0] if row else 1})
 
 @app.route('/api/hate', methods=['GET'])
 def get_hate():
