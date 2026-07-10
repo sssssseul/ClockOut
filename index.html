@@ -639,7 +639,7 @@ function buildMessageDOM(m, isReply) {
       </div>
     </div>
   `;
-  const likeBtn = div.querySelector('.like-btn');
+  const likeBtn = body.querySelector('.like-btn');
   if(likeBtn){
     const likeKey = 'like-'+m.id;
     if(localStorage.getItem(likeKey)){
