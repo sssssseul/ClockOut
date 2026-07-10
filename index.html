@@ -639,8 +639,8 @@ function buildMessageDOM(m, isReply) {
       </div>
     </div>
   `;
-  // 좋아요 버튼 이벤트
-  div.querySelector('.like-btn').addEventListener('click', async(e)=>{
+  const likeBtn = div.querySelector('.like-btn');
+  if(likeBtn) likeBtn.addEventListener('click', async(e)=>{
     e.stopPropagation();
     try{
       const res=await fetch('/api/guestbook/'+m.id+'/like',{method:'POST'});
