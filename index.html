@@ -111,7 +111,10 @@
   .chat-msg-body { display: flex; flex-direction: column; width: 100%; gap: 6px; }
   .chat-msg-top { display: flex; justify-content: space-between; align-items: center; width: 100%; }
   .chat-msg-nick-group { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
-  .chat-msg-bottom { font-size: 12px; line-height: 1.4; color: #1a1a18; word-break: break-all; display: block; }
+  .chat-msg-bottom { font-size: 12px; line-height: 1.4; color: #1a1a18; word-break: break-all; display: flex; justify-content: space-between; align-items: flex-end; gap: 8px; }
+  .chat-msg-text { flex: 1; }
+  .like-btn { background: none; border: 1px solid #e0dfd8; border-radius: 99px; padding: 2px 8px; font-size: 10px; color: #888780; cursor: pointer; display: inline-flex; align-items: center; gap: 3px; font-family: 'Noto Sans KR', sans-serif; flex-shrink: 0; white-space: nowrap; }
+  .like-btn:hover { background: #f1efea; }
   .chat-msg .chat-msg-nick { color: #185FA5; font-weight: 500; }
   .chat-msg .chat-msg-time { color: #aaa; font-size: 10px; flex-shrink: 0; }
   
@@ -629,27 +632,37 @@ function buildMessageDOM(m, isReply) {
       <span class="chat-msg-time">${fmtChatTime(m.ts)}</span>
     </div>
     <div class="chat-msg-bottom">
-      <span>${escapeHtml(m.text)}</span>
-      ${!isReply ? `<button class="msg-action-btn" onclick="initReply(${m.id}, '${escapeHtml(displayNick)}')">답글</button>` : ''}
+      <span class="chat-msg-text">${escapeHtml(m.text)}</span>
+      <div style="display:flex;align-items:center;gap:6px;flex-shrink:0;">
+        ${!isReply ? `<button class="msg-action-btn" onclick="initReply(${m.id}, '${escapeHtml(displayNick)}')">답글</button>` : ''}
+        <button class="like-btn" data-id="${m.id}">👍${m.likes ? ' '+m.likes : ''}</button>
+      </div>
     </div>
   `;
+  // 좋아요 버튼 이벤트
+  body.querySelector('.like-btn').addEventListener('click', async(e)=>{
+    e.stopPropagation();
+    try{
+      const res=await fetch('/api/guestbook/'+m.id+'/like',{method:'POST'});
+      const data=await res.json();
+      e.currentTarget.textContent='👍'+(data.count ? ' '+data.count : '');
+    }catch(e){}
+  });
   div.appendChild(body);
-  
+
   if(isAdmin){
     const adminPanel=document.createElement('div');
     adminPanel.className='admin-panel';
-    if(!m.has_siren){
-      const sirenBtn=document.createElement('button');
-      sirenBtn.className='siren-btn';sirenBtn.textContent='🚨';
-      sirenBtn.addEventListener('click',()=>setSiren(m.id));
-      adminPanel.appendChild(sirenBtn);
-    }
-    if(!m.has_boom){
-      const boomBtn=document.createElement('button');
-      boomBtn.className='boom-btn';boomBtn.textContent='👍';
-      boomBtn.addEventListener('click',()=>setBoom(m.id));
-      adminPanel.appendChild(boomBtn);
-    }
+    const sirenBtn=document.createElement('button');
+    sirenBtn.className='siren-btn';
+    sirenBtn.textContent=m.has_siren?'🚨✕':'🚨';
+    sirenBtn.addEventListener('click',()=>setSiren(m.id));
+    adminPanel.appendChild(sirenBtn);
+    const boomBtn=document.createElement('button');
+    boomBtn.className='boom-btn';
+    boomBtn.textContent=m.has_boom?'👍✕':'👍';
+    boomBtn.addEventListener('click',()=>setBoom(m.id));
+    adminPanel.appendChild(boomBtn);
     const delBtn=document.createElement('button');
     delBtn.className='delete-btn';delBtn.textContent='🗑️';
     delBtn.addEventListener('click',()=>deleteMsg(m.id));
