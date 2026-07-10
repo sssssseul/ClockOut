@@ -640,14 +640,25 @@ function buildMessageDOM(m, isReply) {
     </div>
   `;
   const likeBtn = div.querySelector('.like-btn');
-  if(likeBtn) likeBtn.addEventListener('click', async(e)=>{
-    e.stopPropagation();
-    try{
-      const res=await fetch('/api/guestbook/'+m.id+'/like',{method:'POST'});
-      const data=await res.json();
-      e.currentTarget.textContent='👍'+(data.count ? ' '+data.count : '');
-    }catch(err){}
-  });
+  if(likeBtn){
+    const likeKey = 'like-'+m.id;
+    if(localStorage.getItem(likeKey)){
+      likeBtn.style.opacity='0.5';
+      likeBtn.style.cursor='default';
+    }
+    likeBtn.addEventListener('click', async(e)=>{
+      e.stopPropagation();
+      if(localStorage.getItem(likeKey)) return;
+      try{
+        const res=await fetch('/api/guestbook/'+m.id+'/like',{method:'POST'});
+        const data=await res.json();
+        e.currentTarget.textContent='👍'+(data.count ? ' '+data.count : '');
+        localStorage.setItem(likeKey, 'true');
+        e.currentTarget.style.opacity='0.5';
+        e.currentTarget.style.cursor='default';
+      }catch(err){}
+    });
+  }
   div.appendChild(body);
 
   if(isAdmin){
