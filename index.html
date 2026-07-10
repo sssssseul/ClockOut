@@ -640,13 +640,13 @@ function buildMessageDOM(m, isReply) {
     </div>
   `;
   // 좋아요 버튼 이벤트
-  body.querySelector('.like-btn').addEventListener('click', async(e)=>{
+  div.querySelector('.like-btn').addEventListener('click', async(e)=>{
     e.stopPropagation();
     try{
       const res=await fetch('/api/guestbook/'+m.id+'/like',{method:'POST'});
       const data=await res.json();
       e.currentTarget.textContent='👍'+(data.count ? ' '+data.count : '');
-    }catch(e){}
+    }catch(err){}
   });
   div.appendChild(body);
 
@@ -690,7 +690,9 @@ document.getElementById('cancel-reply-btn').addEventListener('click', () => {
 });
 
 async function setSiren(id){
-  if(!confirm('이 댓글에 🚨 경고 뱃지를 부여할까요?'))return;
+  const m = allMessages.find(x=>x.id===id);
+  const msg = m && m.has_siren ? '이 댓글의 🚨 경고를 취소할까요?' : '이 댓글에 🚨 경고 뱃지를 부여할까요?';
+  if(!confirm(msg))return;
   try{
     const res=await fetch('/api/guestbook/'+id+'/siren',{
       method:'POST',headers:{'Content-Type':'application/json'},
@@ -700,7 +702,9 @@ async function setSiren(id){
   }catch(e){alert('오류 발생');}
 }
 async function setBoom(id){
-  if(!confirm('이 댓글에 👍 붐업 뱃지를 부여할까요?'))return;
+  const m = allMessages.find(x=>x.id===id);
+  const msg = m && m.has_boom ? '이 댓글의 👍 붐업을 취소할까요?' : '이 댓글에 👍 붐업 뱃지를 부여할까요?';
+  if(!confirm(msg))return;
   try{
     const res=await fetch('/api/guestbook/'+id+'/boom',{
       method:'POST',headers:{'Content-Type':'application/json'},
