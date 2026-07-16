@@ -4,45 +4,47 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ClockOut</title>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text x=%2250%22 y=%2250%22 font-size=%2280%22 text-anchor=%22middle%22 dominant-baseline=%22central%22>🍀</text></svg>">
+<link rel="icon" href="https://raw.githubusercontent.com/sssssseul/ClockOut/main/lotso.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { background: #f5f5f3; font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif; display: flex; justify-content: center; align-items: flex-start; min-height: 100vh; padding: 2rem 1rem; }
+  body { background: #fdf0f5;
+  background-image: radial-gradient(circle, rgba(244,184,208,0.4) 1.5px, transparent 1.5px);
+  background-size: 36px 36px; font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif; display: flex; justify-content: center; align-items: flex-start; min-height: 100vh; padding: 2rem 1rem; }
   .wrap { width: 100%; max-width: 480px; }
   .cards { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px; align-items: stretch; }
-  .card { background: #fff; border: 0.5px solid #e0dfd8; border-radius: 12px; padding: 12px 14px; display: flex; flex-direction: column; min-width: 0; }
+  .card { background: #fff; border: 0.5px solid #f4c0d1; border-radius: 12px; padding: 12px 14px; display: flex; flex-direction: column; min-width: 0; }
   .card-full { grid-column: 1 / -1; }
   .card-label { font-size: 11px; color: #888780; margin-bottom: 6px; display: flex; align-items: center; gap: 5px; }
   .card-value { font-size: 24px; font-weight: 500; color: #1a1a18; font-variant-numeric: tabular-nums; letter-spacing: -1px; line-height: 1; }
-  .hate-btn { width: 100%; margin-top: 8px; padding: 5px 4px; background: #fff0f0; border: 1px solid #f4c0c0; border-radius: 8px; font-size: 10px; color: #c0392b; cursor: pointer; font-family: 'Noto Sans KR', sans-serif; font-weight: 500; }
+  .hate-btn { width: 100%; margin-top: 8px; padding: 5px 4px; background: #fce8f0; border: 1px solid #f4b8d0; border-radius: 8px; font-size: 10px; color: #993556; cursor: pointer; font-family: 'Noto Sans KR', sans-serif; font-weight: 500; }
   .hate-btn:active { background: #ffe0e0; }
   .hate-btn.pressed { background: #f5f5f5; border-color: #ddd; color: #aaa; cursor: default; }
-  .lunch-btn { width: 100%; margin-top: 8px; padding: 5px 4px; background: #f0fff4; border: 1px solid #9ae6b4; border-radius: 8px; font-size: 10px; color: #276749; cursor: pointer; font-family: 'Noto Sans KR', sans-serif; font-weight: 500; }
+  .lunch-btn { width: 100%; margin-top: 8px; padding: 5px 4px; background: #fce8f0; border: 1px solid #f4b8d0; border-radius: 8px; font-size: 10px; color: #993556; cursor: pointer; font-family: 'Noto Sans KR', sans-serif; font-weight: 500; }
   .lunch-btn.done { background: #f5f5f5; border-color: #ddd; color: #aaa; }
 
   .card-sub-row { display: flex; align-items: center; gap: 6px; margin-top: 4px; }
   .card-sub { font-size: 12px; color: #888780; }
   .muted { font-size: 16px; font-weight: 400; color: #888780; }
   .badge { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 99px; font-family: 'Noto Sans KR', sans-serif; }
-  .badge-work { background: #E6F1FB; color: #185FA5; }
-  .badge-done { background: #EAF3DE; color: #3B6D11; }
+  .badge-work { background: rgb(252,232,241); color: rgb(153,53,86); }
+  .badge-done { background: #fce8f0; color: #993556; }
   .badge-before { background: #FAEEDA; color: #854F0B; }
-  .badge-lunch { background: #f1efea; color: #5F5E5A; border: 0.5px solid #e0dfd8; }
-  .blocks-card { background: #fff; border: 0.5px solid #e0dfd8; border-radius: 12px; padding: 12px 14px; margin-bottom: 8px; }
+  .badge-lunch { background: #f1efea; color: #5F5E5A; border: 0.5px solid #f4c0d1; }
+  .blocks-card { background: #fff; border: 0.5px solid #f4c0d1; border-radius: 12px; padding: 12px 14px; margin-bottom: 8px; }
   .blocks-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
   .blocks-label { font-size: 11px; color: #888780; display: flex; align-items: center; gap: 5px; }
   .lunch-toggle label { font-size: 11px; color: #888780; cursor: pointer; display: flex; align-items: center; gap: 4px; }
   .lunch-toggle input[type="checkbox"] { appearance: none; -webkit-appearance: none; width: 12px; height: 12px; border: 1px solid #888780; border-radius: 3px; margin: 0; cursor: pointer; position: relative; flex-shrink: 0; }
-  .lunch-toggle input[type="checkbox"]:checked { background: #185FA5; border-color: #185FA5; }
+  .lunch-toggle input[type="checkbox"]:checked { background: rgb(153,53,86); border-color: rgb(153,53,86); }
   .lunch-toggle input[type="checkbox"]:checked::after { content: ''; position: absolute; left: 2px; top: 0px; width: 4px; height: 7px; border: 1.5px solid #fff; border-top: none; border-left: none; transform: rotate(45deg); }
   .blocks-wrap { display: grid; grid-template-columns: repeat(9, 1fr); gap: 4px; }
   .block { border-radius: 5px; height: 24px; }
   .block.done { background: #F4C0D1; border: 1px solid #993556; }
-  .block.current { background: #E6F1FB; border: 1px solid #185FA5; }
+  .block.current { background: rgb(252,232,241); border: 1px solid rgb(153,53,86); }
   .block.remaining { background: #f1efea; border: 1px solid #888780; opacity: 0.4; }
   .block.lunch { background: #D3D1C7; border: 1px solid #444441; }
   .block.lunch.done { background: #B4B2A9; border: 1px solid #2C2C2A; }
@@ -50,31 +52,32 @@
   .leg { display: flex; align-items: center; gap: 4px; font-size: 11px; color: #888780; }
   .leg-dot { width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0; }
   .dot-done { background: #F4C0D1; border: 1px solid #993556; }
-  .dot-current { background: #E6F1FB; border: 1px solid #185FA5; }
+  .dot-current { background: rgb(252,232,241); border: 1px solid rgb(153,53,86); }
   .dot-rem { background: #f1efea; border: 1px solid #888780; opacity: 0.4; }
   .dot-lunch { background: #D3D1C7; border: 1px solid #444441; }
-  .settings-card { background: #fff; border: 0.5px solid #e0dfd8; border-radius: 12px; padding: 12px 14px; margin-bottom: 8px; }
+  .settings-card { background: #fff; border: 0.5px solid #f4c0d1; border-radius: 12px; padding: 12px 14px; margin-bottom: 8px; }
   .settings-label { font-size: 11px; color: #888780; margin-bottom: 8px; display: flex; align-items: center; gap: 5px; }
   .preset-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
   .preset-option { position: relative; }
   .preset-option input[type="radio"] { position: absolute; opacity: 0; width: 100%; height: 100%; margin: 0; cursor: pointer; }
   .preset-option label { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; padding: 8px 4px; border: 1px solid #e0dfd8; border-radius: 8px; cursor: pointer; font-size: 10.5px; color: #888780; line-height: 1.3; text-align: center; font-family: 'Noto Sans KR', sans-serif; transition: all 0.15s; }
-  .preset-option input[type="radio"]:checked + label { border-color: #185FA5; background: #E6F1FB; color: #185FA5; font-weight: 500; }
-  .custom-card { background: #fff; border: 0.5px solid #e0dfd8; border-radius: 12px; padding: 12px 14px; display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+  .preset-option input[type="radio"]:checked + label { border-color: rgb(153,53,86); background: rgb(252,232,241); color: rgb(153,53,86); font-weight: 500; }
+  .custom-card { background: #fff; border: 0.5px solid #f4c0d1; border-radius: 12px; padding: 12px 14px; display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
   .custom-card label { font-size: 11px; color: #888780; white-space: nowrap; display: flex; align-items: center; gap: 4px; flex-shrink: 0; width: 38px; font-family: 'Noto Sans KR', sans-serif; }
-  .custom-card select { flex: 1; min-width: 0; font-size: 12px; color: #888780; border: 0.5px solid #e0dfd8; border-radius: 6px; padding: 4px 8px; background: #f9f9f7; outline: none; font-family: 'Noto Sans KR', sans-serif; cursor: pointer; }
-  .custom-card select:focus { border-color: #185FA5; }
+  .custom-card select { flex: 1; min-width: 0; font-size: 12px; color: #888780; border: 0.5px solid #f4c0d1; border-radius: 6px; padding: 4px 8px; background: #f9f9f7; outline: none; font-family: 'Noto Sans KR', sans-serif; cursor: pointer; }
+  .custom-card select:focus { border-color: rgb(153,53,86); }
   
   /* --- 방명록 대댓글 수직선 완벽 수정 시스템 --- */
-  .chat-card { background: #fff; border: 0.5px solid #e0dfd8; border-radius: 12px; padding: 12px 14px; margin-top: 8px; }
+  .chat-card { background: #fff; border: 0.5px solid #f4c0d1; border-radius: 12px; padding: 12px 14px; margin-top: 8px; }
   .chat-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; gap: 6px; }
-  .placard { background: #fffbe6; border: 1px dashed #e0c040; border-radius: 4px; padding: 0 20px; height: 32px; line-height: 32px; font-size: 11.5px; font-weight: 500; color: #5c4500; text-align: center; margin-bottom: 8px; }
+  .placard { font-size: 11.5px; font-weight: 500; color: #444441; text-align: center; margin-bottom: 8px; }
+  .placard span { background: linear-gradient(transparent 40%, rgba(255,150,180,0.5) 40%); padding: 0 2px; }
   .notice-wrap { background: #fff5f5; border: 1px dashed #fca5a5; border-radius: 4px; height: 32px; overflow: hidden; margin-bottom: 8px; display: none; position: relative; justify-content: center; align-items: center; box-shadow: 0 0 12px rgba(252,165,165,0.6), inset 0 0 12px rgba(252,165,165,0.2), 0 0 24px rgba(252,165,165,0.3); }
   .notice-inner { display: inline-block; white-space: nowrap; font-size: 11.5px; font-weight: 500; color: #7f1d1d; padding: 0 30px; animation: shake 0.8s ease-in-out infinite; }
   .notice-inner span { display: inline-block; vertical-align: middle; }
   .notice-edit-btn { position: absolute; right: 6px; top: 50%; transform: translateY(-50%); background: none; border: 1px solid #fca5a5; border-radius: 4px; color: #7f1d1d; font-size: 10px; padding: 1px 5px; cursor: pointer; display: none; }
   @keyframes shake { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-3px)} 40%{transform:translateX(3px)} 60%{transform:translateX(-2px)} 80%{transform:translateX(2px)} }
-  .chat-nickname { font-size: 11px; color: #185FA5; background: #E6F1FB; padding: 2px 8px; border-radius: 99px; font-family: 'Noto Sans KR', sans-serif; }
+  .chat-nickname { font-size: 11px; color: rgb(153,53,86); background: rgb(252,232,241); padding: 2px 8px; border-radius: 99px; font-family: 'Noto Sans KR', sans-serif; }
   .chat-messages { display: flex; flex-direction: column; margin-bottom: 8px; }
   .chat-thread-group { display: flex; flex-direction: column; gap: 6px; width: 100%; position: relative; margin-bottom: 6px; }
   .chat-thread-group:last-child { margin-bottom: 0; }
@@ -94,9 +97,9 @@
     width: 100%; 
   }
   
-  .chat-msg.mine { background: #E6F1FB !important; }
+  .chat-msg.mine { background: rgb(252,232,241) !important; }
   .chat-msg.reply-msg { background: #f0fdf9; }
-  .chat-msg.reply-msg.mine { background: #E6F1FB !important; }
+  .chat-msg.reply-msg.mine { background: rgb(252,232,241) !important; }
 
   .reply-container {
     display: flex;
@@ -115,7 +118,7 @@
   .chat-msg-text { flex: 1; }
   .like-btn { background: none; border: 1px solid #e0dfd8; border-radius: 99px; padding: 2px 8px; font-size: 10px; color: #888780; cursor: pointer; display: inline-flex; align-items: center; gap: 3px; font-family: 'Noto Sans KR', sans-serif; flex-shrink: 0; white-space: nowrap; }
   .like-btn:hover { background: #f1efea; }
-  .chat-msg .chat-msg-nick { color: #185FA5; font-weight: 500; }
+  .chat-msg .chat-msg-nick { color: rgb(153,53,86); font-weight: 500; }
   .chat-msg .chat-msg-time { color: #aaa; font-size: 10px; flex-shrink: 0; }
   
   .badge-siren-text { display: inline-flex; align-items: center; justify-content: center; background-color: #ffebeb; color: #e74c3c; font-size: 10px; font-weight: bold; padding: 2px 6px; border-radius: 99px; border: 1px solid #f9d5d5; line-height: 1; vertical-align: middle; }
@@ -125,7 +128,7 @@
   
   /* 페이지네이션 */
   .chat-pagination { display: flex; align-items: center; justify-content: space-between; margin: 12px 0 8px 0; }
-  .chat-pagination button { background: none; border: 0.5px solid #e0dfd8; border-radius: 6px; padding: 4px 10px; font-size: 11px; color: #888780; cursor: pointer; font-family: 'Noto Sans KR', sans-serif; }
+  .chat-pagination button { background: none; border: 0.5px solid #f4c0d1; border-radius: 6px; padding: 4px 10px; font-size: 11px; color: #888780; cursor: pointer; font-family: 'Noto Sans KR', sans-serif; }
   .chat-pagination button:hover { background: #f1efea; }
   .chat-pagination button:disabled { opacity: 0.3; cursor: default; }
   .chat-pagination .page-info { font-size: 11px; color: #888780; }
@@ -152,19 +155,19 @@
   }
   
   .chat-input-row { display: flex; gap: 6px; }
-  .chat-input-row input { flex: 1; min-width: 0; font-size: 12px; color: #5F5E5A; border: 0.5px solid #e0dfd8; border-radius: 6px; padding: 6px 10px; background: #f9f9f7; outline: none; font-family: 'Noto Sans KR', sans-serif; }
-  .chat-input-row input:focus { border-color: #185FA5; }
-  .chat-input-row button { background: #185FA5; color: #fff; border: none; border-radius: 6px; width: 32px; flex-shrink: 0; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-  .chat-input-row button:hover { background: #144d87; }
+  .chat-input-row input { flex: 1; min-width: 0; font-size: 12px; color: #5F5E5A; border: 0.5px solid #f4c0d1; border-radius: 6px; padding: 6px 10px; background: #f9f9f7; outline: none; font-family: 'Noto Sans KR', sans-serif; }
+  .chat-input-row input:focus { border-color: rgb(153,53,86); }
+  .chat-input-row button { background: rgb(153,53,86); color: #fff; border: none; border-radius: 6px; width: 32px; flex-shrink: 0; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+  .chat-input-row button:hover { background: rgb(120,30,65); }
   
-  .chat-refresh-btn { background: none; border: 0.5px solid #e0dfd8; border-radius: 6px; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #888780; }
+  .chat-refresh-btn { background: none; border: 0.5px solid #f4c0d1; border-radius: 6px; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #888780; }
   .chat-refresh-btn:hover { background: #f1efea; }
   
   .admin-panel { display: flex; align-items: center; gap: 4px; flex-shrink: 0; margin-left: 6px; }
-  .admin-btn { background: none; border: 0.5px solid #e0dfd8; border-radius: 6px; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 12px; }
+  .admin-btn { background: none; border: 0.5px solid #f4c0d1; border-radius: 6px; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 12px; }
   .admin-btn:hover { background: #f1efea; }
   
-  .msg-action-btn { background: none; border: none; cursor: pointer; font-size: 11px; color: #185FA5; padding: 0; font-family: 'Noto Sans KR', sans-serif; margin-left: 8px; font-weight: 500; }
+  .msg-action-btn { background: none; border: none; cursor: pointer; font-size: 11px; color: rgb(153,53,86); padding: 0; font-family: 'Noto Sans KR', sans-serif; margin-left: 8px; font-weight: 500; }
   .msg-action-btn:hover { text-decoration: underline; }
   .siren-btn, .boom-btn, .delete-btn { background: none; border: none; cursor: pointer; font-size: 12px; padding: 0 2px; }
   .delete-btn { color: #ccc; }
@@ -195,12 +198,12 @@
     <div class="card">
       <div class="card-label"><i class="ti ti-thumb-down" style="font-size:13px"></i> 일하기 싫은 사람</div>
       <div style="flex:1; margin-bottom:4px; display:flex; align-items:baseline; gap:2px;"><span class="card-value" id="hate-count">--</span><span class="muted" style="font-size:12px;"> 명</span></div>
-      <button class="hate-btn" id="hate-btn" style="margin-top:auto;">그건 바로 나 😩</button>
+      <button class="hate-btn" id="hate-btn" style="margin-top:auto;">그건 바로 나 <img src="https://raw.githubusercontent.com/sssssseul/ClockOut/main/lotso.png" style="width:14px;height:14px;vertical-align:middle;"></button>
     </div>
     <div class="card">
       <div class="card-label"><i class="ti ti-tools-kitchen-2" style="font-size:13px"></i> 오늘 뭐 먹지?</div>
       <div style="flex:1; margin-bottom:4px; display:flex; align-items:baseline; gap:4px;"><span class="card-value" id="lunch-result">?</span></div>
-      <button class="lunch-btn" id="lunch-btn" style="margin-top:auto;">돌려 돌려 😋</button>
+      <button class="lunch-btn" id="lunch-btn" style="margin-top:auto;">돌려 돌려 <img src="https://raw.githubusercontent.com/sssssseul/ClockOut/main/lotso.png" style="width:14px;height:14px;vertical-align:middle;"></button>
     </div>
   </div>
 
@@ -241,7 +244,7 @@
         <button id="chat-refresh" class="chat-refresh-btn"><i class="ti ti-refresh" style="font-size:13px"></i></button>
       </div>
     </div>
-    <div class="placard">📢 심한 욕 쓰면!!! 삭제해버립니다 !!!</div>
+    <div class="placard">🍓 <span>심한 욕 쓰면!!! 삭제해버립니다 !!!</span> 🍓</div>
     <div class="notice-wrap" id="notice-wrap">
       <div class="notice-inner" id="notice-inner"></div>
       <button class="notice-edit-btn" id="notice-edit-btn">✏️</button>
@@ -412,11 +415,11 @@ async function pressHate(){
     const data=await res.json();
     hateCount.textContent=data.count;
     localStorage.setItem(hateKey,'true');
-    hateBtn.textContent='퇴근하세요 ㅋ';
+    hateBtn.innerHTML='퇴근하세요ㅋ';
     hateBtn.classList.add('pressed');
   }catch(e){}
 }
-if(localStorage.getItem(hateKey)){hateBtn.textContent='퇴근하세요ㅋ';hateBtn.classList.add('pressed');}
+if(localStorage.getItem(hateKey)){hateBtn.innerHTML='퇴근하세요ㅋ';hateBtn.classList.add('pressed');}
 hateBtn.addEventListener('click',pressHate);
 loadHate();
 
@@ -798,5 +801,28 @@ tick();
 setInterval(tick,1000);
 ensureNickname().then(()=>{loadGuestbook();loadNotice();});
 </script>
+<style>
+@keyframes floatEmoji {
+  0%,100% { transform: translateY(0) rotate(0deg); }
+  33% { transform: translateY(-8px) rotate(5deg); }
+  66% { transform: translateY(-4px) rotate(-5deg); }
+}
+</style>
+<img src="https://raw.githubusercontent.com/sssssseul/ClockOut/main/lotso.png" style="position:fixed;bottom:-10px;right:-10px;width:130px;opacity:0.35;pointer-events:none;z-index:0;" />
+<img src="https://raw.githubusercontent.com/sssssseul/ClockOut/main/lotso2.png" style="position:fixed;bottom:-10px;left:-10px;width:150px;opacity:0.3;pointer-events:none;z-index:0;" />
+<div style="position:fixed;top:0;left:0;right:0;bottom:0;pointer-events:none;z-index:0;overflow:hidden;opacity:0.4;">
+  <span style="position:absolute;font-size:18px;top:5%;left:4%;animation:floatEmoji 5s ease-in-out infinite;animation-delay:0s;">🍓</span>
+  <span style="position:absolute;font-size:16px;top:8%;left:82%;animation:floatEmoji 4.5s ease-in-out infinite;animation-delay:0.5s;">🌼</span>
+  <span style="position:absolute;font-size:17px;top:18%;left:12%;animation:floatEmoji 6s ease-in-out infinite;animation-delay:1s;">🩷</span>
+  <span style="position:absolute;font-size:19px;top:12%;left:68%;animation:floatEmoji 5.5s ease-in-out infinite;animation-delay:1.5s;">🍓</span>
+  <span style="position:absolute;font-size:15px;top:35%;left:2%;animation:floatEmoji 4s ease-in-out infinite;animation-delay:0.8s;">🌼</span>
+  <span style="position:absolute;font-size:17px;top:40%;left:88%;animation:floatEmoji 5s ease-in-out infinite;animation-delay:0.3s;">🩷</span>
+  <span style="position:absolute;font-size:18px;top:55%;left:6%;animation:floatEmoji 6s ease-in-out infinite;animation-delay:1.2s;">🍓</span>
+  <span style="position:absolute;font-size:16px;top:60%;left:80%;animation:floatEmoji 4.5s ease-in-out infinite;animation-delay:0.7s;">🌼</span>
+  <span style="position:absolute;font-size:15px;top:75%;left:15%;animation:floatEmoji 5s ease-in-out infinite;animation-delay:1.8s;">🩷</span>
+  <span style="position:absolute;font-size:17px;top:20%;left:90%;animation:floatEmoji 5.5s ease-in-out infinite;animation-delay:0.4s;">🍓</span>
+  <span style="position:absolute;font-size:18px;top:80%;left:70%;animation:floatEmoji 4s ease-in-out infinite;animation-delay:1s;">🌼</span>
+  <span style="position:absolute;font-size:16px;top:45%;left:50%;animation:floatEmoji 6s ease-in-out infinite;animation-delay:0.6s;">🩷</span>
+</div>
 </body>
 </html>
