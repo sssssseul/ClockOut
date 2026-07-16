@@ -74,13 +74,14 @@
   .placard span { background: linear-gradient(transparent 40%, rgba(255,150,180,0.5) 40%); padding: 0 2px; }
   .notice-wrap { background: transparent; border: none; height: auto; overflow: visible; margin-bottom: 8px; display: none; position: relative; text-align: center; box-shadow: none; }
   .lotso-img { position: fixed; pointer-events: none; z-index: 0; opacity: 0.35; }
-  .lotso-img2 { position: fixed; pointer-events: none; z-index: 0; opacity: 0.3; display: none; }
+  .lotso-img2 { position: fixed; pointer-events: none; z-index: 0; opacity: 0.3; }
   @media (min-width: 600px) {
     .lotso-img { width: 160px; bottom: 20px; right: calc(50% - 560px); }
     .lotso-img2 { display: block; width: 140px; top: 30%; left: calc(50% - 580px); }
   }
   @media (max-width: 599px) {
     .lotso-img { width: 130px; bottom: 20px; right: 10px; }
+    .lotso-img2 { display: block; width: 100px; top: 10px; left: 10px; }
   }
   .notice-inner { display: inline-block; white-space: nowrap; font-size: 13px; font-weight: 400; color: #1a1a18; padding: 0; animation: shake 0.8s ease-in-out infinite; }
   .notice-inner span { display: inline-block; vertical-align: middle; background: linear-gradient(transparent 38%, rgba(255,150,180,0.55) 38%); padding: 0 3px; }
@@ -810,7 +811,7 @@ ensureNickname().then(()=>{loadGuestbook();loadNotice();});
 }
 </style>
 <img src="https://raw.githubusercontent.com/sssssseul/ClockOut/main/lotso2.png" class="lotso-img" />
-<img src="https://raw.githubusercontent.com/sssssseul/ClockOut/main/lotso2.png" class="lotso-img2" />
+<img src="https://raw.githubusercontent.com/sssssseul/ClockOut/main/lotso.png" class="lotso-img2" />
 <div style="position:fixed;top:0;left:0;right:0;bottom:0;pointer-events:none;z-index:0;overflow:hidden;opacity:0.4;">
   <span style="position:absolute;font-size:18px;top:5%;left:5%;animation:floatEmoji 5s ease-in-out infinite;animation-delay:0s;">🍓</span>
   <span style="position:absolute;font-size:16px;top:8%;left:25%;animation:floatEmoji 4.5s ease-in-out infinite;animation-delay:0.5s;">🌼</span>
