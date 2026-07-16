@@ -8,14 +8,20 @@ DATABASE_URL = os.environ.get('DATABASE_URL')
 
 ADJ = ["졸린", "배고픈", "신난", "지친", "느긋한", "용감한", "조용한", "엉뚱한",
        "행복한", "느린", "빠른", "수줍은", "단호한", "차분한", "엉성한", "튼튼한",
-       "졸음많은", "커피사랑", "야근싫은", "퇴근직전"]
+       "졸음많은", "커피사랑", "야근싫은", "퇴근직전", "눈치없는", "진지한",
+       "귀여운", "어색한", "당당한", "얼떨떨한", "배부른", "야식원하는", "몽롱한",
+       "멍한", "설레는", "긴장한", "뻔뻔한", "소심한", "활발한", "수상한",
+       "낯선", "외로운", "신중한", "게으른", "부지런한"]
 
 ANIMAL_EMOJI = {
     "돼지": "🐷", "다람쥐": "🐿️", "펭귄": "🐧", "햄스터": "🐹",
     "여우": "🦊", "고래": "🐳", "토끼": "🐰", "부엉이": "🦉",
     "거북이": "🐢", "수달": "🦦", "코알라": "🐨", "사자": "🦁",
     "너구리": "🦝", "오리": "🦆", "곰": "🐻", "강아지": "🐶",
-    "물개": "🦭", "기린": "🦒", "판다": "🐼", "라마": "🦙"
+    "물개": "🦭", "기린": "🦒", "판다": "🐼", "라마": "🦙",
+    "문어": "🐙", "고슴도치": "🦔", "플라밍고": "🦩", "악어": "🐊",
+    "얼룩말": "🦓", "하마": "🦛", "캥거루": "🦘", "공작": "🦚",
+    "두루미": "🦢", "앵무새": "🦜", "낙타": "🐫", "미어캣": "🐾"
 }
 NOUN = list(ANIMAL_EMOJI.keys())
 
@@ -83,6 +89,19 @@ def index():
 
 @app.route('/api/nickname')
 def api_nickname():
+    conn = get_db()
+    cur = conn.cursor()
+    cur.execute('SELECT DISTINCT nickname FROM guestbook')
+    used = set(row[0] for row in cur.fetchall())
+    cur.close()
+    conn.close()
+    for _ in range(100):
+        adj = random.choice(ADJ)
+        noun = random.choice(NOUN)
+        nickname = ANIMAL_EMOJI[noun] + " " + adj + " " + noun
+        if nickname not in used:
+            return jsonify({"nickname": nickname})
+    # 모두 사용된 경우 그냥 랜덤 반환
     return jsonify({"nickname": gen_nickname()})
 
 @app.route('/api/guestbook', methods=['GET'])
