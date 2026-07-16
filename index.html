@@ -640,7 +640,7 @@ function buildMessageDOM(m, isReply) {
       <span class="chat-msg-text">${escapeHtml(m.text)}</span>
       <div style="display:flex;align-items:center;gap:6px;flex-shrink:0;">
         ${!isReply ? `<button class="msg-action-btn" onclick="initReply(${m.id}, '${escapeHtml(displayNick)}')">답글</button>` : ''}
-        <button class="like-btn" data-id="${m.id}">👍${m.likes ? ' '+m.likes : ''}</button>
+        <button class="like-btn" data-id="${m.id}"><img src="https://raw.githubusercontent.com/sssssseul/ClockOut/main/lotso.png" style="width:13px;height:13px;vertical-align:middle;">${m.likes ? ' '+m.likes : ''}</button>
       </div>
     </div>
   `;
@@ -690,7 +690,7 @@ chatMessagesEl.addEventListener('click', async(e)=>{
   try{
     const res = await fetch('/api/guestbook/'+id+'/like', {method:'POST'});
     const data = await res.json();
-    btn.textContent = '👍'+(data.count ? ' '+data.count : '');
+    btn.innerHTML = '<img src="https://raw.githubusercontent.com/sssssseul/ClockOut/main/lotso.png" style="width:13px;height:13px;vertical-align:middle;">'+(data.count ? ' '+data.count : '');
     localStorage.setItem(likeKey, 'true');
     btn.style.opacity = '0.5';
     btn.style.cursor = 'default';
