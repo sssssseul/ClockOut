@@ -487,7 +487,7 @@ async function loadNotice(){
   }catch(e){}
 }
 noticeEditBtn.addEventListener('click',async()=>{
-  const current=noticeInner.textContent.replace('🌼00A0','').replace(/\u00A0/g,' ').trim();
+  const current=noticeInner.textContent.replace(/^🌼\s*/,'').replace(/\s*🌼$/,'').trim();
   const newText=prompt('공지 입력 (비우면 삭제):',current);
   if(newText===null)return;
   try{
