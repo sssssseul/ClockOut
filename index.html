@@ -72,7 +72,7 @@
   .chat-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; gap: 6px; }
   .placard { font-size: 11.5px; font-weight: 500; color: #444441; text-align: center; margin-bottom: 8px; }
   .placard span { background: linear-gradient(transparent 40%, rgba(255,150,180,0.5) 40%); padding: 0 2px; }
-  .notice-wrap { background: #fff5f5; border: 1px dashed #fca5a5; border-radius: 4px; height: 32px; overflow: hidden; margin-bottom: 8px; display: none; position: relative; justify-content: center; align-items: center; box-shadow: 0 0 12px rgba(252,165,165,0.6), inset 0 0 12px rgba(252,165,165,0.2), 0 0 24px rgba(252,165,165,0.3); }
+  .notice-wrap { background: #fff5f5; border: none; border-radius: 4px; height: 32px; overflow: hidden; margin-bottom: 8px; display: none; position: relative; justify-content: center; align-items: center; box-shadow: 0 0 12px rgba(252,165,165,0.6), inset 0 0 12px rgba(252,165,165,0.2), 0 0 24px rgba(252,165,165,0.3); }
   .notice-inner { display: inline-block; white-space: nowrap; font-size: 11.5px; font-weight: 500; color: #7f1d1d; padding: 0 30px; animation: shake 0.8s ease-in-out infinite; }
   .notice-inner span { display: inline-block; vertical-align: middle; }
   .notice-edit-btn { position: absolute; right: 6px; top: 50%; transform: translateY(-50%); background: none; border: 1px solid #fca5a5; border-radius: 4px; color: #7f1d1d; font-size: 10px; padding: 1px 5px; cursor: pointer; display: none; }
@@ -98,7 +98,7 @@
   }
   
   .chat-msg.mine { background: rgb(252,232,241) !important; }
-  .chat-msg.reply-msg { background: #f0fdf9; }
+  .chat-msg.reply-msg { background: #fffde7; }
   .chat-msg.reply-msg.mine { background: rgb(252,232,241) !important; }
 
   .reply-container {
@@ -808,20 +808,20 @@ ensureNickname().then(()=>{loadGuestbook();loadNotice();});
   66% { transform: translateY(-4px) rotate(-5deg); }
 }
 </style>
-<img src="https://raw.githubusercontent.com/sssssseul/ClockOut/main/lotso2.png" style="position:fixed;bottom:-10px;right:-10px;width:150px;opacity:0.3;pointer-events:none;z-index:0;" />
+<img src="https://raw.githubusercontent.com/sssssseul/ClockOut/main/lotso2.png" style="position:fixed;bottom:-10px;right:calc(50% - 480px/2 - 160px);width:150px;opacity:0.3;pointer-events:none;z-index:0;" />
 <div style="position:fixed;top:0;left:0;right:0;bottom:0;pointer-events:none;z-index:0;overflow:hidden;opacity:0.4;">
-  <span style="position:absolute;font-size:18px;top:5%;left:4%;animation:floatEmoji 5s ease-in-out infinite;animation-delay:0s;">🍓</span>
-  <span style="position:absolute;font-size:16px;top:8%;left:82%;animation:floatEmoji 4.5s ease-in-out infinite;animation-delay:0.5s;">🌼</span>
-  <span style="position:absolute;font-size:17px;top:18%;left:12%;animation:floatEmoji 6s ease-in-out infinite;animation-delay:1s;">🩷</span>
-  <span style="position:absolute;font-size:19px;top:12%;left:68%;animation:floatEmoji 5.5s ease-in-out infinite;animation-delay:1.5s;">🍓</span>
-  <span style="position:absolute;font-size:15px;top:35%;left:2%;animation:floatEmoji 4s ease-in-out infinite;animation-delay:0.8s;">🌼</span>
-  <span style="position:absolute;font-size:17px;top:40%;left:88%;animation:floatEmoji 5s ease-in-out infinite;animation-delay:0.3s;">🩷</span>
-  <span style="position:absolute;font-size:18px;top:55%;left:6%;animation:floatEmoji 6s ease-in-out infinite;animation-delay:1.2s;">🍓</span>
-  <span style="position:absolute;font-size:16px;top:60%;left:80%;animation:floatEmoji 4.5s ease-in-out infinite;animation-delay:0.7s;">🌼</span>
-  <span style="position:absolute;font-size:15px;top:75%;left:15%;animation:floatEmoji 5s ease-in-out infinite;animation-delay:1.8s;">🩷</span>
-  <span style="position:absolute;font-size:17px;top:20%;left:90%;animation:floatEmoji 5.5s ease-in-out infinite;animation-delay:0.4s;">🍓</span>
-  <span style="position:absolute;font-size:18px;top:80%;left:70%;animation:floatEmoji 4s ease-in-out infinite;animation-delay:1s;">🌼</span>
-  <span style="position:absolute;font-size:16px;top:45%;left:50%;animation:floatEmoji 6s ease-in-out infinite;animation-delay:0.6s;">🩷</span>
+  <span style="position:absolute;font-size:18px;top:5%;left:20%;animation:floatEmoji 5s ease-in-out infinite;animation-delay:0s;">🍓</span>
+  <span style="position:absolute;font-size:16px;top:8%;left:75%;animation:floatEmoji 4.5s ease-in-out infinite;animation-delay:0.5s;">🌼</span>
+  <span style="position:absolute;font-size:17px;top:18%;left:30%;animation:floatEmoji 6s ease-in-out infinite;animation-delay:1s;">🩷</span>
+  <span style="position:absolute;font-size:19px;top:12%;left:60%;animation:floatEmoji 5.5s ease-in-out infinite;animation-delay:1.5s;">🍓</span>
+  <span style="position:absolute;font-size:15px;top:35%;left:15%;animation:floatEmoji 4s ease-in-out infinite;animation-delay:0.8s;">🌼</span>
+  <span style="position:absolute;font-size:17px;top:40%;left:80%;animation:floatEmoji 5s ease-in-out infinite;animation-delay:0.3s;">🩷</span>
+  <span style="position:absolute;font-size:18px;top:55%;left:22%;animation:floatEmoji 6s ease-in-out infinite;animation-delay:1.2s;">🍓</span>
+  <span style="position:absolute;font-size:16px;top:60%;left:70%;animation:floatEmoji 4.5s ease-in-out infinite;animation-delay:0.7s;">🌼</span>
+  <span style="position:absolute;font-size:15px;top:75%;left:35%;animation:floatEmoji 5s ease-in-out infinite;animation-delay:1.8s;">🩷</span>
+  <span style="position:absolute;font-size:17px;top:25%;left:50%;animation:floatEmoji 5.5s ease-in-out infinite;animation-delay:0.4s;">🍓</span>
+  <span style="position:absolute;font-size:18px;top:80%;left:65%;animation:floatEmoji 4s ease-in-out infinite;animation-delay:1s;">🌼</span>
+  <span style="position:absolute;font-size:16px;top:45%;left:45%;animation:floatEmoji 6s ease-in-out infinite;animation-delay:0.6s;">🩷</span>
 </div>
 </body>
 </html>
