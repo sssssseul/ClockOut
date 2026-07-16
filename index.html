@@ -72,7 +72,7 @@
   .chat-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; gap: 6px; }
   .placard { font-size: 11.5px; font-weight: 500; color: #444441; text-align: center; margin-bottom: 8px; }
   .placard span { background: linear-gradient(transparent 40%, rgba(255,150,180,0.5) 40%); padding: 0 2px; }
-  .notice-wrap { background: #fff5f5; border: none; border-radius: 4px; height: 32px; overflow: hidden; margin-bottom: 8px; display: none; justify-content: center; align-items: center; box-shadow: 0 0 12px rgba(252,165,165,0.6), inset 0 0 12px rgba(252,165,165,0.2), 0 0 24px rgba(252,165,165,0.3); }
+  .notice-wrap { background: #fff5f5; border: none; border-radius: 4px; height: 26px; overflow: hidden; margin-bottom: 8px; display: none; position: relative; justify-content: center; align-items: center; box-shadow: 0 0 12px rgba(252,165,165,0.6), inset 0 0 12px rgba(252,165,165,0.2), 0 0 24px rgba(252,165,165,0.3); }
   .lotso-img { position: fixed; pointer-events: none; z-index: 0; opacity: 0.35; }
   @media (min-width: 600px) {
     .lotso-img { width: 160px; bottom: 20px; right: calc(50% - 560px); }
@@ -82,7 +82,7 @@
   }
   .notice-inner { display: inline-block; white-space: nowrap; font-size: 11.5px; font-weight: 500; color: #444441; padding: 0 30px; animation: shake 0.8s ease-in-out infinite; }
   .notice-inner span { display: inline-block; vertical-align: middle; }
-  .notice-edit-btn { background: none; border: 1px solid #fca5a5; border-radius: 4px; color: #7f1d1d; font-size: 10px; padding: 2px 8px; cursor: pointer; display: none; }
+  .notice-edit-btn { position: absolute; right: 6px; top: 50%; transform: translateY(-50%); background: none; border: none; color: #7f1d1d; font-size: 13px; padding: 0; cursor: pointer; display: none; }
   @keyframes shake { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-3px)} 40%{transform:translateX(3px)} 60%{transform:translateX(-2px)} 80%{transform:translateX(2px)} }
   .chat-nickname { font-size: 11px; color: rgb(153,53,86); background: rgb(252,232,241); padding: 2px 8px; border-radius: 99px; font-family: 'Noto Sans KR', sans-serif; }
   .chat-messages { display: flex; flex-direction: column; margin-bottom: 8px; }
@@ -255,9 +255,7 @@
     <div class="placard">🍓 <span>심한 욕 쓰면!!! 삭제해버립니다 !!!</span> 🍓</div>
     <div class="notice-wrap" id="notice-wrap">
       <div class="notice-inner" id="notice-inner"></div>
-    </div>
-    <div style="text-align:right; margin-top:-6px; margin-bottom:6px;">
-      <button class="notice-edit-btn" id="notice-edit-btn">✏️ 공지 수정</button>
+      <button class="notice-edit-btn" id="notice-edit-btn">✏️</button>
     </div>
     
     <div class="chat-messages" id="chat-messages"></div>
