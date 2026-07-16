@@ -60,8 +60,8 @@
   .preset-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
   .preset-option { position: relative; }
   .preset-option input[type="radio"] { position: absolute; opacity: 0; width: 100%; height: 100%; margin: 0; cursor: pointer; }
-  .preset-option label { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; padding: 8px 4px; border: 1px solid #e0dfd8; border-radius: 8px; cursor: pointer; font-size: 10.5px; color: #888780; line-height: 1.3; text-align: center; font-family: 'Noto Sans KR', sans-serif; transition: all 0.15s; }
-  .preset-option input[type="radio"]:checked + label { border-color: rgb(153,53,86); background: rgb(252,232,241); color: rgb(153,53,86); font-weight: 500; }
+  .preset-option label { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; padding: 8px 4px; border: 1px solid #f4c0d1; border-radius: 8px; cursor: pointer; font-size: 10.5px; color: #888780; line-height: 1.3; text-align: center; font-family: 'Noto Sans KR', sans-serif; transition: all 0.15s; }
+  .preset-option input[type="radio"]:checked + label { border-color: #f4c0d1; background: rgb(252,232,241); color: rgb(153,53,86); font-weight: 500; }
   .custom-card { background: #fff; border: 0.5px solid #f4c0d1; border-radius: 12px; padding: 12px 14px; display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
   .custom-card label { font-size: 11px; color: #888780; white-space: nowrap; display: flex; align-items: center; gap: 4px; flex-shrink: 0; width: 38px; font-family: 'Noto Sans KR', sans-serif; }
   .custom-card select { flex: 1; min-width: 0; font-size: 12px; color: #888780; border: 0.5px solid #f4c0d1; border-radius: 6px; padding: 4px 8px; background: #f9f9f7; outline: none; font-family: 'Noto Sans KR', sans-serif; cursor: pointer; }
@@ -78,7 +78,7 @@
     .lotso-img { width: 160px; bottom: 20px; right: calc(50% - 560px); }
   }
   @media (max-width: 599px) {
-    .lotso-img { width: 130px; bottom: 60px; right: -10px; }
+    .lotso-img { width: 130px; bottom: 20px; right: 10px; }
   }
   .notice-inner { display: inline-block; white-space: nowrap; font-size: 11.5px; font-weight: 500; color: #444441; padding: 0; animation: shake 0.8s ease-in-out infinite; }
   .notice-inner span { display: inline-block; vertical-align: middle; background: linear-gradient(transparent 40%, rgba(255,150,180,0.5) 40%); padding: 0 2px; }
@@ -113,9 +113,10 @@
     flex-direction: column;
     gap: 6px;
     margin-top: 0;
+    margin-left: 16px;
     padding-left: 14px;
     border-left: 2px solid #e0dfd8;
-    width: 100%;
+    width: calc(100% - 16px);
   }
   
   .chat-msg-body { display: flex; flex-direction: column; width: 100%; gap: 6px; }
@@ -475,16 +476,7 @@ const noticeWrap=document.getElementById('notice-wrap');
 const noticeInner=document.getElementById('notice-inner');
 const noticeEditBtn=document.getElementById('notice-edit-btn');
 function buildMarquee(text){
-  noticeInner.innerHTML='';
   noticeInner.innerHTML = '🌼 <span>' + escapeHtml(text) + '</span> 🌼';
-  let delay=0;
-  chars.forEach(ch=>{
-    const span=document.createElement('span');
-    span.textContent=ch===' '?'\u00A0':ch;
-    span.style.animationDelay=delay+'s';
-    noticeInner.appendChild(span);
-    if(ch!==' ')delay+=0.07;
-  });
 }
 async function loadNotice(){
   try{
