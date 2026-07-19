@@ -8,20 +8,14 @@ DATABASE_URL = os.environ.get('DATABASE_URL')
 
 ADJ = ["졸린", "배고픈", "신난", "지친", "느긋한", "용감한", "조용한", "엉뚱한",
        "행복한", "느린", "빠른", "수줍은", "단호한", "차분한", "엉성한", "튼튼한",
-       "졸음많은", "커피사랑", "야근싫은", "퇴근직전", "눈치없는", "진지한",
-       "귀여운", "어색한", "당당한", "얼떨떨한", "배부른", "야식원하는", "몽롱한",
-       "멍한", "설레는", "긴장한", "뻔뻔한", "소심한", "활발한", "수상한",
-       "낯선", "외로운", "신중한", "게으른", "부지런한"]
+       "졸음많은", "커피사랑", "야근싫은", "퇴근직전"]
 
 ANIMAL_EMOJI = {
     "돼지": "🐷", "다람쥐": "🐿️", "펭귄": "🐧", "햄스터": "🐹",
     "여우": "🦊", "고래": "🐳", "토끼": "🐰", "부엉이": "🦉",
     "거북이": "🐢", "수달": "🦦", "코알라": "🐨", "사자": "🦁",
     "너구리": "🦝", "오리": "🦆", "곰": "🐻", "강아지": "🐶",
-    "물개": "🦭", "기린": "🦒", "판다": "🐼", "라마": "🦙",
-    "문어": "🐙", "고슴도치": "🦔", "플라밍고": "🦩", "악어": "🐊",
-    "얼룩말": "🦓", "하마": "🦛", "캥거루": "🦘", "공작": "🦚",
-    "두루미": "🦢", "앵무새": "🦜", "낙타": "🐫", "미어캣": "🐾"
+    "물개": "🦭", "기린": "🦒", "판다": "🐼", "라마": "🦙"
 }
 NOUN = list(ANIMAL_EMOJI.keys())
 
@@ -89,19 +83,6 @@ def index():
 
 @app.route('/api/nickname')
 def api_nickname():
-    conn = get_db()
-    cur = conn.cursor()
-    cur.execute('SELECT DISTINCT nickname FROM guestbook')
-    used = set(row[0] for row in cur.fetchall())
-    cur.close()
-    conn.close()
-    for _ in range(100):
-        adj = random.choice(ADJ)
-        noun = random.choice(NOUN)
-        nickname = ANIMAL_EMOJI[noun] + " " + adj + " " + noun
-        if nickname not in used:
-            return jsonify({"nickname": nickname})
-    # 모두 사용된 경우 그냥 랜덤 반환
     return jsonify({"nickname": gen_nickname()})
 
 @app.route('/api/guestbook', methods=['GET'])
@@ -141,13 +122,24 @@ def post_guestbook():
 
 @app.route('/api/guestbook/<int:msg_id>', methods=['DELETE'])
 def delete_guestbook(msg_id):
-    pw = request.get_json(force=True).get('password', '')
-    if pw != '0530':
-        return jsonify({"error": "unauthorized"}), 401
+    data = request.get_json(force=True)
+    pw = data.get("password", "")
+    is_owner = data.get("isOwner", False)
+    nickname = data.get("nickname", "")
     conn = get_db()
     cur = conn.cursor()
-    # 부모 글 삭제 시 자식 대댓글도 함께 밀어버리도록 설계
-    cur.execute('DELETE FROM guestbook WHERE id = %s OR parent_id = %s', (msg_id, msg_id))
+    if is_owner and nickname:
+        cur.execute("SELECT nickname FROM guestbook WHERE id = %s", (msg_id,))
+        row = cur.fetchone()
+        if not row or row[0] != nickname:
+            cur.close(); conn.close()
+            return jsonify({"error": "unauthorized"}), 401
+        cur.execute("DELETE FROM guestbook WHERE id = %s", (msg_id,))
+    elif pw == "0530":
+        cur.execute("DELETE FROM guestbook WHERE id = %s OR parent_id = %s", (msg_id, msg_id))
+    else:
+        cur.close(); conn.close()
+        return jsonify({"error": "unauthorized"}), 401
     conn.commit()
     cur.close()
     conn.close()
@@ -250,3 +242,26 @@ def post_notice():
 
 if __name__ == '__main__':
     app.run()
+
+
+@app.route('/api/guestbook/<int:msg_id>/edit', methods=['POST'])
+def edit_guestbook(msg_id):
+    data = request.get_json(force=True)
+    nickname = (data.get('nickname') or '').strip()
+    text = (data.get('text') or '').strip()[:200]
+    if not text:
+        return jsonify({"error": "empty"}), 400
+    conn = get_db()
+    cur = conn.cursor()
+    # 본인 닉네임 확인
+    cur.execute('SELECT nickname FROM guestbook WHERE id = %s', (msg_id,))
+    row = cur.fetchone()
+    if not row or row[0] != nickname:
+        cur.close()
+        conn.close()
+        return jsonify({"error": "unauthorized"}), 401
+    cur.execute('UPDATE guestbook SET text = %s WHERE id = %s', (text, msg_id))
+    conn.commit()
+    cur.close()
+    conn.close()
+    return jsonify({"ok": True})
