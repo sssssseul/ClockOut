@@ -126,6 +126,16 @@
   .chat-msg-top { display: flex; justify-content: space-between; align-items: center; width: 100%; }
   .chat-msg-nick-group { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
   .chat-msg-bottom { font-size: 12px; line-height: 1.4; color: #1a1a18; word-break: break-all; display: flex; justify-content: space-between; align-items: flex-end; gap: 8px; }
+  .my-actions { display: flex; align-items: center; gap: 3px; }
+  .my-edit-btn { background: none; border: none; font-size: 11px; color: #ccc; cursor: pointer; padding: 0; line-height: 1; }
+  .my-edit-btn:hover { color: #993556; }
+  .my-del-btn { background: none; border: none; font-size: 11px; color: #ccc; cursor: pointer; padding: 0; line-height: 1; }
+  .my-del-btn:hover { color: #e05a5a; }
+  .edit-mode-wrap { background: rgb(252,232,241); border-radius: 8px; padding: 8px 10px; }
+  .edit-mode-input { width: 100%; font-size: 12px; border: 1px solid #f4b8d0; border-radius: 6px; padding: 6px 8px; font-family: 'Noto Sans KR', sans-serif; resize: none; outline: none; background: #fff; box-sizing: border-box; }
+  .edit-mode-actions { display: flex; gap: 6px; margin-top: 6px; justify-content: flex-end; }
+  .edit-save-btn { background: #993556; color: #fff; border: none; border-radius: 6px; padding: 4px 12px; font-size: 10px; cursor: pointer; font-family: 'Noto Sans KR', sans-serif; }
+  .edit-cancel-btn { background: none; border: 1px solid #e0dfd8; border-radius: 6px; padding: 4px 12px; font-size: 10px; color: #888780; cursor: pointer; font-family: 'Noto Sans KR', sans-serif; }
   .chat-msg-text { flex: 1; }
   .like-btn { background: none; border: 1px solid #e0dfd8; border-radius: 99px; padding: 2px 8px; font-size: 10px; color: #888780; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 3px; font-family: 'Noto Sans KR', sans-serif; flex-shrink: 0; min-width: 36px; }
   .like-btn:hover { background: #f1efea; }
@@ -642,11 +652,58 @@ function buildMessageDOM(m, isReply) {
     <div class="chat-msg-bottom">
       <span class="chat-msg-text">${escapeHtml(m.text)}</span>
       <div style="display:flex;align-items:center;gap:6px;flex-shrink:0;">
+        ${mine ? `<div class="my-actions"><button class="my-edit-btn">✏️</button><button class="my-del-btn">🗑️</button></div>` : ''}
         ${!isReply ? `<button class="msg-action-btn" onclick="initReply(${m.id}, '${escapeHtml(displayNick)}')">답글</button>` : ''}
         <button class="like-btn" data-id="${m.id}"><img src="https://raw.githubusercontent.com/sssssseul/ClockOut/main/lotso.png" style="width:13px;height:13px;vertical-align:middle;">${m.likes ? ' '+m.likes : ''}</button>
       </div>
     </div>
   `;
+
+  // 내 댓글 수정/삭제 이벤트
+  if(mine){
+    body.querySelector('.my-edit-btn').addEventListener('click', ()=>{
+      const textarea = document.createElement('textarea');
+      textarea.className = 'edit-mode-input';
+      textarea.value = m.text;
+      textarea.rows = 2;
+      const actions = document.createElement('div');
+      actions.className = 'edit-mode-actions';
+      actions.innerHTML = `<button class="edit-cancel-btn">취소</button><button class="edit-save-btn">저장</button>`;
+      const wrap = document.createElement('div');
+      wrap.className = 'edit-mode-wrap';
+      wrap.appendChild(textarea);
+      wrap.appendChild(actions);
+      div.replaceWith(wrap);
+      textarea.focus();
+      actions.querySelector('.edit-cancel-btn').addEventListener('click', ()=>{ wrap.replaceWith(div); });
+      actions.querySelector('.edit-save-btn').addEventListener('click', async()=>{
+        const newText = textarea.value.trim();
+        if(!newText) return;
+        try{
+          const res = await fetch('/api/guestbook/'+m.id+'/edit', {
+            method:'POST', headers:{'Content-Type':'application/json'},
+            body: JSON.stringify({nickname: myNickname, text: newText})
+          });
+          if(res.ok) loadGuestbook();
+          else alert('수정 실패');
+        }catch(e){ alert('오류 발생'); }
+      });
+      // Ctrl+Enter로 저장
+      textarea.addEventListener('keydown', (e)=>{
+        if(e.key==='Enter' && e.ctrlKey){ e.preventDefault(); actions.querySelector('.edit-save-btn').click(); }
+      });
+    });
+    body.querySelector('.my-del-btn').addEventListener('click', async()=>{
+      if(!confirm('내 댓글을 삭제할까요?')) return;
+      try{
+        const res = await fetch('/api/guestbook/'+m.id, {
+          method:'DELETE', headers:{'Content-Type':'application/json'},
+          body: JSON.stringify({isOwner: true, nickname: myNickname})
+        });
+        if(res.ok) loadGuestbook(); else alert('삭제 실패');
+      }catch(e){ alert('오류 발생'); }
+    });
+  }
   const likeBtn = body.querySelector('.like-btn');
   if(likeBtn){
     const likeKey = 'like-'+m.id;
@@ -799,7 +856,9 @@ async function sendChat(){
 let sending=false;
 async function safeSendChat(){if(sending)return;sending=true;await sendChat();sending=false;}
 document.getElementById('chat-send').addEventListener('click',safeSendChat);
-document.getElementById('chat-input').addEventListener('keydown',(e)=>{if(e.key==='Enter'){e.preventDefault();safeSendChat();}});
+document.getElementById('chat-input').addEventListener('keydown',(e)=>{
+  if(e.key==='Enter' && !e.isComposing){e.preventDefault();safeSendChat();}
+});
 document.getElementById('chat-refresh').addEventListener('click',loadGuestbook);
 
 tick();
