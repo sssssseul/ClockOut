@@ -93,6 +93,10 @@ def lotso():
 def lotso2():
     return send_file('lotso2.png', mimetype='image/png')
 
+@app.route('/strawberry.png')
+def strawberry():
+    return send_file('strawberry.png', mimetype='image/png')
+
 @app.route('/manifest.json')
 def manifest():
     return send_file('manifest.json', mimetype='application/json')
