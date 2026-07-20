@@ -1,0 +1,15 @@
+{
+  "name": "ClockOut",
+  "short_name": "ClockOut",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text x='50' y='50' font-size='80' text-anchor='middle' dominant-baseline='central'>🍓</text></svg>",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ],
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#fdf0f5",
+  "theme_color": "#f4b8d0"
+}
