@@ -91,6 +91,18 @@ def lotso():
 
 @app.route('/api/nickname')
 def api_nickname():
+    conn = get_db()
+    cur = conn.cursor()
+    cur.execute('SELECT DISTINCT nickname FROM guestbook')
+    used = set(row[0] for row in cur.fetchall())
+    cur.close()
+    conn.close()
+    for _ in range(100):
+        adj = random.choice(ADJ)
+        noun = random.choice(NOUN)
+        nickname = ANIMAL_EMOJI[noun] + " " + adj + " " + noun
+        if nickname not in used:
+            return jsonify({"nickname": nickname})
     return jsonify({"nickname": gen_nickname()})
 
 @app.route('/api/guestbook', methods=['GET'])
