@@ -89,6 +89,10 @@ def manifest():
 def lotso():
     return send_file('lotso.png', mimetype='image/png')
 
+@app.route('/apple-touch-icon.png')
+def apple_touch_icon():
+    return send_file('apple-touch-icon.png', mimetype='image/png')
+
 @app.route('/api/nickname')
 def api_nickname():
     conn = get_db()
