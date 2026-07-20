@@ -8,14 +8,20 @@ DATABASE_URL = os.environ.get('DATABASE_URL')
 
 ADJ = ["졸린", "배고픈", "신난", "지친", "느긋한", "용감한", "조용한", "엉뚱한",
        "행복한", "느린", "빠른", "수줍은", "단호한", "차분한", "엉성한", "튼튼한",
-       "졸음많은", "커피사랑", "야근싫은", "퇴근직전"]
+       "졸음많은", "커피사랑", "야근싫은", "퇴근직전", "눈치없는", "진지한",
+       "귀여운", "어색한", "당당한", "얼떨떨한", "배부른", "야식원하는", "몽롱한",
+       "멍한", "설레는", "긴장한", "뻔뻔한", "소심한", "활발한", "수상한",
+       "낯선", "외로운", "신중한", "게으른", "부지런한"]
 
 ANIMAL_EMOJI = {
     "돼지": "🐷", "다람쥐": "🐿️", "펭귄": "🐧", "햄스터": "🐹",
     "여우": "🦊", "고래": "🐳", "토끼": "🐰", "부엉이": "🦉",
     "거북이": "🐢", "수달": "🦦", "코알라": "🐨", "사자": "🦁",
     "너구리": "🦝", "오리": "🦆", "곰": "🐻", "강아지": "🐶",
-    "물개": "🦭", "기린": "🦒", "판다": "🐼", "라마": "🦙"
+    "물개": "🦭", "기린": "🦒", "판다": "🐼", "라마": "🦙",
+    "문어": "🐙", "고슴도치": "🦔", "플라밍고": "🦩", "악어": "🐊",
+    "얼룩말": "🦓", "하마": "🦛", "캥거루": "🦘", "공작": "🦚",
+    "두루미": "🦢", "앵무새": "🦜", "낙타": "🐫", "미어캣": "🐾"
 }
 NOUN = list(ANIMAL_EMOJI.keys())
 
@@ -42,25 +48,17 @@ def init_db():
             nickname TEXT NOT NULL,
             text TEXT NOT NULL,
             ts DOUBLE PRECISION NOT NULL,
-            parent_id INTEGER DEFAULT NULL,
             has_siren BOOLEAN DEFAULT FALSE,
-            has_boom BOOLEAN DEFAULT FALSE
+            has_boom BOOLEAN DEFAULT FALSE,
+            parent_id INTEGER DEFAULT NULL
         )
     ''')
-    # 🆕 대댓글 구조용 parent_id 컬럼 추가 자동화 스크립트
-    cur.execute('ALTER TABLE guestbook ADD COLUMN IF NOT EXISTS parent_id INTEGER DEFAULT NULL;')
     cur.execute('ALTER TABLE guestbook ADD COLUMN IF NOT EXISTS has_siren BOOLEAN DEFAULT FALSE;')
     cur.execute('ALTER TABLE guestbook ADD COLUMN IF NOT EXISTS has_boom BOOLEAN DEFAULT FALSE;')
-    
+    cur.execute('ALTER TABLE guestbook ADD COLUMN IF NOT EXISTS parent_id INTEGER DEFAULT NULL;')
     cur.execute('''
         CREATE TABLE IF NOT EXISTS hate_count (
             date TEXT PRIMARY KEY,
-            count INTEGER DEFAULT 0
-        )
-    ''')
-    cur.execute('''
-        CREATE TABLE IF NOT EXISTS guestbook_likes (
-            msg_id INTEGER PRIMARY KEY,
             count INTEGER DEFAULT 0
         )
     ''')
@@ -69,6 +67,12 @@ def init_db():
             id INTEGER PRIMARY KEY,
             text TEXT NOT NULL,
             updated_at DOUBLE PRECISION NOT NULL
+        )
+    ''')
+    cur.execute('''
+        CREATE TABLE IF NOT EXISTS guestbook_likes (
+            msg_id INTEGER PRIMARY KEY,
+            count INTEGER DEFAULT 0
         )
     ''')
     conn.commit()
@@ -80,6 +84,18 @@ init_db()
 @app.route('/')
 def index():
     return send_file('index.html')
+
+@app.route('/lotso.png')
+def lotso():
+    return send_file('lotso.png', mimetype='image/png')
+
+@app.route('/lotso2.png')
+def lotso2():
+    return send_file('lotso2.png', mimetype='image/png')
+
+@app.route('/manifest.json')
+def manifest():
+    return send_file('manifest.json', mimetype='application/json')
 
 @app.route('/api/nickname')
 def api_nickname():
@@ -118,14 +134,12 @@ def post_guestbook():
     data = request.get_json(force=True)
     nickname = (data.get('nickname') or '익명').strip()[:20]
     text = (data.get('text') or '').strip()[:200]
-    parent_id = data.get('parent_id') # 🆕 프론트에서 보낸 대댓글의 부모 ID 수집
-    
+    parent_id = data.get('parent_id')
     if not text:
         return jsonify({"error": "empty"}), 400
     conn = get_db()
     cur = conn.cursor()
-    # 🆕 인서트 구문에 parent_id 유동 맵핑 구현
-    cur.execute('INSERT INTO guestbook (nickname, text, ts, parent_id, has_siren, has_boom) VALUES (%s, %s, %s, %s, FALSE, FALSE)',
+    cur.execute('INSERT INTO guestbook (nickname, text, ts, has_siren, has_boom, parent_id) VALUES (%s, %s, %s, FALSE, FALSE, %s)',
                 (nickname, text, time.time(), parent_id))
     conn.commit()
     cur.close()
@@ -135,23 +149,43 @@ def post_guestbook():
 @app.route('/api/guestbook/<int:msg_id>', methods=['DELETE'])
 def delete_guestbook(msg_id):
     data = request.get_json(force=True)
-    pw = data.get("password", "")
-    is_owner = data.get("isOwner", False)
-    nickname = data.get("nickname", "")
+    pw = data.get('password', '')
+    is_owner = data.get('isOwner', False)
+    nickname = data.get('nickname', '')
     conn = get_db()
     cur = conn.cursor()
     if is_owner and nickname:
-        cur.execute("SELECT nickname FROM guestbook WHERE id = %s", (msg_id,))
+        cur.execute('SELECT nickname FROM guestbook WHERE id = %s', (msg_id,))
         row = cur.fetchone()
         if not row or row[0] != nickname:
             cur.close(); conn.close()
             return jsonify({"error": "unauthorized"}), 401
-        cur.execute("DELETE FROM guestbook WHERE id = %s", (msg_id,))
-    elif pw == "0530":
-        cur.execute("DELETE FROM guestbook WHERE id = %s OR parent_id = %s", (msg_id, msg_id))
+        cur.execute('DELETE FROM guestbook WHERE id = %s', (msg_id,))
+    elif pw == '0530':
+        cur.execute('DELETE FROM guestbook WHERE id = %s OR parent_id = %s', (msg_id, msg_id))
     else:
         cur.close(); conn.close()
         return jsonify({"error": "unauthorized"}), 401
+    conn.commit()
+    cur.close()
+    conn.close()
+    return jsonify({"ok": True})
+
+@app.route('/api/guestbook/<int:msg_id>/edit', methods=['POST'])
+def edit_guestbook(msg_id):
+    data = request.get_json(force=True)
+    nickname = (data.get('nickname') or '').strip()
+    text = (data.get('text') or '').strip()[:200]
+    if not text:
+        return jsonify({"error": "empty"}), 400
+    conn = get_db()
+    cur = conn.cursor()
+    cur.execute('SELECT nickname FROM guestbook WHERE id = %s', (msg_id,))
+    row = cur.fetchone()
+    if not row or row[0] != nickname:
+        cur.close(); conn.close()
+        return jsonify({"error": "unauthorized"}), 401
+    cur.execute('UPDATE guestbook SET text = %s WHERE id = %s', (text, msg_id))
     conn.commit()
     cur.close()
     conn.close()
@@ -254,26 +288,3 @@ def post_notice():
 
 if __name__ == '__main__':
     app.run()
-
-
-@app.route('/api/guestbook/<int:msg_id>/edit', methods=['POST'])
-def edit_guestbook(msg_id):
-    data = request.get_json(force=True)
-    nickname = (data.get('nickname') or '').strip()
-    text = (data.get('text') or '').strip()[:200]
-    if not text:
-        return jsonify({"error": "empty"}), 400
-    conn = get_db()
-    cur = conn.cursor()
-    # 본인 닉네임 확인
-    cur.execute('SELECT nickname FROM guestbook WHERE id = %s', (msg_id,))
-    row = cur.fetchone()
-    if not row or row[0] != nickname:
-        cur.close()
-        conn.close()
-        return jsonify({"error": "unauthorized"}), 401
-    cur.execute('UPDATE guestbook SET text = %s WHERE id = %s', (text, msg_id))
-    conn.commit()
-    cur.close()
-    conn.close()
-    return jsonify({"ok": True})
