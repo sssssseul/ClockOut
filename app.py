@@ -81,6 +81,14 @@ init_db()
 def index():
     return send_file('index.html')
 
+@app.route('/manifest.json')
+def manifest():
+    return send_file('manifest.json', mimetype='application/json')
+
+@app.route('/lotso.png')
+def lotso():
+    return send_file('lotso.png', mimetype='image/png')
+
 @app.route('/api/nickname')
 def api_nickname():
     return jsonify({"nickname": gen_nickname()})
