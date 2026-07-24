@@ -195,6 +195,13 @@
   .siren-btn, .boom-btn, .delete-btn { background: none; border: none; cursor: pointer; font-size: 12px; padding: 0 2px; }
   .delete-btn { color: #ccc; }
   .delete-btn:hover { color: #e05a5a; }
+  .king-card { background: rgba(255,255,255,0.88); border: 0.5px solid #f4c0d1; border-radius: 12px; padding: 10px 14px; margin-bottom: 8px; }
+  .king-header { font-size: 11px; color: #993556; font-weight: 500; margin-bottom: 8px; display: flex; align-items: center; gap: 5px; }
+  .king-row { display: flex; align-items: center; gap: 8px; padding: 3px 0; }
+  .king-rank { font-size: 15px; flex-shrink: 0; }
+  .king-nick { font-size: 12px; color: #1a1a18; font-weight: 500; flex: 1; }
+  .king-count { font-size: 11px; color: #993556; background: #fce8f0; padding: 2px 8px; border-radius: 99px; flex-shrink: 0; }
+  .king-divider { height: 0.5px; background: #f4c0d1; margin: 4px 0; }
 </style>
 </head>
 <body>
@@ -266,6 +273,20 @@
         <span class="chat-nickname" id="my-nickname">익명</span>
         <button id="admin-btn" class="admin-btn" title="관리자">🔑</button>
         <button id="chat-refresh" class="chat-refresh-btn"><i class="ti ti-refresh" style="font-size:13px"></i></button>
+      </div>
+    </div>
+    <div class="king-card" id="king-card" style="display:none;">
+      <div class="king-header">🍓 이달의 댓글왕</div>
+      <div class="king-row" id="king-1" style="display:none;">
+        <span class="king-rank">🥇</span>
+        <span class="king-nick" id="king-nick-1"></span>
+        <span class="king-count" id="king-count-1"></span>
+      </div>
+      <div class="king-divider" id="king-divider" style="display:none;"></div>
+      <div class="king-row" id="king-2" style="display:none;">
+        <span class="king-rank">🥈</span>
+        <span class="king-nick" id="king-nick-2"></span>
+        <span class="king-count" id="king-count-2"></span>
       </div>
     </div>
     <div class="notice-wrap" id="notice-wrap">
@@ -496,6 +517,27 @@ const noticeEditBtn=document.getElementById('notice-edit-btn');
 function buildMarquee(text){
   noticeInner.innerHTML = '🌼 <span>' + escapeHtml(text) + '</span> 🌼';
 }
+async function loadTopCommenters(){
+  try{
+    const res = await fetch('/api/top-commenters');
+    const data = await res.json();
+    const top = data.top || [];
+    if(top.length === 0) return;
+    document.getElementById('king-card').style.display = 'block';
+    if(top[0]){
+      document.getElementById('king-nick-1').textContent = addEmojiToNickname(top[0].nickname);
+      document.getElementById('king-count-1').textContent = '댓글 '+top[0].count+'개';
+      document.getElementById('king-1').style.display = 'flex';
+    }
+    if(top[1]){
+      document.getElementById('king-nick-2').textContent = addEmojiToNickname(top[1].nickname);
+      document.getElementById('king-count-2').textContent = '댓글 '+top[1].count+'개';
+      document.getElementById('king-2').style.display = 'flex';
+      document.getElementById('king-divider').style.display = 'block';
+    }
+  }catch(e){}
+}
+
 async function loadNotice(){
   try{
     const res=await fetch('/api/notice');
@@ -865,7 +907,7 @@ document.getElementById('chat-refresh').addEventListener('click',loadGuestbook);
 
 tick();
 setInterval(tick,1000);
-ensureNickname().then(()=>{loadGuestbook();loadNotice();});
+ensureNickname().then(()=>{loadGuestbook();loadNotice();loadTopCommenters();});
 </script>
 <style>
 @keyframes floatEmoji {
