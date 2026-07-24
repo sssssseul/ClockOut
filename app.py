@@ -290,5 +290,25 @@ def post_notice():
     conn.close()
     return jsonify({"ok": True, "text": text})
 
+@app.route('/api/top-commenters', methods=['GET'])
+def top_commenters():
+    conn = get_db()
+    cur = conn.cursor()
+    now_kst = datetime.datetime.utcnow() + datetime.timedelta(hours=9)
+    first_day = datetime.datetime(now_kst.year, now_kst.month, 1) - datetime.timedelta(hours=9)
+    first_ts = first_day.timestamp()
+    cur.execute('''
+        SELECT nickname, COUNT(*) as cnt
+        FROM guestbook
+        WHERE ts >= %s
+        GROUP BY nickname
+        ORDER BY cnt DESC
+        LIMIT 2
+    ''', (first_ts,))
+    rows = cur.fetchall()
+    cur.close()
+    conn.close()
+    return jsonify({"top": [{"nickname": r[0], "count": r[1]} for r in rows]})
+
 if __name__ == '__main__':
     app.run()
