@@ -860,7 +860,12 @@ document.getElementById('admin-btn').addEventListener('click',()=>{
   }
   const pw=prompt('관리자 비밀번호를 입력하세요:');
   if(pw===null)return;
+  if(pw!=='0530'){alert('비밀번호가 틀렸습니다.');return;}
   adminPassword=pw;isAdmin=true;
+  // 관리자 닉네임 고정
+  myNickname='🐳 졸린 고래';
+  localStorage.setItem('clockout-nickname', myNickname);
+  document.getElementById('my-nickname').textContent=myNickname;
   document.getElementById('admin-btn').textContent='🔓';
   noticeWrap.style.display='block';
   noticeEditBtn.style.display='block';
