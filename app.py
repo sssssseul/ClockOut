@@ -303,7 +303,7 @@ def top_commenters():
         WHERE ts >= %s
         GROUP BY nickname
         ORDER BY cnt DESC
-        LIMIT 2
+        LIMIT 3
     ''', (first_ts,))
     rows = cur.fetchall()
     cur.close()
