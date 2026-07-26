@@ -278,6 +278,11 @@
       <span class="king-nick" id="king-nick-2"></span>
       <span class="king-count" id="king-count-2"></span>
     </div>
+    <div class="king-row" id="king-3" style="display:none;">
+      <span class="king-rank">🥉</span>
+      <span class="king-nick" id="king-nick-3"></span>
+      <span class="king-count" id="king-count-3"></span>
+    </div>
   </div>
 
   <div class="chat-card">
@@ -535,6 +540,11 @@ async function loadTopCommenters(){
       document.getElementById('king-count-2').textContent = '댓글 '+top[1].count+'개';
       document.getElementById('king-2').style.display = 'flex';
     }
+    if(top[2]){
+      document.getElementById('king-nick-3').textContent = addEmojiToNickname(top[2].nickname);
+      document.getElementById('king-count-3').textContent = '댓글 '+top[2].count+'개';
+      document.getElementById('king-3').style.display = 'flex';
+    }
   }catch(e){}
 }
 
@@ -613,7 +623,7 @@ let allMessages=[], isAdmin=false, adminPassword='';
 let selectedParentId = null;
 
 let currentPage = 0;
-const PAGE_SIZE = 10; 
+const PAGE_SIZE = 6; 
 
 function escapeHtml(str){const div=document.createElement('div');div.textContent=str;return div.innerHTML;}
 
