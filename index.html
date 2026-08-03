@@ -187,7 +187,21 @@
   .chat-refresh-btn:hover { background: #f1efea; }
   
   .admin-panel { display: flex; align-items: center; gap: 4px; flex-shrink: 0; margin-left: 6px; }
-  .admin-btn { background: none; border: 0.5px solid #f4c0d1; border-radius: 6px; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 12px; }
+  .admin-dashboard { background: rgba(255,255,255,0.88); border: 0.5px solid #f4c0d1; border-radius: 12px; padding: 12px 14px; margin-top: 8px; margin-bottom: 8px; display: none; }
+  .admin-dashboard-header { font-size: 11px; color: #888780; margin-bottom: 10px; display: flex; align-items: center; gap: 5px; }
+  .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 10px; }
+  .stat-box { background: #fce8f0; border-radius: 8px; padding: 8px; text-align: center; }
+  .stat-box-label { font-size: 10px; color: #993556; margin-bottom: 2px; }
+  .stat-box-value { font-size: 18px; font-weight: 500; color: #1a1a18; }
+  .stat-chart { margin-top: 8px; }
+  .stat-chart-label { font-size: 10px; color: #888780; margin-bottom: 4px; }
+  .chart-bars { display: flex; align-items: flex-end; gap: 3px; height: 50px; }
+  .chart-bar-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 2px; height: 100%; justify-content: flex-end; }
+  .chart-bar { width: 100%; background: #f4b8d0; border-radius: 3px 3px 0 0; min-height: 2px; }
+  .chart-date { font-size: 8px; color: #aaa; white-space: nowrap; }
+  .chart-tabs { display: flex; gap: 6px; margin-bottom: 8px; }
+  .chart-tab { font-size: 10px; padding: 2px 8px; border-radius: 99px; border: 1px solid #f4c0d1; color: #888780; cursor: pointer; background: none; font-family: 'Noto Sans KR', sans-serif; }
+  .chart-tab.active { background: #fce8f0; color: #993556; border-color: #993556; }
   .admin-btn:hover { background: #f1efea; }
   
   .msg-action-btn { background: none; border: none; cursor: pointer; font-size: 11px; color: rgb(153,53,86); padding: 0; font-family: 'Noto Sans KR', sans-serif; margin-left: 8px; font-weight: 500; }
@@ -263,6 +277,32 @@
     <select id="start-time"></select>
     <label><i class="ti ti-home" style="font-size:13px"></i> 퇴근</label>
     <select id="end-time"></select>
+  </div>
+
+  <div class="admin-dashboard" id="admin-dashboard">
+    <div class="admin-dashboard-header"><i class="ti ti-chart-bar" style="font-size:13px"></i> 관리자 대시보드</div>
+    <div class="stats-grid">
+      <div class="stat-box">
+        <div class="stat-box-label">오늘 방문자</div>
+        <div class="stat-box-value" id="stat-today-visitors">-</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-box-label">오늘 댓글</div>
+        <div class="stat-box-value" id="stat-today-comments">-</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-box-label">오늘 일하기싫다</div>
+        <div class="stat-box-value" id="stat-today-hate">-</div>
+      </div>
+    </div>
+    <div class="chart-tabs">
+      <button class="chart-tab active" onclick="switchChart('visitors', this)">방문자</button>
+      <button class="chart-tab" onclick="switchChart('comments', this)">댓글</button>
+      <button class="chart-tab" onclick="switchChart('hate', this)">일하기싫다</button>
+    </div>
+    <div class="stat-chart">
+      <div class="chart-bars" id="chart-bars"></div>
+    </div>
   </div>
 
   <div class="king-card" id="king-card" style="display:none; margin-top:8px;">
@@ -546,6 +586,46 @@ async function loadTopCommenters(){
       document.getElementById('king-3').style.display = 'flex';
     }
   }catch(e){}
+}
+
+let statsData = [];
+let currentChart = 'visitors';
+
+function switchChart(type, el) {
+  currentChart = type;
+  document.querySelectorAll('.chart-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  renderChart();
+}
+
+function renderChart() {
+  if(!statsData.length) return;
+  const bars = document.getElementById('chart-bars');
+  const max = Math.max(...statsData.map(d => d[currentChart])) || 1;
+  bars.innerHTML = statsData.map(d => {
+    const h = Math.max(2, Math.round((d[currentChart] / max) * 46));
+    const dateLabel = d.date.slice(5);
+    return `<div class="chart-bar-wrap">
+      <div style="font-size:9px;color:#993556;">${d[currentChart]}</div>
+      <div class="chart-bar" style="height:${h}px;"></div>
+      <div class="chart-date">${dateLabel}</div>
+    </div>`;
+  }).join('');
+}
+
+async function loadStats() {
+  try {
+    const res = await fetch('/api/stats?password=0530');
+    const data = await res.json();
+    statsData = data.stats || [];
+    const today = statsData[statsData.length - 1];
+    if(today) {
+      document.getElementById('stat-today-visitors').textContent = today.visitors;
+      document.getElementById('stat-today-comments').textContent = today.comments;
+      document.getElementById('stat-today-hate').textContent = today.hate;
+    }
+    renderChart();
+  } catch(e) {}
 }
 
 async function loadNotice(){
@@ -864,6 +944,7 @@ document.getElementById('admin-btn').addEventListener('click',()=>{
   if(isAdmin){
     isAdmin=false;adminPassword='';
     document.getElementById('admin-btn').textContent='🔑';
+    document.getElementById('admin-dashboard').style.display='none';
     noticeEditBtn.style.display='none';
     if(!noticeInner.textContent.trim()) noticeWrap.style.display='none';
     renderPage();return;
@@ -877,6 +958,8 @@ document.getElementById('admin-btn').addEventListener('click',()=>{
   localStorage.setItem('clockout-nickname', myNickname);
   document.getElementById('my-nickname').textContent=myNickname;
   document.getElementById('admin-btn').textContent='🔓';
+  document.getElementById('admin-dashboard').style.display='block';
+  loadStats();
   noticeWrap.style.display='block';
   noticeEditBtn.style.display='block';
   renderPage();
