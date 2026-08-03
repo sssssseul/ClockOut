@@ -75,6 +75,14 @@ def init_db():
             count INTEGER DEFAULT 0
         )
     ''')
+    cur.execute('''
+        CREATE TABLE IF NOT EXISTS visitors (
+            id SERIAL PRIMARY KEY,
+            date TEXT NOT NULL,
+            ip TEXT NOT NULL,
+            UNIQUE(date, ip)
+        )
+    ''')
     conn.commit()
     cur.close()
     conn.close()
@@ -83,6 +91,17 @@ init_db()
 
 @app.route('/')
 def index():
+    try:
+        conn = get_db()
+        cur = conn.cursor()
+        today = get_kst_today()
+        ip = request.headers.get('X-Forwarded-For', request.remote_addr).split(',')[0].strip()
+        cur.execute('INSERT INTO visitors (date, ip) VALUES (%s, %s) ON CONFLICT DO NOTHING', (today, ip))
+        conn.commit()
+        cur.close()
+        conn.close()
+    except:
+        pass
     return send_file('index.html')
 
 @app.route('/lotso.png')
@@ -309,6 +328,41 @@ def top_commenters():
     cur.close()
     conn.close()
     return jsonify({"top": [{"nickname": r[0], "count": r[1]} for r in rows]})
+
+@app.route('/api/stats', methods=['GET'])
+def get_stats():
+    pw = request.args.get('password', '')
+    if pw != '0530':
+        return jsonify({"error": "unauthorized"}), 401
+    conn = get_db()
+    cur = conn.cursor()
+    now_kst = datetime.datetime.utcnow() + datetime.timedelta(hours=9)
+    dates = [(now_kst - datetime.timedelta(days=i)).strftime('%Y-%m-%d') for i in range(6, -1, -1)]
+    # 방문자 수 7일치
+    cur.execute('''
+        SELECT date, COUNT(*) FROM visitors
+        WHERE date = ANY(%s) GROUP BY date
+    ''', (dates,))
+    visitor_rows = {r[0]: r[1] for r in cur.fetchall()}
+    # 댓글 수 7일치
+    stats = []
+    for d in dates:
+        start_ts = datetime.datetime.strptime(d, '%Y-%m-%d').replace(tzinfo=datetime.timezone(datetime.timedelta(hours=9))).timestamp()
+        end_ts = start_ts + 86400
+        cur.execute('SELECT COUNT(*) FROM guestbook WHERE ts >= %s AND ts < %s', (start_ts, end_ts))
+        comment_count = cur.fetchone()[0]
+        cur.execute('SELECT count FROM hate_count WHERE date = %s', (d,))
+        hate_row = cur.fetchone()
+        hate_count = hate_row[0] if hate_row else 0
+        stats.append({
+            'date': d,
+            'visitors': visitor_rows.get(d, 0),
+            'comments': comment_count,
+            'hate': hate_count
+        })
+    cur.close()
+    conn.close()
+    return jsonify({"stats": stats})
 
 if __name__ == '__main__':
     app.run()
