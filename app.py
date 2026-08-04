@@ -309,6 +309,26 @@ def post_notice():
     conn.close()
     return jsonify({"ok": True, "text": text})
 
+@app.route('/api/top-likers', methods=['GET'])
+def top_likers():
+    conn = get_db()
+    cur = conn.cursor()
+    now_kst = datetime.datetime.utcnow() + datetime.timedelta(hours=9)
+    first_day = datetime.datetime(now_kst.year, now_kst.month, 1) - datetime.timedelta(hours=9)
+    first_ts = first_day.timestamp()
+    cur.execute('''
+        SELECT g.nickname, COALESCE(l.count, 0) as likes
+        FROM guestbook g
+        LEFT JOIN guestbook_likes l ON g.id = l.msg_id
+        WHERE g.ts >= %s AND COALESCE(l.count, 0) > 0
+        ORDER BY likes DESC
+        LIMIT 3
+    ''', (first_ts,))
+    rows = cur.fetchall()
+    cur.close()
+    conn.close()
+    return jsonify({"top": [{"nickname": r[0], "count": r[1]} for r in rows]})
+
 @app.route('/api/top-commenters', methods=['GET'])
 def top_commenters():
     conn = get_db()
@@ -328,6 +348,20 @@ def top_commenters():
     cur.close()
     conn.close()
     return jsonify({"top": [{"nickname": r[0], "count": r[1]} for r in rows]})
+
+@app.route('/api/guestbook/<int:msg_id>/like', methods=['DELETE'])
+def unlike_guestbook(msg_id):
+    conn = get_db()
+    cur = conn.cursor()
+    cur.execute('''
+        UPDATE guestbook_likes SET count = GREATEST(0, count - 1) WHERE msg_id = %s
+    ''', (msg_id,))
+    conn.commit()
+    cur.execute('SELECT count FROM guestbook_likes WHERE msg_id = %s', (msg_id,))
+    row = cur.fetchone()
+    cur.close()
+    conn.close()
+    return jsonify({"count": row[0] if row else 0})
 
 @app.route('/api/stats', methods=['GET'])
 def get_stats():
