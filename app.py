@@ -317,11 +317,12 @@ def top_likers():
     first_day = datetime.datetime(now_kst.year, now_kst.month, 1) - datetime.timedelta(hours=9)
     first_ts = first_day.timestamp()
     cur.execute('''
-        SELECT g.nickname, COALESCE(l.count, 0) as likes
+        SELECT g.nickname, SUM(COALESCE(l.count, 0)) as total_likes
         FROM guestbook g
         LEFT JOIN guestbook_likes l ON g.id = l.msg_id
         WHERE g.ts >= %s AND COALESCE(l.count, 0) > 0
-        ORDER BY likes DESC
+        GROUP BY g.nickname
+        ORDER BY total_likes DESC
         LIMIT 3
     ''', (first_ts,))
     rows = cur.fetchall()
