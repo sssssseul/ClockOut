@@ -323,6 +323,59 @@
   </div>
 
 
+  .photo-carousel-card { background: #fff; border: 0.5px solid #f4c0d1; border-radius: 12px; padding: 12px 14px; margin-top: 8px; margin-bottom: 8px; }
+  .photo-carousel-header { font-size: 11px; color: #888780; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; gap: 5px; }
+  .photo-carousel-wrap { overflow: hidden; position: relative; }
+  .photo-carousel-track { display: flex; transition: transform 0.3s ease; }
+  .photo-card-item { flex: 0 0 100%; display: flex; align-items: stretch; background: #f9f9f7; border-radius: 10px; overflow: hidden; min-height: 80px; }
+  .photo-card-img { width: 90px; height: 90px; object-fit: cover; flex-shrink: 0; background: #f4c0d1; }
+  .photo-card-info { padding: 10px 12px; flex: 1; display: flex; flex-direction: column; justify-content: space-between; min-width: 0; }
+  .photo-card-nick { font-size: 11px; color: #993556; font-weight: 500; }
+  .photo-card-text { font-size: 13px; color: #1a1a18; line-height: 1.4; word-break: break-all; }
+  .photo-card-time { font-size: 10px; color: #aaa; }
+  .photo-carousel-dots { display: flex; justify-content: center; gap: 4px; margin-top: 8px; }
+  .photo-dot { width: 6px; height: 6px; border-radius: 99px; background: #f4c0d1; cursor: pointer; transition: background 0.2s; }
+  .photo-dot.active { background: #993556; width: 14px; }
+  .photo-upload-btn { font-size: 10px; color: #993556; background: #fce8f0; border: none; border-radius: 99px; padding: 2px 10px; cursor: pointer; font-family: 'Noto Sans KR', sans-serif; }
+  .photo-upload-modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.4); z-index: 100; justify-content: center; align-items: center; }
+  .photo-upload-box { background: #fff; border-radius: 16px; padding: 20px; width: 90%; max-width: 360px; display: flex; flex-direction: column; gap: 10px; }
+  .photo-upload-box h3 { font-size: 13px; color: #993556; margin: 0; }
+  .photo-preview { width: 100%; height: 160px; background: #fce8f0; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 32px; cursor: pointer; overflow: hidden; }
+  .photo-preview img { width: 100%; height: 100%; object-fit: cover; }
+  .photo-text-input { font-size: 12px; border: 0.5px solid #f4c0d1; border-radius: 8px; padding: 8px 10px; font-family: 'Noto Sans KR', sans-serif; outline: none; resize: none; width: 100%; box-sizing: border-box; }
+  .photo-upload-actions { display: flex; gap: 8px; }
+  .photo-submit-btn { flex: 1; background: #993556; color: #fff; border: none; border-radius: 8px; padding: 8px; font-size: 12px; cursor: pointer; font-family: 'Noto Sans KR', sans-serif; }
+  .photo-cancel-btn { flex: 1; background: #f9f9f7; color: #888780; border: 0.5px solid #e0dfd8; border-radius: 8px; padding: 8px; font-size: 12px; cursor: pointer; font-family: 'Noto Sans KR', sans-serif; }
+  .photo-empty { text-align: center; color: #aaa; font-size: 12px; padding: 20px 0; }
+
+  <!-- 사진 캐러셀 -->
+  <div class="photo-carousel-card">
+    <div class="photo-carousel-header">
+      <span style="display:flex;align-items:center;gap:5px;"><i class="ti ti-photo" style="font-size:13px"></i> 오늘의 TMI</span>
+      <button class="photo-upload-btn" id="photo-upload-btn">+ 올리기</button>
+    </div>
+    <div class="photo-carousel-wrap">
+      <div class="photo-carousel-track" id="photo-track"></div>
+    </div>
+    <div class="photo-carousel-dots" id="photo-dots"></div>
+  </div>
+
+  <!-- 업로드 모달 -->
+  <div class="photo-upload-modal" id="photo-modal">
+    <div class="photo-upload-box">
+      <h3>📸 오늘의 TMI</h3>
+      <div class="photo-preview" id="photo-preview-area">
+        <span>사진을 선택하세요</span>
+        <input type="file" id="photo-file-input" accept="image/*" style="display:none;">
+      </div>
+      <textarea class="photo-text-input" id="photo-text-input" placeholder="한마디 남겨요" rows="2" maxlength="50"></textarea>
+      <div class="photo-upload-actions">
+        <button class="photo-cancel-btn" id="photo-cancel-btn">취소</button>
+        <button class="photo-submit-btn" id="photo-submit-btn">올리기</button>
+      </div>
+    </div>
+  </div>
+
   <div class="chat-card">
     <div class="chat-header">
       <span class="settings-label" style="margin:0;"><i class="ti ti-notebook" style="font-size:13px"></i> 방명록</span>
@@ -633,6 +686,130 @@ async function loadStats() {
     renderChart();
   } catch(e) {}
 }
+
+// --- 사진 캐러셀 ---
+let photoIndex = 0;
+let photos = [];
+
+function fmtPhotoTime(ts){
+  const d = new Date(ts*1000);
+  const h = d.getHours(), m = d.getMinutes();
+  const ampm = h < 12 ? '오전' : '오후';
+  const hh = h===0?12:h>12?h-12:h;
+  return ampm+' '+hh+':'+String(m).padStart(2,'0');
+}
+
+function renderCarousel(){
+  const track = document.getElementById('photo-track');
+  const dots = document.getElementById('photo-dots');
+  if(!photos.length){
+    track.innerHTML = '<div class="photo-card-item" style="justify-content:center;"><div class="photo-empty">아직 사진이 없어요 📸</div></div>';
+    dots.innerHTML = '';
+    return;
+  }
+  track.innerHTML = photos.map((p,i) => {
+    const nick = addEmojiToNickname(p.nickname);
+    const delBtn = (isAdmin || nick === myNickname) 
+      ? `<button onclick="deletePhoto(${p.id}, '${nick}')" style="background:none;border:none;color:#ccc;cursor:pointer;font-size:11px;padding:0;">🗑️</button>` : '';
+    return `<div class="photo-card-item">
+      <img class="photo-card-img" src="${p.image}" alt="">
+      <div class="photo-card-info">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <span class="photo-card-nick">${escapeHtml(nick)}</span>${delBtn}
+        </div>
+        <div class="photo-card-text">${escapeHtml(p.text||'')}</div>
+        <div class="photo-card-time">${fmtPhotoTime(p.ts)}</div>
+      </div>
+    </div>`;
+  }).join('');
+  dots.innerHTML = photos.map((_, i) => 
+    `<div class="photo-dot ${i===photoIndex?'active':''}" onclick="goToPhoto(${i})"></div>`
+  ).join('');
+  track.style.transform = `translateX(-${photoIndex * 100}%)`;
+}
+
+function goToPhoto(idx){
+  photoIndex = idx;
+  renderCarousel();
+}
+
+async function deletePhoto(id, nick){
+  if(!confirm('삭제할까요?')) return;
+  const body = isAdmin 
+    ? {password: adminPassword}
+    : {isOwner: true, nickname: myNickname};
+  try{
+    const res = await fetch('/api/photos/'+id, {method:'DELETE', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body)});
+    if(res.ok){ await loadPhotos(); }
+  }catch(e){}
+}
+
+async function loadPhotos(){
+  try{
+    const res = await fetch('/api/photos');
+    const data = await res.json();
+    photos = data.photos || [];
+    photoIndex = 0;
+    renderCarousel();
+  }catch(e){}
+}
+
+// 업로드 모달
+let selectedImageBase64 = '';
+document.getElementById('photo-upload-btn').addEventListener('click', ()=>{
+  document.getElementById('photo-modal').style.display = 'flex';
+});
+document.getElementById('photo-cancel-btn').addEventListener('click', ()=>{
+  document.getElementById('photo-modal').style.display = 'none';
+  selectedImageBase64 = '';
+  document.getElementById('photo-preview-area').innerHTML = '<span>사진을 선택하세요</span><input type="file" id="photo-file-input" accept="image/*" style="display:none;">';
+  document.getElementById('photo-text-input').value = '';
+  rebindFileInput();
+});
+function rebindFileInput(){
+  document.getElementById('photo-preview-area').addEventListener('click', ()=>{
+    document.getElementById('photo-file-input').click();
+  });
+  document.getElementById('photo-file-input').addEventListener('change', handleFileSelect);
+}
+function handleFileSelect(e){
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = (ev)=>{
+    const img = new Image();
+    img.onload = ()=>{
+      const canvas = document.createElement('canvas');
+      const max = 400;
+      let w = img.width, h = img.height;
+      if(w > max){ h = Math.round(h * max / w); w = max; }
+      if(h > max){ w = Math.round(w * max / h); h = max; }
+      canvas.width = w; canvas.height = h;
+      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+      selectedImageBase64 = canvas.toDataURL('image/jpeg', 0.7);
+      document.getElementById('photo-preview-area').innerHTML = `<img src="${selectedImageBase64}">`;
+    };
+    img.src = ev.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+document.getElementById('photo-preview-area').addEventListener('click', ()=>{
+  const input = document.getElementById('photo-file-input');
+  if(input) input.click();
+});
+document.getElementById('photo-file-input').addEventListener('change', handleFileSelect);
+document.getElementById('photo-submit-btn').addEventListener('click', async()=>{
+  if(!selectedImageBase64){ alert('사진을 선택해주세요!'); return; }
+  const text = document.getElementById('photo-text-input').value.trim();
+  try{
+    await fetch('/api/photos', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({nickname: myNickname, text, image: selectedImageBase64})
+    });
+    document.getElementById('photo-cancel-btn').click();
+    loadPhotos();
+  }catch(e){ alert('업로드 실패'); }
+});
 
 async function loadNotice(){
   try{
@@ -1018,7 +1195,7 @@ document.getElementById('chat-refresh').addEventListener('click',loadGuestbook);
 
 tick();
 setInterval(tick,1000);
-ensureNickname().then(()=>{loadGuestbook();loadNotice();loadTopCommenters();});
+ensureNickname().then(()=>{loadGuestbook();loadNotice();loadTopCommenters();loadPhotos();});
 </script>
 <style>
 @keyframes floatEmoji {
