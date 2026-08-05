@@ -76,6 +76,15 @@ def init_db():
         )
     ''')
     cur.execute('''
+        CREATE TABLE IF NOT EXISTS photos (
+            id SERIAL PRIMARY KEY,
+            nickname TEXT NOT NULL,
+            text TEXT,
+            image TEXT NOT NULL,
+            ts DOUBLE PRECISION NOT NULL
+        )
+    ''')
+    cur.execute('''
         CREATE TABLE IF NOT EXISTS visitors (
             id SERIAL PRIMARY KEY,
             date TEXT NOT NULL,
@@ -308,6 +317,56 @@ def post_notice():
     cur.close()
     conn.close()
     return jsonify({"ok": True, "text": text})
+
+@app.route('/api/photos', methods=['GET'])
+def get_photos():
+    conn = get_db()
+    cur = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+    cur.execute('SELECT id, nickname, text, image, ts FROM photos ORDER BY id DESC LIMIT 20')
+    rows = cur.fetchall()
+    cur.close()
+    conn.close()
+    return jsonify({"photos": [dict(r) for r in rows]})
+
+@app.route('/api/photos', methods=['POST'])
+def post_photo():
+    data = request.get_json(force=True)
+    nickname = (data.get('nickname') or '익명').strip()[:20]
+    text = (data.get('text') or '').strip()
+    image = data.get('image', '')
+    if not image:
+        return jsonify({"error": "no image"}), 400
+    conn = get_db()
+    cur = conn.cursor()
+    cur.execute('INSERT INTO photos (nickname, text, image, ts) VALUES (%s, %s, %s, %s)',
+                (nickname, text, image, time.time()))
+    conn.commit()
+    cur.close()
+    conn.close()
+    return jsonify({"ok": True})
+
+@app.route('/api/photos/<int:photo_id>', methods=['DELETE'])
+def delete_photo(photo_id):
+    data = request.get_json(force=True)
+    pw = data.get('password', '')
+    nickname = data.get('nickname', '')
+    is_owner = data.get('isOwner', False)
+    conn = get_db()
+    cur = conn.cursor()
+    if is_owner and nickname:
+        cur.execute('SELECT nickname FROM photos WHERE id = %s', (photo_id,))
+        row = cur.fetchone()
+        if not row or row[0] != nickname:
+            cur.close(); conn.close()
+            return jsonify({"error": "unauthorized"}), 401
+    elif pw != '0530':
+        cur.close(); conn.close()
+        return jsonify({"error": "unauthorized"}), 401
+    cur.execute('DELETE FROM photos WHERE id = %s', (photo_id,))
+    conn.commit()
+    cur.close()
+    conn.close()
+    return jsonify({"ok": True})
 
 @app.route('/api/top-likers', methods=['GET'])
 def top_likers():
