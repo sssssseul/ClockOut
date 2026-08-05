@@ -232,11 +232,11 @@
   .photo-carousel-header { font-size: 11px; color: #888780; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; gap: 5px; }
   .photo-carousel-wrap { overflow: hidden; position: relative; }
   .photo-carousel-track { display: flex; transition: transform 0.3s ease; }
-  .photo-card-item { flex: 0 0 100%; display: flex; align-items: stretch; background: #f9f9f7; border-radius: 10px; overflow: hidden; min-height: 60px; }
-  .photo-card-img { width: 60px; height: 60px; object-fit: cover; flex-shrink: 0; background: #f4c0d1; cursor: pointer; }
+  .photo-card-item { flex: 0 0 100%; display: flex; align-items: stretch; background: #f9f9f7; border-radius: 10px; overflow: hidden; min-height: 80px; }
+  .photo-card-img { width: 80px; height: 80px; object-fit: cover; flex-shrink: 0; background: #f4c0d1; cursor: pointer; }
   .photo-card-info { padding: 10px 12px; flex: 1; display: flex; flex-direction: column; justify-content: space-between; min-width: 0; }
   .photo-card-nick { font-size: 11px; color: #993556; font-weight: 500; }
-  .photo-card-text { font-size: 13px; color: #1a1a18; line-height: 1.4; word-break: break-all; }
+  .photo-card-text { font-size: 12px; color: #1a1a18; line-height: 1.4; word-break: break-all; }
   .photo-card-time { font-size: 10px; color: #aaa; }
   .photo-carousel-dots { display: flex; justify-content: center; gap: 4px; margin-top: 8px; }
   .photo-dot { width: 6px; height: 6px; border-radius: 99px; background: #f4c0d1; cursor: pointer; transition: background 0.2s; }
@@ -759,7 +759,7 @@ function renderCarousel(){
           <div style="display:flex;gap:4px;">${editBtn}${delBtn}</div>
         </div>
         <div class="photo-card-text">${escapeHtml(p.text||'')}</div>
-        <div class="photo-card-time">${fmtPhotoTime(p.ts)}</div>
+        <div style="text-align:right;" class="photo-card-time">${fmtPhotoTime(p.ts)}</div>
       </div>
     </div>`;
   }).join('');
@@ -839,13 +839,13 @@ function handleFileSelect(e){
     const img = new Image();
     img.onload = ()=>{
       const canvas = document.createElement('canvas');
-      const max = 400;
+      const max = 600;
       let w = img.width, h = img.height;
       if(w > max){ h = Math.round(h * max / w); w = max; }
       if(h > max){ w = Math.round(w * max / h); h = max; }
       canvas.width = w; canvas.height = h;
       canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-      selectedImageBase64 = canvas.toDataURL('image/jpeg', 0.7);
+      selectedImageBase64 = canvas.toDataURL("image/jpeg", 0.95);
       document.getElementById('photo-preview-area').innerHTML = `<img src="${selectedImageBase64}">`;
     };
     img.src = ev.target.result;
