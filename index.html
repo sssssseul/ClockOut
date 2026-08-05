@@ -243,7 +243,7 @@
   .photo-upload-modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.4); z-index: 100; justify-content: center; align-items: center; }
   .photo-upload-box { background: #fff; border-radius: 16px; padding: 20px; width: 90%; max-width: 360px; display: flex; flex-direction: column; gap: 10px; }
   .photo-upload-box h3 { font-size: 13px; color: #993556; margin: 0; }
-  .photo-preview { width: 100%; height: 160px; background: #fce8f0; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 32px; cursor: pointer; overflow: hidden; }
+  .photo-preview { width: 100%; height: 160px; background: #fce8f0; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 13px; color: #888780; cursor: pointer; overflow: hidden; }
   .photo-preview img { width: 100%; height: 100%; object-fit: cover; }
   .photo-text-input { font-size: 12px; border: 0.5px solid #f4c0d1; border-radius: 8px; padding: 8px 10px; font-family: 'Noto Sans KR', sans-serif; outline: none; resize: none; width: 100%; box-sizing: border-box; }
   .photo-upload-actions { display: flex; gap: 8px; }
@@ -373,7 +373,7 @@
     <div class="photo-upload-box">
       <h3>📸 오늘의 TMI</h3>
       <div class="photo-preview" id="photo-preview-area">
-        <span>사진을 선택하세요</span>
+        <span>당신의 지금을 자랑해주세요</span>
         <input type="file" id="photo-file-input" accept="image/*" style="display:none;">
       </div>
       <textarea class="photo-text-input" id="photo-text-input" placeholder="한마디 남겨요" rows="2" maxlength="50"></textarea>
@@ -789,7 +789,7 @@ document.getElementById('photo-upload-btn').addEventListener('click', ()=>{
 document.getElementById('photo-cancel-btn').addEventListener('click', ()=>{
   document.getElementById('photo-modal').style.display = 'none';
   selectedImageBase64 = '';
-  document.getElementById('photo-preview-area').innerHTML = '<span>사진을 선택하세요</span><input type="file" id="photo-file-input" accept="image/*" style="display:none;">';
+  document.getElementById('photo-preview-area').innerHTML = '<span>당신의 지금을 자랑해주세요</span><input type="file" id="photo-file-input" accept="image/*" style="display:none;">';
   document.getElementById('photo-text-input').value = '';
   rebindFileInput();
 });
