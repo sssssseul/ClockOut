@@ -217,6 +217,30 @@
   .king-nick { font-size: 11px; color: #1a1a18; font-weight: 400; flex: 1; min-width: 0; }
   .king-count { font-size: 9px; color: #993556; background: #fce8f0; padding: 1px 5px; border-radius: 99px; flex-shrink: 0; white-space: nowrap; }
   .king-divider { display: none !important; }
+  .photo-carousel-card { background: #fff; border: 0.5px solid #f4c0d1; border-radius: 12px; padding: 12px 14px; margin-top: 8px; margin-bottom: 8px; }
+  .photo-carousel-header { font-size: 11px; color: #888780; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; gap: 5px; }
+  .photo-carousel-wrap { overflow: hidden; position: relative; }
+  .photo-carousel-track { display: flex; transition: transform 0.3s ease; }
+  .photo-card-item { flex: 0 0 100%; display: flex; align-items: stretch; background: #f9f9f7; border-radius: 10px; overflow: hidden; min-height: 80px; }
+  .photo-card-img { width: 90px; height: 90px; object-fit: cover; flex-shrink: 0; background: #f4c0d1; }
+  .photo-card-info { padding: 10px 12px; flex: 1; display: flex; flex-direction: column; justify-content: space-between; min-width: 0; }
+  .photo-card-nick { font-size: 11px; color: #993556; font-weight: 500; }
+  .photo-card-text { font-size: 13px; color: #1a1a18; line-height: 1.4; word-break: break-all; }
+  .photo-card-time { font-size: 10px; color: #aaa; }
+  .photo-carousel-dots { display: flex; justify-content: center; gap: 4px; margin-top: 8px; }
+  .photo-dot { width: 6px; height: 6px; border-radius: 99px; background: #f4c0d1; cursor: pointer; transition: background 0.2s; }
+  .photo-dot.active { background: #993556; width: 14px; }
+  .photo-upload-btn { font-size: 10px; color: #993556; background: #fce8f0; border: none; border-radius: 99px; padding: 2px 10px; cursor: pointer; font-family: 'Noto Sans KR', sans-serif; }
+  .photo-upload-modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.4); z-index: 100; justify-content: center; align-items: center; }
+  .photo-upload-box { background: #fff; border-radius: 16px; padding: 20px; width: 90%; max-width: 360px; display: flex; flex-direction: column; gap: 10px; }
+  .photo-upload-box h3 { font-size: 13px; color: #993556; margin: 0; }
+  .photo-preview { width: 100%; height: 160px; background: #fce8f0; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 32px; cursor: pointer; overflow: hidden; }
+  .photo-preview img { width: 100%; height: 100%; object-fit: cover; }
+  .photo-text-input { font-size: 12px; border: 0.5px solid #f4c0d1; border-radius: 8px; padding: 8px 10px; font-family: 'Noto Sans KR', sans-serif; outline: none; resize: none; width: 100%; box-sizing: border-box; }
+  .photo-upload-actions { display: flex; gap: 8px; }
+  .photo-submit-btn { flex: 1; background: #993556; color: #fff; border: none; border-radius: 8px; padding: 8px; font-size: 12px; cursor: pointer; font-family: 'Noto Sans KR', sans-serif; }
+  .photo-cancel-btn { flex: 1; background: #f9f9f7; color: #888780; border: 0.5px solid #e0dfd8; border-radius: 8px; padding: 8px; font-size: 12px; cursor: pointer; font-family: 'Noto Sans KR', sans-serif; }
+  .photo-empty { text-align: center; color: #aaa; font-size: 12px; padding: 20px 0; }
 </style>
 </head>
 <body>
@@ -322,31 +346,6 @@
     </div>
   </div>
 
-
-  .photo-carousel-card { background: #fff; border: 0.5px solid #f4c0d1; border-radius: 12px; padding: 12px 14px; margin-top: 8px; margin-bottom: 8px; }
-  .photo-carousel-header { font-size: 11px; color: #888780; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; gap: 5px; }
-  .photo-carousel-wrap { overflow: hidden; position: relative; }
-  .photo-carousel-track { display: flex; transition: transform 0.3s ease; }
-  .photo-card-item { flex: 0 0 100%; display: flex; align-items: stretch; background: #f9f9f7; border-radius: 10px; overflow: hidden; min-height: 80px; }
-  .photo-card-img { width: 90px; height: 90px; object-fit: cover; flex-shrink: 0; background: #f4c0d1; }
-  .photo-card-info { padding: 10px 12px; flex: 1; display: flex; flex-direction: column; justify-content: space-between; min-width: 0; }
-  .photo-card-nick { font-size: 11px; color: #993556; font-weight: 500; }
-  .photo-card-text { font-size: 13px; color: #1a1a18; line-height: 1.4; word-break: break-all; }
-  .photo-card-time { font-size: 10px; color: #aaa; }
-  .photo-carousel-dots { display: flex; justify-content: center; gap: 4px; margin-top: 8px; }
-  .photo-dot { width: 6px; height: 6px; border-radius: 99px; background: #f4c0d1; cursor: pointer; transition: background 0.2s; }
-  .photo-dot.active { background: #993556; width: 14px; }
-  .photo-upload-btn { font-size: 10px; color: #993556; background: #fce8f0; border: none; border-radius: 99px; padding: 2px 10px; cursor: pointer; font-family: 'Noto Sans KR', sans-serif; }
-  .photo-upload-modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.4); z-index: 100; justify-content: center; align-items: center; }
-  .photo-upload-box { background: #fff; border-radius: 16px; padding: 20px; width: 90%; max-width: 360px; display: flex; flex-direction: column; gap: 10px; }
-  .photo-upload-box h3 { font-size: 13px; color: #993556; margin: 0; }
-  .photo-preview { width: 100%; height: 160px; background: #fce8f0; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 32px; cursor: pointer; overflow: hidden; }
-  .photo-preview img { width: 100%; height: 100%; object-fit: cover; }
-  .photo-text-input { font-size: 12px; border: 0.5px solid #f4c0d1; border-radius: 8px; padding: 8px 10px; font-family: 'Noto Sans KR', sans-serif; outline: none; resize: none; width: 100%; box-sizing: border-box; }
-  .photo-upload-actions { display: flex; gap: 8px; }
-  .photo-submit-btn { flex: 1; background: #993556; color: #fff; border: none; border-radius: 8px; padding: 8px; font-size: 12px; cursor: pointer; font-family: 'Noto Sans KR', sans-serif; }
-  .photo-cancel-btn { flex: 1; background: #f9f9f7; color: #888780; border: 0.5px solid #e0dfd8; border-radius: 8px; padding: 8px; font-size: 12px; cursor: pointer; font-family: 'Noto Sans KR', sans-serif; }
-  .photo-empty { text-align: center; color: #aaa; font-size: 12px; padding: 20px 0; }
 
   <!-- 사진 캐러셀 -->
   <div class="photo-carousel-card">
