@@ -387,6 +387,28 @@ def post_photo():
     conn.close()
     return jsonify({"ok": True})
 
+@app.route('/api/photos/<int:photo_id>/edit', methods=['POST'])
+def edit_photo(photo_id):
+    data = request.get_json(force=True)
+    nickname = (data.get('nickname') or '').strip()
+    text = (data.get('text') or '').strip()
+    image = data.get('image', '')
+    conn = get_db()
+    cur = conn.cursor()
+    cur.execute('SELECT nickname FROM photos WHERE id = %s', (photo_id,))
+    row = cur.fetchone()
+    if not row or row[0] != nickname:
+        cur.close(); conn.close()
+        return jsonify({"error": "unauthorized"}), 401
+    if image:
+        cur.execute('UPDATE photos SET text = %s, image = %s WHERE id = %s', (text, image, photo_id))
+    else:
+        cur.execute('UPDATE photos SET text = %s WHERE id = %s', (text, photo_id))
+    conn.commit()
+    cur.close()
+    conn.close()
+    return jsonify({"ok": True})
+
 @app.route('/api/photos/<int:photo_id>', methods=['DELETE'])
 def delete_photo(photo_id):
     data = request.get_json(force=True)
