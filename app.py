@@ -76,6 +76,12 @@ def init_db():
         )
     ''')
     cur.execute('''
+        CREATE TABLE IF NOT EXISTS nickname_passwords (
+            nickname TEXT PRIMARY KEY,
+            password TEXT NOT NULL
+        )
+    ''')
+    cur.execute('''
         CREATE TABLE IF NOT EXISTS photos (
             id SERIAL PRIMARY KEY,
             nickname TEXT NOT NULL,
@@ -317,6 +323,42 @@ def post_notice():
     cur.close()
     conn.close()
     return jsonify({"ok": True, "text": text})
+
+@app.route('/api/nicknames', methods=['GET'])
+def get_nicknames():
+    conn = get_db()
+    cur = conn.cursor()
+    cur.execute('SELECT DISTINCT nickname FROM guestbook ORDER BY nickname')
+    rows = cur.fetchall()
+    cur.close()
+    conn.close()
+    return jsonify({"nicknames": [r[0] for r in rows]})
+
+@app.route('/api/nickname-auth', methods=['POST'])
+def nickname_auth():
+    data = request.get_json(force=True)
+    nickname = (data.get('nickname') or '').strip()
+    password = (data.get('password') or '').strip()
+    if not nickname or not password:
+        return jsonify({"error": "missing"}), 400
+    conn = get_db()
+    cur = conn.cursor()
+    cur.execute('SELECT password FROM nickname_passwords WHERE nickname = %s', (nickname,))
+    row = cur.fetchone()
+    if row is None:
+        # 비번 없는 닉네임 → 새로 등록
+        cur.execute('INSERT INTO nickname_passwords (nickname, password) VALUES (%s, %s)', (nickname, password))
+        conn.commit()
+        cur.close()
+        conn.close()
+        return jsonify({"ok": True, "new": True})
+    else:
+        cur.close()
+        conn.close()
+        if row[0] == password:
+            return jsonify({"ok": True, "new": False})
+        else:
+            return jsonify({"error": "wrong password"}), 401
 
 @app.route('/api/photos', methods=['GET'])
 def get_photos():
