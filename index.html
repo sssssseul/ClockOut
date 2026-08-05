@@ -90,6 +90,8 @@
   .notice-edit-btn { position: absolute; right: 6px; top: 50%; transform: translateY(-50%); background: none; border: none; color: #7f1d1d; font-size: 13px; padding: 0; cursor: pointer; display: none; }
   @keyframes shake { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-3px)} 40%{transform:translateX(3px)} 60%{transform:translateX(-2px)} 80%{transform:translateX(2px)} }
   .chat-nickname { font-size: 11px; color: rgb(153,53,86); background: rgb(252,232,241); padding: 2px 8px; border-radius: 99px; font-family: 'Noto Sans KR', sans-serif; cursor: pointer; }
+  .photo-view-modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.85); z-index: 200; justify-content: center; align-items: center; }
+  .photo-view-img { max-width: 95vw; max-height: 90vh; border-radius: 12px; object-fit: contain; }
   .nick-modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.4); z-index: 100; justify-content: center; align-items: center; }
   .nick-box { background: #fff; border-radius: 16px; padding: 20px; width: 90%; max-width: 360px; display: flex; flex-direction: column; gap: 10px; max-height: 80vh; }
   .nick-box h3 { font-size: 13px; color: #993556; margin: 0; }
@@ -230,8 +232,8 @@
   .photo-carousel-header { font-size: 11px; color: #888780; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; gap: 5px; }
   .photo-carousel-wrap { overflow: hidden; position: relative; }
   .photo-carousel-track { display: flex; transition: transform 0.3s ease; }
-  .photo-card-item { flex: 0 0 100%; display: flex; align-items: stretch; background: #f9f9f7; border-radius: 10px; overflow: hidden; min-height: 80px; }
-  .photo-card-img { width: 90px; height: 90px; object-fit: cover; flex-shrink: 0; background: #f4c0d1; }
+  .photo-card-item { flex: 0 0 100%; display: flex; align-items: stretch; background: #f9f9f7; border-radius: 10px; overflow: hidden; min-height: 60px; }
+  .photo-card-img { width: 60px; height: 60px; object-fit: cover; flex-shrink: 0; background: #f4c0d1; cursor: pointer; }
   .photo-card-info { padding: 10px 12px; flex: 1; display: flex; flex-direction: column; justify-content: space-between; min-width: 0; }
   .photo-card-nick { font-size: 11px; color: #993556; font-weight: 500; }
   .photo-card-text { font-size: 13px; color: #1a1a18; line-height: 1.4; word-break: break-all; }
@@ -382,6 +384,11 @@
         <button class="photo-submit-btn" id="photo-submit-btn">올리기</button>
       </div>
     </div>
+  </div>
+
+  <!-- 사진 크게 보기 모달 -->
+  <div class="photo-view-modal" id="photo-view-modal" onclick="this.style.display='none'">
+    <img class="photo-view-img" id="photo-view-img" src="" alt="">
   </div>
 
   <div class="chat-card">
@@ -720,10 +727,13 @@ let photos = [];
 
 function fmtPhotoTime(ts){
   const d = new Date(ts*1000);
+  const yy = String(d.getFullYear()).slice(-2);
+  const mm = String(d.getMonth()+1).padStart(2,'0');
+  const dd = String(d.getDate()).padStart(2,'0');
   const h = d.getHours(), m = d.getMinutes();
   const ampm = h < 12 ? '오전' : '오후';
   const hh = h===0?12:h>12?h-12:h;
-  return ampm+' '+hh+':'+String(m).padStart(2,'0');
+  return yy+'-'+mm+'-'+dd+' '+ampm+' '+hh+':'+String(m).padStart(2,'0');
 }
 
 function renderCarousel(){
@@ -736,13 +746,17 @@ function renderCarousel(){
   }
   track.innerHTML = photos.map((p,i) => {
     const nick = addEmojiToNickname(p.nickname);
-    const delBtn = (isAdmin || nick === myNickname) 
-      ? `<button onclick="deletePhoto(${p.id}, '${nick}')" style="background:none;border:none;color:#ccc;cursor:pointer;font-size:11px;padding:0;">🗑️</button>` : '';
+    const isMine = nick === myNickname;
+    const delBtn = (isAdmin || isMine) 
+      ? `<button onclick="deletePhoto(${p.id})" style="background:none;border:none;color:#ccc;cursor:pointer;font-size:11px;padding:0;">🗑️</button>` : '';
+    const editBtn = isMine
+      ? `<button onclick="editPhoto(${p.id})" style="background:none;border:none;color:#ccc;cursor:pointer;font-size:11px;padding:0;">✏️</button>` : '';
     return `<div class="photo-card-item">
-      <img class="photo-card-img" src="${p.image}" alt="">
+      <img class="photo-card-img" src="${p.image}" alt="" onclick="document.getElementById('photo-view-img').src='${p.image}';document.getElementById('photo-view-modal').style.display='flex';" >
       <div class="photo-card-info">
         <div style="display:flex;justify-content:space-between;align-items:center;">
-          <span class="photo-card-nick">${escapeHtml(nick)}</span>${delBtn}
+          <span class="photo-card-nick">${escapeHtml(nick)}</span>
+          <div style="display:flex;gap:4px;">${editBtn}${delBtn}</div>
         </div>
         <div class="photo-card-text">${escapeHtml(p.text||'')}</div>
         <div class="photo-card-time">${fmtPhotoTime(p.ts)}</div>
@@ -758,6 +772,21 @@ function renderCarousel(){
 function goToPhoto(idx){
   photoIndex = idx;
   renderCarousel();
+}
+
+async function editPhoto(id){
+  const p = photos.find(x => x.id === id);
+  if(!p) return;
+  const modal = document.getElementById("photo-modal");
+  const previewArea = document.getElementById("photo-preview-area");
+  const textInput = document.getElementById("photo-text-input");
+  selectedImageBase64 = p.image;
+  previewArea.innerHTML = `<img src="${p.image}"><input type="file" id="photo-file-input" accept="image/*" style="display:none;">`;
+  textInput.value = p.text || "";
+  modal.style.display = "flex";
+  const submitBtn = document.getElementById("photo-submit-btn");
+  submitBtn.textContent = "수정하기";
+  submitBtn._editId = id;
 }
 
 async function deletePhoto(id, nick){
@@ -789,6 +818,9 @@ document.getElementById('photo-upload-btn').addEventListener('click', ()=>{
 document.getElementById('photo-cancel-btn').addEventListener('click', ()=>{
   document.getElementById('photo-modal').style.display = 'none';
   selectedImageBase64 = '';
+  const submitBtn = document.getElementById('photo-submit-btn');
+  submitBtn._editId = null;
+  submitBtn.textContent = '올리기';
   document.getElementById('photo-preview-area').innerHTML = '<span>당신의 지금을 자랑해주세요</span><input type="file" id="photo-file-input" accept="image/*" style="display:none;">';
   document.getElementById('photo-text-input').value = '';
   rebindFileInput();
@@ -828,14 +860,25 @@ document.getElementById('photo-file-input').addEventListener('change', handleFil
 document.getElementById('photo-submit-btn').addEventListener('click', async()=>{
   if(!selectedImageBase64){ alert('사진을 선택해주세요!'); return; }
   const text = document.getElementById('photo-text-input').value.trim();
+  const submitBtn = document.getElementById('photo-submit-btn');
+  const editId = submitBtn._editId;
   try{
-    await fetch('/api/photos', {
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({nickname: myNickname, text, image: selectedImageBase64})
-    });
+    if(editId){
+      await fetch('/api/photos/'+editId+'/edit', {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({nickname: myNickname, text, image: selectedImageBase64})
+      });
+      submitBtn._editId = null;
+      submitBtn.textContent = '올리기';
+    } else {
+      await fetch('/api/photos', {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({nickname: myNickname, text, image: selectedImageBase64})
+      });
+    }
     document.getElementById('photo-cancel-btn').click();
     loadPhotos();
-  }catch(e){ alert('업로드 실패'); }
+  }catch(e){ alert('실패'); }
 });
 
 // --- 닉네임 변경 ---
