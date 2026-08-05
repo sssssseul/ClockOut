@@ -89,7 +89,16 @@
   .notice-inner span { display: inline-block; vertical-align: middle; background: linear-gradient(transparent 38%, rgba(255,150,180,0.55) 38%); padding: 0 3px; }
   .notice-edit-btn { position: absolute; right: 6px; top: 50%; transform: translateY(-50%); background: none; border: none; color: #7f1d1d; font-size: 13px; padding: 0; cursor: pointer; display: none; }
   @keyframes shake { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-3px)} 40%{transform:translateX(3px)} 60%{transform:translateX(-2px)} 80%{transform:translateX(2px)} }
-  .chat-nickname { font-size: 11px; color: rgb(153,53,86); background: rgb(252,232,241); padding: 2px 8px; border-radius: 99px; font-family: 'Noto Sans KR', sans-serif; }
+  .chat-nickname { font-size: 11px; color: rgb(153,53,86); background: rgb(252,232,241); padding: 2px 8px; border-radius: 99px; font-family: 'Noto Sans KR', sans-serif; cursor: pointer; }
+  .nick-modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.4); z-index: 100; justify-content: center; align-items: center; }
+  .nick-box { background: #fff; border-radius: 16px; padding: 20px; width: 90%; max-width: 360px; display: flex; flex-direction: column; gap: 10px; max-height: 80vh; }
+  .nick-box h3 { font-size: 13px; color: #993556; margin: 0; }
+  .nick-list { overflow-y: auto; max-height: 240px; display: flex; flex-direction: column; gap: 4px; }
+  .nick-item { font-size: 12px; padding: 8px 12px; border-radius: 8px; cursor: pointer; background: #f9f9f7; color: #1a1a18; }
+  .nick-item:hover { background: #fce8f0; color: #993556; }
+  .nick-pw-input { font-size: 12px; border: 0.5px solid #f4c0d1; border-radius: 8px; padding: 8px 10px; font-family: 'Noto Sans KR', sans-serif; outline: none; width: 100%; box-sizing: border-box; }
+  .nick-confirm-btn { background: #993556; color: #fff; border: none; border-radius: 8px; padding: 8px; font-size: 12px; cursor: pointer; font-family: 'Noto Sans KR', sans-serif; }
+  .nick-cancel-btn { background: #f9f9f7; color: #888780; border: 0.5px solid #e0dfd8; border-radius: 8px; padding: 8px; font-size: 12px; cursor: pointer; font-family: 'Noto Sans KR', sans-serif; }
   .chat-messages { display: flex; flex-direction: column; margin-bottom: 8px; }
   .chat-thread-group { display: flex; flex-direction: column; gap: 6px; width: 100%; position: relative; margin-bottom: 6px; }
   .chat-thread-group:last-child { margin-bottom: 0; }
@@ -381,6 +390,23 @@
       <!-- <span style="font-size:10.5px; color:#1a1a18; text-align:center; white-space:nowrap;">🍓 심한 욕 쓰면 삭제합니다 🍓</span> -->
       <div style="display:flex; align-items:center; gap:6px;">
         <span class="chat-nickname" id="my-nickname">익명</span>
+
+  <!-- 닉네임 변경 모달 -->
+  <div class="nick-modal" id="nick-modal">
+    <div class="nick-box">
+      <h3>닉네임 변경</h3>
+      <div class="nick-list" id="nick-list"></div>
+      <div id="nick-pw-area" style="display:none; flex-direction:column; gap:8px;">
+        <div style="font-size:11px;color:#888780;" id="nick-pw-label"></div>
+        <input class="nick-pw-input" type="password" id="nick-pw-input" placeholder="비밀번호 입력">
+        <div style="display:flex;gap:8px;">
+          <button class="nick-cancel-btn" id="nick-pw-back">← 뒤로</button>
+          <button class="nick-confirm-btn" id="nick-pw-confirm">확인</button>
+        </div>
+      </div>
+      <button class="nick-cancel-btn" id="nick-modal-close" style="margin-top:4px;">닫기</button>
+    </div>
+  </div>
         <button id="admin-btn" class="admin-btn" title="관리자">🔑</button>
         <button id="chat-refresh" class="chat-refresh-btn"><i class="ti ti-refresh" style="font-size:13px"></i></button>
       </div>
@@ -808,6 +834,65 @@ document.getElementById('photo-submit-btn').addEventListener('click', async()=>{
     document.getElementById('photo-cancel-btn').click();
     loadPhotos();
   }catch(e){ alert('업로드 실패'); }
+});
+
+// --- 닉네임 변경 ---
+let selectedNick = '';
+document.getElementById('my-nickname').addEventListener('click', async()=>{
+  if(isAdmin) return;
+  const modal = document.getElementById('nick-modal');
+  const list = document.getElementById('nick-list');
+  const pwArea = document.getElementById('nick-pw-area');
+  list.innerHTML = '<div style="font-size:12px;color:#aaa;text-align:center;padding:12px;">불러오는 중...</div>';
+  pwArea.style.display = 'none';
+  modal.style.display = 'flex';
+  try{
+    const res = await fetch('/api/nicknames');
+    const data = await res.json();
+    const nicks = (data.nicknames || []).map(n => addEmojiToNickname(n));
+    list.innerHTML = nicks.map(n => `<div class="nick-item" data-nick="${n}">${n}</div>`).join('');
+    list.querySelectorAll('.nick-item').forEach(el => {
+      el.addEventListener('click', ()=>{
+        selectedNick = el.dataset.nick;
+        list.style.display = 'none';
+        document.getElementById('nick-pw-label').textContent = 
+          `"${selectedNick}" 선택됨\n처음이면 새 비밀번호를 설정해주세요.`;
+        document.getElementById('nick-pw-input').value = '';
+        pwArea.style.display = 'flex';
+      });
+    });
+  }catch(e){
+    list.innerHTML = '<div style="font-size:12px;color:#aaa;text-align:center;padding:12px;">불러오기 실패</div>';
+  }
+});
+document.getElementById('nick-modal-close').addEventListener('click', ()=>{
+  document.getElementById('nick-modal').style.display = 'none';
+  document.getElementById('nick-list').style.display = 'flex';
+  document.getElementById('nick-pw-area').style.display = 'none';
+});
+document.getElementById('nick-pw-back').addEventListener('click', ()=>{
+  document.getElementById('nick-list').style.display = 'flex';
+  document.getElementById('nick-pw-area').style.display = 'none';
+});
+document.getElementById('nick-pw-confirm').addEventListener('click', async()=>{
+  const pw = document.getElementById('nick-pw-input').value.trim();
+  if(!pw){ alert('비밀번호를 입력해주세요!'); return; }
+  try{
+    const res = await fetch('/api/nickname-auth', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({nickname: selectedNick, password: pw})
+    });
+    if(res.ok){
+      myNickname = selectedNick;
+      localStorage.setItem('clockout-nickname', myNickname);
+      document.getElementById('my-nickname').textContent = myNickname;
+      document.getElementById('nick-modal').style.display = 'none';
+      document.getElementById('nick-list').style.display = 'flex';
+      document.getElementById('nick-pw-area').style.display = 'none';
+    } else {
+      alert('비밀번호가 틀렸어요!');
+    }
+  }catch(e){ alert('오류 발생'); }
 });
 
 async function loadNotice(){
