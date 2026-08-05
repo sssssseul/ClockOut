@@ -85,7 +85,7 @@
     .lotso-img { width: 130px; bottom: 20px; right: 10px; }
     .lotso-img2 { display: block; width: 100px; top: 60px; left: 10px; }
   }
-  .notice-inner { display: inline-block; white-space: nowrap; font-size: 13px; font-weight: 400; color: #1a1a18; padding: 0; animation: shake 0.8s ease-in-out infinite; }
+  .notice-inner { display: inline-block; white-space: nowrap; font-size: 11.5px; font-weight: 400; color: #1a1a18; padding: 0; animation: shake 0.8s ease-in-out infinite; }
   .notice-inner span { display: inline-block; vertical-align: middle; background: linear-gradient(transparent 38%, rgba(255,150,180,0.55) 38%); padding: 0 3px; }
   .notice-edit-btn { position: absolute; right: 6px; top: 50%; transform: translateY(-50%); background: none; border: none; color: #7f1d1d; font-size: 13px; padding: 0; cursor: pointer; display: none; }
   @keyframes shake { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-3px)} 40%{transform:translateX(3px)} 60%{transform:translateX(-2px)} 80%{transform:translateX(2px)} }
@@ -390,6 +390,10 @@
       <!-- <span style="font-size:10.5px; color:#1a1a18; text-align:center; white-space:nowrap;">🍓 심한 욕 쓰면 삭제합니다 🍓</span> -->
       <div style="display:flex; align-items:center; gap:6px;">
         <span class="chat-nickname" id="my-nickname">익명</span>
+        <button id="admin-btn" class="admin-btn" title="관리자">🔑</button>
+        <button id="chat-refresh" class="chat-refresh-btn"><i class="ti ti-refresh" style="font-size:13px"></i></button>
+      </div>
+    </div>
 
   <!-- 닉네임 변경 모달 -->
   <div class="nick-modal" id="nick-modal">
@@ -407,10 +411,6 @@
       <button class="nick-cancel-btn" id="nick-modal-close" style="margin-top:4px;">닫기</button>
     </div>
   </div>
-        <button id="admin-btn" class="admin-btn" title="관리자">🔑</button>
-        <button id="chat-refresh" class="chat-refresh-btn"><i class="ti ti-refresh" style="font-size:13px"></i></button>
-      </div>
-    </div>
     <div class="notice-wrap" id="notice-wrap">
       <div class="notice-inner" id="notice-inner"></div>
       <button class="notice-edit-btn" id="notice-edit-btn">✏️</button>
@@ -637,6 +637,8 @@ const noticeWrap=document.getElementById('notice-wrap');
 const noticeInner=document.getElementById('notice-inner');
 const noticeEditBtn=document.getElementById('notice-edit-btn');
 function buildMarquee(text){
+  const fontSize = text.length > 20 ? '10.5px' : '11.5px';
+  noticeInner.style.fontSize = fontSize;
   noticeInner.innerHTML = '🌼 <span>' + escapeHtml(text) + '</span> 🌼';
 }
 async function loadTopCommenters(){
