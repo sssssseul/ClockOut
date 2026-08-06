@@ -644,7 +644,8 @@ const noticeWrap=document.getElementById('notice-wrap');
 const noticeInner=document.getElementById('notice-inner');
 const noticeEditBtn=document.getElementById('notice-edit-btn');
 function buildMarquee(text){
-  const fontSize = text.length > 20 ? '10.5px' : '11.5px';
+  const isMobile = window.innerWidth < 600;
+  const fontSize = isMobile && text.length > 20 ? '10.5px' : '13px';
   noticeInner.style.fontSize = fontSize;
   noticeInner.innerHTML = '🌼 <span>' + escapeHtml(text) + '</span> 🌼';
 }
