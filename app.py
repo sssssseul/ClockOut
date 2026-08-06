@@ -99,8 +99,8 @@ def init_db():
         CREATE TABLE IF NOT EXISTS visitors (
             id SERIAL PRIMARY KEY,
             date TEXT NOT NULL,
-            ip TEXT NOT NULL,
-            UNIQUE(date, ip)
+            nickname TEXT NOT NULL,
+            UNIQUE(date, nickname)
         )
     ''')
     conn.commit()
@@ -111,17 +111,6 @@ init_db()
 
 @app.route('/')
 def index():
-    try:
-        conn = get_db()
-        cur = conn.cursor()
-        today = get_kst_today()
-        ip = request.headers.get('X-Forwarded-For', request.remote_addr).split(',')[0].strip()
-        cur.execute('INSERT INTO visitors (date, ip) VALUES (%s, %s) ON CONFLICT DO NOTHING', (today, ip))
-        conn.commit()
-        cur.close()
-        conn.close()
-    except:
-        pass
     return send_file('index.html')
 
 @app.route('/lotso.png')
@@ -142,8 +131,17 @@ def manifest():
 
 @app.route('/api/nickname')
 def api_nickname():
+    existing = request.args.get('existing', '').strip()
     conn = get_db()
     cur = conn.cursor()
+    today = get_kst_today()
+    if existing:
+        # 이미 닉네임 있는 사람 - 방문자 기록만
+        cur.execute('INSERT INTO visitors (date, nickname) VALUES (%s, %s) ON CONFLICT DO NOTHING', (today, existing))
+        conn.commit()
+        cur.close()
+        conn.close()
+        return jsonify({"nickname": existing})
     cur.execute('SELECT DISTINCT nickname FROM guestbook')
     used = set(row[0] for row in cur.fetchall())
     nickname = None
@@ -156,8 +154,8 @@ def api_nickname():
             break
     if not nickname:
         nickname = gen_nickname()
-    # 닉네임 저장
     cur.execute('INSERT INTO guestbook_nicknames (nickname) VALUES (%s) ON CONFLICT DO NOTHING', (nickname,))
+    cur.execute('INSERT INTO visitors (date, nickname) VALUES (%s, %s) ON CONFLICT DO NOTHING', (today, nickname))
     conn.commit()
     cur.close()
     conn.close()
