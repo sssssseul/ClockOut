@@ -191,6 +191,7 @@ def post_guestbook():
     cur = conn.cursor()
     cur.execute('INSERT INTO guestbook (nickname, text, ts, has_siren, has_boom, parent_id) VALUES (%s, %s, %s, FALSE, FALSE, %s)',
                 (nickname, text, time.time(), parent_id))
+    cur.execute('INSERT INTO guestbook_nicknames (nickname) VALUES (%s) ON CONFLICT DO NOTHING', (nickname,))
     conn.commit()
     cur.close()
     conn.close()
@@ -345,6 +346,8 @@ def get_nicknames():
         SELECT nickname FROM guestbook_nicknames
         UNION
         SELECT DISTINCT nickname FROM guestbook
+        UNION
+        SELECT DISTINCT nickname FROM photos
         ORDER BY nickname
     ''')
     rows = cur.fetchall()
@@ -400,6 +403,7 @@ def post_photo():
     cur = conn.cursor()
     cur.execute('INSERT INTO photos (nickname, text, image, ts) VALUES (%s, %s, %s, %s)',
                 (nickname, text, image, time.time()))
+    cur.execute('INSERT INTO guestbook_nicknames (nickname) VALUES (%s) ON CONFLICT DO NOTHING', (nickname,))
     conn.commit()
     cur.close()
     conn.close()
