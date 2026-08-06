@@ -828,10 +828,8 @@ document.getElementById('photo-cancel-btn').addEventListener('click', ()=>{
   rebindFileInput();
 });
 function rebindFileInput(){
-  document.getElementById('photo-preview-area').addEventListener('click', ()=>{
-    document.getElementById('photo-file-input').click();
-  });
-  document.getElementById('photo-file-input').addEventListener('change', handleFileSelect);
+  const inp = document.getElementById('photo-file-input');
+  if(inp) inp.addEventListener('change', handleFileSelect);
 }
 function handleFileSelect(e){
   const file = e.target.files[0];
@@ -854,7 +852,19 @@ function handleFileSelect(e){
       ctx.fillRect(0, 0, w, h);
       ctx.drawImage(img, 0, 0, w, h);
       selectedImageBase64 = canvas.toDataURL("image/jpeg", 0.95);
-      document.getElementById('photo-preview-area').innerHTML = `<img src="${selectedImageBase64}">`;
+      // 미리보기 업데이트 - input 태그 유지
+      const previewArea = document.getElementById('photo-preview-area');
+      let imgEl = previewArea.querySelector('img');
+      if(!imgEl){
+        imgEl = document.createElement('img');
+        imgEl.style.width = '100%';
+        imgEl.style.height = '100%';
+        imgEl.style.objectFit = 'cover';
+        const span = previewArea.querySelector('span');
+        if(span) span.remove();
+        previewArea.insertBefore(imgEl, previewArea.firstChild);
+      }
+      imgEl.src = selectedImageBase64;
     };
     img.src = ev.target.result;
   };
