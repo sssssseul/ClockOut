@@ -787,6 +787,7 @@ async function editPhoto(id){
   const submitBtn = document.getElementById("photo-submit-btn");
   submitBtn.textContent = "수정하기";
   submitBtn._editId = id;
+  rebindFileInput();
 }
 
 async function deletePhoto(id, nick){
