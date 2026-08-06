@@ -771,9 +771,24 @@ function renderCarousel(){
 }
 
 function goToPhoto(idx){
-  photoIndex = idx;
+  photoIndex = Math.max(0, Math.min(idx, photos.length - 1));
   renderCarousel();
 }
+
+// 스와이프
+let _swipeStartX = 0;
+document.addEventListener('DOMContentLoaded', ()=>{
+  const w = document.querySelector('.photo-carousel-wrap');
+  if(!w) return;
+  w.addEventListener('touchstart', e=>{ _swipeStartX = e.touches[0].clientX; }, {passive:true});
+  w.addEventListener('touchend', e=>{
+    const diff = _swipeStartX - e.changedTouches[0].clientX;
+    if(Math.abs(diff) > 40){
+      if(diff > 0) goToPhoto(photoIndex + 1);
+      else goToPhoto(photoIndex - 1);
+    }
+  });
+});
 
 async function editPhoto(id){
   const p = photos.find(x => x.id === id);
