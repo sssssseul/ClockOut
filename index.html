@@ -397,7 +397,7 @@
       <span class="settings-label" style="margin:0;"><i class="ti ti-notebook" style="font-size:13px"></i> 방명록</span>
       <!-- <span style="font-size:10.5px; color:#1a1a18; text-align:center; white-space:nowrap;">🍓 심한 욕 쓰면 삭제합니다 🍓</span> -->
       <div style="display:flex; align-items:center; gap:6px;">
-        <span id="nick-hint" style="font-size:8.5px; color:#aaa; cursor:pointer; text-decoration:underline;">모든 기기에서 동일하게 사용하기 ➡️</span>
+        <span id="nick-hint" style="font-size:8px; color:#aaa; cursor:pointer; text-decoration:underline;">모든 기기에서 동일하게 사용 가능 ➡️</span>
         <span class="chat-nickname" id="my-nickname">익명</span>
         <button id="admin-btn" class="admin-btn" title="관리자">🔑</button>
         <button id="chat-refresh" class="chat-refresh-btn"><i class="ti ti-refresh" style="font-size:13px"></i></button>
@@ -930,7 +930,8 @@ document.getElementById('my-nickname').addEventListener('click', async()=>{
   try{
     const res = await fetch('/api/nicknames');
     const data = await res.json();
-    const nicks = (data.nicknames || []).map(n => addEmojiToNickname(n));
+    const nicks = [...new Set((data.nicknames || []).map(n => addEmojiToNickname(n)))];
+    nicks.sort();
     list.innerHTML = nicks.map(n => `<div class="nick-item" data-nick="${n}">${n}</div>`).join('');
     list.querySelectorAll('.nick-item').forEach(el => {
       el.addEventListener('click', ()=>{
