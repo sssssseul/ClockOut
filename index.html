@@ -841,10 +841,16 @@ function handleFileSelect(e){
       const canvas = document.createElement('canvas');
       const max = 800;
       let w = img.width, h = img.height;
-      if(w > max){ h = Math.round(h * max / w); w = max; }
-      if(h > max){ w = Math.round(w * max / h); h = max; }
+      if(w > h){
+        if(w > max){ h = Math.round(h * (max / w)); w = max; }
+      } else {
+        if(h > max){ w = Math.round(w * (max / h)); h = max; }
+      }
       canvas.width = w; canvas.height = h;
-      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, w, h);
+      ctx.drawImage(img, 0, 0, w, h);
       selectedImageBase64 = canvas.toDataURL("image/jpeg", 0.95);
       document.getElementById('photo-preview-area').innerHTML = `<img src="${selectedImageBase64}">`;
     };
