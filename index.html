@@ -90,6 +90,8 @@
   .notice-edit-btn { position: absolute; right: 6px; top: 50%; transform: translateY(-50%); background: none; border: none; color: #7f1d1d; font-size: 13px; padding: 0; cursor: pointer; display: none; }
   @keyframes shake { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-3px)} 40%{transform:translateX(3px)} 60%{transform:translateX(-2px)} 80%{transform:translateX(2px)} }
   .chat-nickname { font-size: 11px; color: rgb(153,53,86); background: rgb(252,232,241); padding: 2px 8px; border-radius: 99px; font-family: 'Noto Sans KR', sans-serif; cursor: pointer; }
+  .nick-emoji-wrap { position: relative; display: inline-block; font-size: 14px; line-height: 1; }
+  .nick-crown { position: absolute; top: -7px; left: 50%; transform: translateX(-50%); font-size: 8px; pointer-events: none; }
   .photo-view-modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.85); z-index: 200; justify-content: center; align-items: center; }
   .photo-view-img { max-width: 95vw; max-height: 90vh; border-radius: 12px; object-fit: contain; }
   .nick-modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.4); z-index: 100; justify-content: center; align-items: center; }
@@ -397,7 +399,7 @@
       <span class="settings-label" style="margin:0;"><i class="ti ti-notebook" style="font-size:13px"></i> 방명록</span>
       <!-- <span style="font-size:10.5px; color:#1a1a18; text-align:center; white-space:nowrap;">🍓 심한 욕 쓰면 삭제합니다 🍓</span> -->
       <div style="display:flex; align-items:center; gap:6px;">
-        <span id="nick-hint" style="font-size:8px; color:#aaa; cursor:pointer; text-decoration:underline;">모든 기기에서 동일하게 사용하기 ➡️</span>
+        <span id="nick-hint" style="font-size:clamp(8px, 1.5vw, 10px); color:#aaa; cursor:pointer; text-decoration:underline;">모든 기기에서 동일하게 사용하기 ➡️</span>
         <span class="chat-nickname" id="my-nickname">익명</span>
         <button id="admin-btn" class="admin-btn" title="관리자">🔑</button>
         <button id="chat-refresh" class="chat-refresh-btn"><i class="ti ti-refresh" style="font-size:13px"></i></button>
@@ -1020,6 +1022,14 @@ if(myNickname){
   const withEmoji=addEmojiToNickname(myNickname);
   if(withEmoji!==myNickname){myNickname=withEmoji;localStorage.setItem('clockout-nickname',myNickname);}
 }
+function setNicknameDisplay(){
+  const el = document.getElementById('my-nickname');
+  if(myNickname === '🐳 졸린 고래'){
+    el.innerHTML = '<span class="nick-emoji-wrap">🐳<span class="nick-crown">👑</span></span> 졸린 고래';
+  } else {
+    el.textContent = myNickname;
+  }
+}
 async function ensureNickname(){
   if(myNickname){
     // 이미 닉네임 있으면 방문자 기록만
@@ -1032,7 +1042,7 @@ async function ensureNickname(){
       localStorage.setItem('clockout-nickname',myNickname);
     }catch(e){myNickname='익명';}
   }
-  document.getElementById('my-nickname').textContent=myNickname;
+  setNicknameDisplay();
 }
 function fmtChatTime(ts){
   const d=new Date(ts*1000);
@@ -1315,7 +1325,7 @@ document.getElementById('admin-btn').addEventListener('click',()=>{
   // 관리자 닉네임 고정
   myNickname='🐳 졸린 고래';
   localStorage.setItem('clockout-nickname', myNickname);
-  document.getElementById('my-nickname').textContent=myNickname;
+  setNicknameDisplay();
   document.getElementById('admin-btn').textContent='🔓';
   document.getElementById('admin-dashboard').style.display='block';
   loadStats();
