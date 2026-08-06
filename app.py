@@ -76,6 +76,11 @@ def init_db():
         )
     ''')
     cur.execute('''
+        CREATE TABLE IF NOT EXISTS guestbook_nicknames (
+            nickname TEXT PRIMARY KEY
+        )
+    ''')
+    cur.execute('''
         CREATE TABLE IF NOT EXISTS nickname_passwords (
             nickname TEXT PRIMARY KEY,
             password TEXT NOT NULL
@@ -141,15 +146,22 @@ def api_nickname():
     cur = conn.cursor()
     cur.execute('SELECT DISTINCT nickname FROM guestbook')
     used = set(row[0] for row in cur.fetchall())
-    cur.close()
-    conn.close()
+    nickname = None
     for _ in range(100):
         adj = random.choice(ADJ)
         noun = random.choice(NOUN)
-        nickname = ANIMAL_EMOJI[noun] + " " + adj + " " + noun
-        if nickname not in used:
-            return jsonify({"nickname": nickname})
-    return jsonify({"nickname": gen_nickname()})
+        candidate = ANIMAL_EMOJI[noun] + " " + adj + " " + noun
+        if candidate not in used:
+            nickname = candidate
+            break
+    if not nickname:
+        nickname = gen_nickname()
+    # 닉네임 저장
+    cur.execute('INSERT INTO guestbook_nicknames (nickname) VALUES (%s) ON CONFLICT DO NOTHING', (nickname,))
+    conn.commit()
+    cur.close()
+    conn.close()
+    return jsonify({"nickname": nickname})
 
 @app.route('/api/guestbook', methods=['GET'])
 def get_guestbook():
@@ -328,7 +340,13 @@ def post_notice():
 def get_nicknames():
     conn = get_db()
     cur = conn.cursor()
-    cur.execute('SELECT DISTINCT nickname FROM guestbook ORDER BY nickname')
+    # 배정된 닉네임 + 댓글 쓴 닉네임 합쳐서 반환
+    cur.execute('''
+        SELECT nickname FROM guestbook_nicknames
+        UNION
+        SELECT DISTINCT nickname FROM guestbook
+        ORDER BY nickname
+    ''')
     rows = cur.fetchall()
     cur.close()
     conn.close()
