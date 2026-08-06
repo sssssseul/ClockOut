@@ -213,6 +213,7 @@
   .chart-tabs { display: flex; gap: 6px; margin-bottom: 8px; }
   .chart-tab { font-size: 10px; padding: 2px 8px; border-radius: 99px; border: 1px solid #f4c0d1; color: #888780; cursor: pointer; background: none; font-family: 'Noto Sans KR', sans-serif; }
   .chart-tab.active { background: #fce8f0; color: #993556; border-color: #993556; }
+  .admin-btn { background: none; border: 0.5px solid #f4c0d1; border-radius: 6px; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 12px; }
   .admin-btn:hover { background: #f1efea; }
   
   .msg-action-btn { background: none; border: none; cursor: pointer; font-size: 11px; color: rgb(153,53,86); padding: 0; font-family: 'Noto Sans KR', sans-serif; margin-left: 8px; font-weight: 500; }
@@ -396,6 +397,7 @@
       <span class="settings-label" style="margin:0;"><i class="ti ti-notebook" style="font-size:13px"></i> 방명록</span>
       <!-- <span style="font-size:10.5px; color:#1a1a18; text-align:center; white-space:nowrap;">🍓 심한 욕 쓰면 삭제합니다 🍓</span> -->
       <div style="display:flex; align-items:center; gap:6px;">
+        <span id="nick-hint" style="font-size:8px; color:#aaa; cursor:pointer; text-decoration:underline;">닉네임 변경시 모든 기기에서 동일하게 사용 가능 ➡️</span>
         <span class="chat-nickname" id="my-nickname">익명</span>
         <button id="admin-btn" class="admin-btn" title="관리자">🔑</button>
         <button id="chat-refresh" class="chat-refresh-btn"><i class="ti ti-refresh" style="font-size:13px"></i></button>
@@ -918,7 +920,7 @@ document.getElementById('photo-submit-btn').addEventListener('click', async()=>{
 let selectedNick = '';
 document.getElementById('my-nickname').addEventListener('click', async()=>{
   if(isAdmin) return;
-  if(!confirm('닉네임 변경시 모든 기기/브라우저에서 동일 닉네임 사용 가능\n\n⚠️ 반드시 본인이 기존에 사용하던 닉네임을 선택하세요 ⚠️')) return;
+  if(!confirm('⚠️ 반드시 본인이 기존에 사용하던 닉네임을 선택하세요 ⚠️')) return;
   const modal = document.getElementById('nick-modal');
   const list = document.getElementById('nick-list');
   const pwArea = document.getElementById('nick-pw-area');
