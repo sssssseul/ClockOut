@@ -1777,9 +1777,12 @@ const FORTUNES = [
 ];
 
 function drawFortune(){
+  if(!myNickname || myNickname === '익명'){
+    alert('닉네임이 아직 배정되지 않았어요. 잠시 후 다시 눌러주세요!');
+    return;
+  }
   const todayKST = new Date(new Date().getTime()+9*60*60*1000).toISOString().slice(0,10);
-  const nick = document.getElementById("my-nickname").textContent.trim() || myNickname || "anon";
-  const fortuneKey = "clockout-fortune-"+todayKST+"-"+nick;
+  const fortuneKey = "clockout-fortune-"+todayKST+"-"+(myNickname||"anon");
   const el = document.getElementById('fortune-text');
   const btn = document.getElementById('fortune-btn');
   const stored = localStorage.getItem(fortuneKey);
@@ -2143,8 +2146,7 @@ tick();
 setInterval(tick,1000);
 function initFortune(){
   const todayKST = new Date(new Date().getTime()+9*60*60*1000).toISOString().slice(0,10);
-  const nick = document.getElementById("my-nickname").textContent.trim() || myNickname || "anon";
-  const fortuneKey = "clockout-fortune-"+todayKST+"-"+nick;
+  const fortuneKey = 'clockout-fortune-'+todayKST+'-'+(myNickname||'anon');
   const stored = localStorage.getItem(fortuneKey);
   if(stored){
     const el = document.getElementById('fortune-text');
