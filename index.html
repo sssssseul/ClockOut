@@ -1778,7 +1778,8 @@ const FORTUNES = [
 
 function drawFortune(){
   const todayKST = new Date(new Date().getTime()+9*60*60*1000).toISOString().slice(0,10);
-  const fortuneKey = 'clockout-fortune-'+todayKST+'-'+(myNickname||'anon');
+  const nick = document.getElementById("my-nickname").textContent.trim() || myNickname || "anon";
+  const fortuneKey = "clockout-fortune-"+todayKST+"-"+nick;
   const el = document.getElementById('fortune-text');
   const btn = document.getElementById('fortune-btn');
   const stored = localStorage.getItem(fortuneKey);
@@ -2142,7 +2143,8 @@ tick();
 setInterval(tick,1000);
 function initFortune(){
   const todayKST = new Date(new Date().getTime()+9*60*60*1000).toISOString().slice(0,10);
-  const fortuneKey = 'clockout-fortune-'+todayKST+'-'+(myNickname||'anon');
+  const nick = document.getElementById("my-nickname").textContent.trim() || myNickname || "anon";
+  const fortuneKey = "clockout-fortune-"+todayKST+"-"+nick;
   const stored = localStorage.getItem(fortuneKey);
   if(stored){
     const el = document.getElementById('fortune-text');
