@@ -1794,18 +1794,7 @@ function drawFortune(){
   localStorage.setItem(fortuneKey, el.innerHTML);
   btn.textContent = "🔮 오늘의 운세는 이미 확인했어요"; btn.style.opacity = "0.5"; btn.style.cursor = "default";
 }
-// 페이지 로드시 이미 뽑았으면 표시
-(function(){
-  const todayKST = new Date(new Date().getTime()+9*60*60*1000).toISOString().slice(0,10);
-  const fortuneKey = 'clockout-fortune-'+todayKST;
-  const stored = localStorage.getItem(fortuneKey);
-  if(stored){
-    const el = document.getElementById('fortune-text');
-    const btn = document.getElementById('fortune-btn');
-    el.innerHTML = stored;
-    btn.textContent = "🔮 오늘의 운세는 이미 확인했어요"; btn.style.opacity = "0.5"; btn.style.cursor = "default";
-  }
-})();
+
 
 async function ensureNickname(){
   if(myNickname){
@@ -2151,7 +2140,20 @@ document.getElementById('chat-refresh').addEventListener('click',loadGuestbook);
 
 tick();
 setInterval(tick,1000);
-ensureNickname().then(()=>{loadGuestbook();loadNotice();loadTopCommenters();loadPhotos();});
+function initFortune(){
+  const todayKST = new Date(new Date().getTime()+9*60*60*1000).toISOString().slice(0,10);
+  const fortuneKey = 'clockout-fortune-'+todayKST;
+  const stored = localStorage.getItem(fortuneKey);
+  if(stored){
+    const el = document.getElementById('fortune-text');
+    const btn = document.getElementById('fortune-btn');
+    el.innerHTML = stored;
+    btn.textContent = "🔮 오늘의 운세는 이미 확인했어요";
+    btn.style.opacity = "0.5";
+    btn.style.cursor = "default";
+  }
+}
+ensureNickname().then(()=>{loadGuestbook();loadNotice();loadTopCommenters();loadPhotos();initFortune();});
 </script>
 <style>
 @keyframes floatEmoji {
