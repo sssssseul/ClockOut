@@ -662,7 +662,7 @@ async function loadTopCommenters(){
       document.getElementById('kings-grid').style.display = 'grid';
       ['1','2','3'].forEach((r,i)=>{
         if(top[i]){
-          document.getElementById('king-nick-'+r).textContent = addEmojiToNickname(top[i].nickname);
+          document.getElementById('king-nick-'+r).innerHTML = addCrownToNickname(addEmojiToNickname(top[i].nickname));
           document.getElementById('king-count-'+r).textContent = top[i].count+'개';
           document.getElementById('king-'+r).style.display = 'flex';
         }
@@ -677,7 +677,7 @@ async function loadTopCommenters(){
       document.getElementById('kings-grid').style.display = 'grid';
       ['1','2','3'].forEach((r,i)=>{
         if(top2[i]){
-          document.getElementById('like-king-nick-'+r).textContent = addEmojiToNickname(top2[i].nickname);
+          document.getElementById('like-king-nick-'+r).innerHTML = addCrownToNickname(addEmojiToNickname(top2[i].nickname));
           document.getElementById('like-king-count-'+r).textContent = top2[i].count+'개';
           document.getElementById('like-king-'+r).style.display = 'flex';
         }
@@ -760,7 +760,7 @@ function renderCarousel(){
       <img class="photo-card-img" src="${p.image}" alt="" onclick="document.getElementById('photo-view-img').src='${p.image}';document.getElementById('photo-view-modal').style.display='flex';" >
       <div class="photo-card-info">
         <div style="display:flex;justify-content:space-between;align-items:center;">
-          <span class="photo-card-nick">${escapeHtml(nick)}</span>
+          <span class="photo-card-nick">${addCrownToNickname(nick)}</span>
           <div style="display:flex;gap:4px;">${editBtn}${delBtn}</div>
         </div>
         <div class="photo-card-text">${escapeHtml(p.text||'')}</div>
@@ -922,7 +922,7 @@ document.getElementById('photo-submit-btn').addEventListener('click', async()=>{
 let selectedNick = '';
 document.getElementById('my-nickname').addEventListener('click', async()=>{
   if(isAdmin) return;
-  if(!confirm('⚠️기존에 사용하던 닉네임을 선택하세요⚠️')) return;
+  if(!confirm('⚠️본인이 기존에 사용하던 닉네임을 선택하세요⚠️')) return;
   const modal = document.getElementById('nick-modal');
   const list = document.getElementById('nick-list');
   const pwArea = document.getElementById('nick-pw-area');
