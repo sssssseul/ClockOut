@@ -103,6 +103,13 @@ def init_db():
             UNIQUE(date, nickname)
         )
     ''')
+    # ip 컬럼 → nickname 컬럼 마이그레이션
+    try:
+        cur.execute('ALTER TABLE visitors ADD COLUMN IF NOT EXISTS nickname TEXT')
+        cur.execute('ALTER TABLE visitors DROP COLUMN IF EXISTS ip')
+        cur.execute('DELETE FROM visitors WHERE nickname IS NULL')
+    except:
+        pass
     conn.commit()
     cur.close()
     conn.close()
