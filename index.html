@@ -189,15 +189,17 @@
     position: relative; text-align: center; box-shadow: none;
     border-style: solid; border-width: 2px; border-color: #808080 #ffffff #ffffff #808080; padding: 3px 6px;
   }
-  .notice-inner { display: inline-block; white-space: nowrap; font-size: 11px; font-weight: normal; color: #000; padding: 0; font-family: 'Galmuri11', 'Press Start 2P', 'Courier New', monospace; animation: shake 0.8s ease-in-out infinite; }
+  .notice-inner { display: inline-block; white-space: nowrap; font-size: 11px; font-weight: bold; color: #000; padding: 0; font-family: 'Galmuri11', 'Press Start 2P', 'Courier New', monospace; animation: shake 0.8s ease-in-out infinite; }
   .notice-inner span { display: inline-block; vertical-align: middle; background: none; padding: 0 3px; color: #000; }
   .notice-edit-btn { position: absolute; right: 6px; top: 50%; transform: translateY(-50%); background: none; border: none; color: #000080; font-size: 13px; padding: 0; cursor: pointer; display: none; }
   @keyframes shake { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-3px)} 40%{transform:translateX(3px)} 60%{transform:translateX(-2px)} 80%{transform:translateX(2px)} }
 
   .chat-nickname {
-    font-size: 10px; color: #000; background: #c0c0c0; padding: 1px 8px;
+    font-size: 10px; color: #000; background: #c0c0c0; padding: 0 8px;
+    height: 24px; display: inline-flex; align-items: center;
     border-radius: 0; font-family: 'W98', Tahoma, sans-serif; cursor: pointer;
     border-style: solid; border-width: 2px; border-color: #ffffff #808080 #808080 #ffffff;
+    box-sizing: border-box;
   }
   .nick-emoji-wrap { position: relative; display: inline-block; font-size: 14px; line-height: 1; }
   .nick-crown { position: absolute; top: -5px; left: 35%; transform: translateX(-50%); font-size: 10px; pointer-events: none; }
@@ -423,9 +425,9 @@
     border-style: solid; border-width: 1px; border-color: #808080 #fff #fff #808080;
     gap: 6px; padding: 3px;
   }
-  .photo-card-img { width: 80px; height: 80px; object-fit: cover; flex-shrink: 0; background: #dfdfdf; cursor: pointer; margin-right: 0; border-style: solid; border-width: 1px; border-color: #808080 #fff #fff #808080; }
+  .photo-card-img { width: 80px; height: auto; align-self: stretch; object-fit: cover; flex-shrink: 0; background: #dfdfdf; cursor: pointer; margin-right: 0; border-style: solid; border-width: 1px; border-color: #808080 #fff #fff #808080; }
   .photo-card-info {
-    padding: 6px 8px; flex: 0 1 150px; max-width: 150px; display: flex; flex-direction: column; justify-content: space-between; min-width: 0;
+    padding: 6px 8px; flex: 1; display: flex; flex-direction: column; justify-content: space-between; min-width: 0;
     background: #fff; border-style: solid; border-width: 2px; border-color: #808080 #ffffff #ffffff #808080;
   }
   .photo-card-nick { font-size: 10px; color: #000080; font-weight: bold; }
@@ -568,10 +570,10 @@
   <!-- 오늘의 운세 -->
   <div class="card" id="fortune-card" style="margin-bottom:8px;">
     <div class="card-label"><i class="ti ti-sparkles" style="font-size:13px"></i> 오늘의 운세</div>
-    <div id="fortune-text" style="font-family:'Galmuri11','Press Start 2P','Courier New',monospace; font-size:10px; color:#1a1a18; line-height:1.8; min-height:36px; text-align:center; flex:1; display:flex; align-items:center; justify-content:center;">
-      <span style="color:#aaa; font-size:10px;">아직 오늘의 운세를 확인하지 않았어요</span>
+    <div id="fortune-text" style="font-family:'Galmuri11','Press Start 2P','Courier New',monospace; font-size:13px; font-weight:bold; color:#1a1a18; line-height:1.8; min-height:36px; text-align:center; flex:1; display:flex; align-items:center; justify-content:center;">
+      <span style="color:#000; font-size:10px;">아직 오늘의 운세를 확인하지 않았어요</span>
     </div>
-    <button onclick="drawFortune()" id="fortune-btn" class="lunch-btn" style="font-family:'Galmuri11','Press Start 2P','Courier New',monospace; font-size:9px;">🔮 운세 뽑기</button>
+    <button onclick="drawFortune()" id="fortune-btn" class="lunch-btn" style="font-family:'Galmuri11','Press Start 2P','Courier New',monospace; font-size:9px; font-weight:normal; color:#000;">🔮 운세 뽑기</button>
   </div>
   <!-- 사진 캐러셀 -->
   <div class="photo-carousel-card">
