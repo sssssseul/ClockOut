@@ -120,7 +120,7 @@
   .blocks-card { margin-bottom: 8px; padding: 3px 6px 6px 6px; }
   .blocks-top { display: flex; align-items: center; justify-content: space-between; margin: -3px -6px 6px -6px; padding: 3px 6px; background: linear-gradient(90deg, #000080, #1084d0); }
   .blocks-label { font-size: 9px; color: #fff; font-weight: normal; font-family: 'Galmuri11', 'Press Start 2P', 'Courier New', monospace; display: flex; align-items: center; gap: 5px; padding: 0; margin: 0; background: none; text-shadow: 1px 1px 0 rgba(0,0,0,0.35); }
-  .lunch-toggle label { font-size: 10px; color: #fff; cursor: pointer; display: flex; align-items: center; gap: 4px; }
+  .lunch-toggle label { font-size: 9px; color: #fff; cursor: pointer; display: flex; align-items: center; gap: 4px; font-family: 'Galmuri11', 'Press Start 2P', 'Courier New', monospace; }
   .lunch-toggle input[type="checkbox"] {
     appearance: none; -webkit-appearance: none; width: 13px; height: 13px;
     background: #fff; margin: 0; cursor: pointer; position: relative; flex-shrink: 0;
@@ -163,7 +163,7 @@
   }
   .preset-option input[type="radio"]:checked + label {
     border-color: #808080 #ffffff #ffffff #808080;
-    background: #000080; color: #fff; font-weight: bold;
+    background: #000080; color: #fff; font-weight: normal;
     box-shadow: inset 1px 1px 0 #000;
   }
 
@@ -191,7 +191,7 @@
     position: relative; text-align: center; box-shadow: none;
     border-style: solid; border-width: 2px; border-color: #808080 #ffffff #ffffff #808080; padding: 3px 6px;
   }
-  .notice-inner { display: inline-block; white-space: nowrap; font-size: 11px; font-weight: bold; color: #000; padding: 0; font-family: 'Galmuri11', 'Press Start 2P', 'Courier New', monospace; animation: shake 0.8s ease-in-out infinite; }
+  .notice-inner { display: inline-block; white-space: nowrap; font-size: 11px; font-weight: normal; color: #000; padding: 0; font-family: 'Galmuri11', 'Press Start 2P', 'Courier New', monospace; animation: shake 0.8s ease-in-out infinite; }
   .notice-inner span { display: inline-block; vertical-align: middle; background: none; padding: 0 3px; color: #000; }
   .notice-edit-btn { position: absolute; right: 6px; top: 50%; transform: translateY(-50%); background: none; border: none; color: #000080; font-size: 13px; padding: 0; cursor: pointer; display: none; }
   @keyframes shake { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-3px)} 40%{transform:translateX(3px)} 60%{transform:translateX(-2px)} 80%{transform:translateX(2px)} }
@@ -444,14 +444,14 @@
     border-style: solid; border-width: 2px; border-color: #ffffff #808080 #808080 #ffffff;
   }
   .photo-preview {
-    width: 100%; height: 150px; background: #fff; border-radius: 0; display: flex; align-items: center;
+    height: 150px; background: #fff; border-radius: 0; display: flex; align-items: center;
     justify-content: center; font-size: 12px; color: #444; cursor: pointer; overflow: hidden;
     border-style: solid; border-width: 2px; border-color: #808080 #ffffff #ffffff #808080;
   }
   .photo-preview img { width: 100%; height: 100%; object-fit: cover; }
   .photo-text-input {
     font-size: 11px; border-radius: 0; padding: 6px 8px; font-family: 'Galmuri11', 'Press Start 2P', 'Courier New', monospace; outline: none; resize: none;
-    width: 100%; box-sizing: border-box; background: #fff;
+    box-sizing: border-box; background: #fff;
     border-style: solid; border-width: 2px; border-color: #808080 #ffffff #ffffff #808080;
   }
   .photo-upload-actions { display: flex; gap: 8px; }
@@ -615,7 +615,7 @@
       <span class="settings-label" style="margin:0;"><i class="ti ti-notebook" style="font-size:13px"></i> 방명록</span>
       <!-- <span style="font-size:10.5px; color:#1a1a18; text-align:center; white-space:nowrap;">🍓 심한 욕 쓰면 삭제합니다 🍓</span> -->
       <div style="display:flex; align-items:center; gap:6px;">
-        <span id="nick-hint" style="font-size:clamp(8px, 1.5vw, 10px); color:#aaa; cursor:pointer; text-decoration:underline;">모든 기기에서 동일하게 사용하기 ➡️</span>
+        <span id="nick-hint" style="font-size:clamp(8px, 1.5vw, 10px); color:#aaa; cursor:pointer; text-decoration:underline;">모든 기기에서 동일하게 사용하기 →</span>
         <span class="chat-nickname" id="my-nickname">익명</span>
         <button id="admin-btn" class="admin-btn" title="관리자">🔑</button>
         <button id="chat-refresh" class="chat-refresh-btn"><i class="ti ti-refresh" style="font-size:13px"></i></button>
