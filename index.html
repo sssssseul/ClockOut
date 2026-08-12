@@ -132,7 +132,7 @@
   .blocks-wrap { display: grid; grid-template-columns: repeat(18, 1fr); gap: 2px; }
   .block { border-radius: 0; height: 14px; border-style: solid; border-width: 1px; }
   .block.done      { background: #000080; border-color: #4040c0 #000040 #000040 #4040c0; }
-  .block.current   { background: #00ff00; border-color: #90ff90 #008000 #008000 #90ff90; animation: blockBlink 1s step-start infinite; }
+  .block.current   { background: #008080; border-color: #40b0b0 #004040 #004040 #40b0b0; animation: blockBlink 1s step-start infinite; }
   .block.remaining { background: #ffffff; border-color: #ffffff #808080 #808080 #ffffff; }
   .block.lunch      { background: #c0c0c0; border-color: #ffffff #808080 #808080 #ffffff; }
   .block.lunch.done { background: #808080; border-color: #a0a0a0 #404040 #404040 #a0a0a0; }
@@ -142,7 +142,7 @@
   .leg { display: flex; align-items: center; gap: 4px; font-size: 8px; color: #000; font-family: 'Galmuri11', 'Press Start 2P', 'Courier New', monospace; }
   .leg-dot { width: 10px; height: 10px; border-radius: 0; flex-shrink: 0; border-style: solid; border-width: 1px; }
   .dot-done    { background: #000080; border-color: #4040c0 #000040 #000040 #4040c0; }
-  .dot-current { background: #00ff00; border-color: #90ff90 #008000 #008000 #90ff90; }
+  .dot-current { background: #008080; border-color: #40b0b0 #004040 #004040 #40b0b0; }
   .dot-rem     { background: #ffffff; border-color: #ffffff #808080 #808080 #ffffff; }
   .dot-lunch   { background: #c0c0c0; border-color: #ffffff #808080 #808080 #ffffff; }
 
@@ -189,17 +189,7 @@
     position: relative; text-align: left; box-shadow: none;
     border-style: solid; border-width: 2px; border-color: #808080 #ffffff #ffffff #808080; padding: 3px 6px;
   }
-  .lotso-img { position: fixed; pointer-events: none; z-index: 0; opacity: 0.2; filter: grayscale(0.3); }
-  .lotso-img2 { position: fixed; pointer-events: none; z-index: 0; opacity: 0.2; filter: grayscale(0.3); }
-  @media (min-width: 600px) {
-    .lotso-img { width: 160px; bottom: 60px; right: calc(50% - 560px); }
-    .lotso-img2 { display: block; width: 140px; top: 30%; left: calc(50% - 580px); }
-  }
-  @media (max-width: 599px) {
-    .lotso-img { width: 130px; bottom: 20px; right: 10px; }
-    .lotso-img2 { display: block; width: 100px; top: 60px; left: 10px; }
-  }
-  .notice-inner { display: inline-block; white-space: nowrap; font-size: 11px; font-weight: bold; color: #00ff00; padding: 0; font-family: 'Courier New', monospace; animation: shake 0.8s ease-in-out infinite; }
+  .notice-inner { display: inline-block; white-space: nowrap; font-size: 11px; font-weight: normal; color: #00ff00; padding: 0; font-family: 'Galmuri11', 'Press Start 2P', 'Courier New', monospace; animation: shake 0.8s ease-in-out infinite; }
   .notice-inner span { display: inline-block; vertical-align: middle; background: none; padding: 0 3px; color: #00ff00; }
   .notice-edit-btn { position: absolute; right: 6px; top: 50%; transform: translateY(-50%); background: none; border: none; color: #ffff00; font-size: 13px; padding: 0; cursor: pointer; display: none; }
   @keyframes shake { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-3px)} 40%{transform:translateX(3px)} 60%{transform:translateX(-2px)} 80%{transform:translateX(2px)} }
@@ -490,12 +480,12 @@
     <div class="card">
       <div class="card-label"><i class="ti ti-thumb-down" style="font-size:13px"></i> 일하기 싫은 사람</div>
       <div style="flex:1; margin-bottom:4px; display:flex; align-items:baseline; gap:2px;"><span class="card-value" id="hate-count">--</span><span class="muted" style="font-size:12px;"> 명</span></div>
-      <button class="hate-btn" id="hate-btn" style="margin-top:auto;">그건 바로 나 <img src="https://raw.githubusercontent.com/sssssseul/ClockOut/main/lotso.png" style="width:14px;height:14px;vertical-align:middle;"></button>
+      <button class="hate-btn" id="hate-btn" style="margin-top:auto;">그건 바로 나</button>
     </div>
     <div class="card">
       <div class="card-label"><i class="ti ti-tools-kitchen-2" style="font-size:13px"></i> 오늘 뭐 먹지?</div>
       <div style="flex:1; margin-bottom:4px; display:flex; align-items:baseline; gap:4px;"><span class="card-value" id="lunch-result">?</span></div>
-      <button class="lunch-btn" id="lunch-btn" style="margin-top:auto;">돌려 돌려 <img src="https://raw.githubusercontent.com/sssssseul/ClockOut/main/lotso.png" style="width:14px;height:14px;vertical-align:middle;"></button>
+      <button class="lunch-btn" id="lunch-btn" style="margin-top:auto;">돌려 돌려</button>
     </div>
   </div>
 
@@ -867,9 +857,9 @@ const noticeInner=document.getElementById('notice-inner');
 const noticeEditBtn=document.getElementById('notice-edit-btn');
 function buildMarquee(text){
   const isMobile = window.innerWidth < 600;
-  const fontSize = isMobile && text.length > 20 ? '10.5px' : '13px';
+  const fontSize = isMobile && text.length > 20 ? '9px' : '11px';
   noticeInner.style.fontSize = fontSize;
-  noticeInner.innerHTML = '🌼 <span>' + escapeHtml(text) + '</span> 🌼';
+  noticeInner.innerHTML = '<span>' + escapeHtml(text) + '</span>';
 }
 async function loadTopCommenters(){
   try{
@@ -2121,7 +2111,7 @@ function buildMessageDOM(m, isReply) {
       <div style="display:flex;align-items:center;gap:6px;flex-shrink:0;">
         ${mine ? `<div class="my-actions"><button class="my-edit-btn">✏️</button><button class="my-del-btn">🗑️</button></div>` : ''}
         ${!isReply ? `<button class="msg-action-btn" onclick="initReply(${m.id}, '${escapeHtml(displayNick)}')">답글</button>` : ''}
-        <button class="like-btn" data-id="${m.id}"><img src="https://raw.githubusercontent.com/sssssseul/ClockOut/main/lotso.png" style="width:13px;height:13px;vertical-align:middle;">${m.likes ? ' '+m.likes : ''}</button>
+        <button class="like-btn" data-id="${m.id}">👍${m.likes ? ' '+m.likes : ''}</button>
       </div>
     </div>
   `;
@@ -2215,13 +2205,13 @@ chatMessagesEl.addEventListener('click', async(e)=>{
     if(liked){
       const res = await fetch('/api/guestbook/'+id+'/like', {method:'DELETE'});
       const data = await res.json();
-      btn.innerHTML = '<img src="https://raw.githubusercontent.com/sssssseul/ClockOut/main/lotso.png" style="width:13px;height:13px;vertical-align:middle;">'+(data.count ? ' '+data.count : '');
+      btn.innerHTML = '👍'+(data.count ? ' '+data.count : '');
       btn.style.opacity = '1';
       localStorage.removeItem(likeKey);
     } else {
       const res = await fetch('/api/guestbook/'+id+'/like', {method:'POST'});
       const data = await res.json();
-      btn.innerHTML = '<img src="https://raw.githubusercontent.com/sssssseul/ClockOut/main/lotso.png" style="width:13px;height:13px;vertical-align:middle;">'+(data.count ? ' '+data.count : '');
+      btn.innerHTML = '👍'+(data.count ? ' '+data.count : '');
       btn.style.opacity = '0.5';
       localStorage.setItem(likeKey, 'true');
     }
