@@ -191,7 +191,7 @@
     position: relative; text-align: center; box-shadow: none;
     border-style: solid; border-width: 2px; border-color: #808080 #ffffff #ffffff #808080; padding: 3px 6px;
   }
-  .notice-inner { display: inline-block; white-space: nowrap; font-size: 11px; font-weight: normal; color: #000; padding: 0; font-family: 'Galmuri11', 'Press Start 2P', 'Courier New', monospace; animation: shake 0.8s ease-in-out infinite; }
+  .notice-inner { display: inline-block; white-space: nowrap; font-size: 13px; font-weight: normal; color: #000; padding: 0; font-family: 'Galmuri11', 'Press Start 2P', 'Courier New', monospace; animation: shake 0.8s ease-in-out infinite; }
   .notice-inner span { display: inline-block; vertical-align: middle; background: none; padding: 0 3px; color: #000; }
   .notice-edit-btn { position: absolute; right: 6px; top: 50%; transform: translateY(-50%); background: none; border: none; color: #000080; font-size: 13px; padding: 0; cursor: pointer; display: none; }
   @keyframes shake { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-3px)} 40%{transform:translateX(3px)} 60%{transform:translateX(-2px)} 80%{transform:translateX(2px)} }
@@ -427,7 +427,7 @@
     border-style: solid; border-width: 1px; border-color: #808080 #fff #fff #808080;
     gap: 6px; padding: 3px;
   }
-  .photo-card-img { width: 90px; height: 90px; align-self: center; flex-shrink: 0; object-fit: cover; background: #dfdfdf; cursor: pointer; margin-right: 0; border: none; }
+  .photo-card-img { width: 90px; height: auto; align-self: stretch; flex-shrink: 0; object-fit: cover; background: #dfdfdf; cursor: pointer; margin-right: 0; border: none; }
   .photo-card-info {
     padding: 6px 8px; flex: 1; display: flex; flex-direction: column; justify-content: space-between; min-width: 0; overflow: hidden;
     background: #fff; border: none;
@@ -868,7 +868,7 @@ const noticeInner=document.getElementById('notice-inner');
 const noticeEditBtn=document.getElementById('notice-edit-btn');
 function buildMarquee(text){
   const isMobile = window.innerWidth < 600;
-  const fontSize = isMobile && text.length > 20 ? '9px' : '11px';
+  const fontSize = isMobile && text.length > 20 ? '11px' : '13px';
   noticeInner.style.fontSize = fontSize;
   noticeInner.innerHTML = '<span>' + escapeHtml(text) + '</span>';
 }
