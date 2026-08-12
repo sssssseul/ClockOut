@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ClockOut</title>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text x=%2250%22 y=%2250%22 font-size=%2280%22 text-anchor=%22middle%22 dominant-baseline=%22central%22>🌐</text></svg>">
-<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text x=%2250%22 y=%2250%22 font-size=%2280%22 text-anchor=%22middle%22 dominant-baseline=%22central%22>🌐</text></svg>">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text x=%2250%22 y=%2250%22 font-size=%2280%22 text-anchor=%22middle%22 dominant-baseline=%22central%22>📁</text></svg>">
+<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text x=%2250%22 y=%2250%22 font-size=%2280%22 text-anchor=%22middle%22 dominant-baseline=%22central%22>📁</text></svg>">
 <link rel="manifest" href="/manifest.json">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -50,6 +50,7 @@
     box-shadow: 1px 1px 0 0 #000, inset 1px 1px 0 0 #dfdfdf;
     padding: 3px;
     position: relative;
+    overflow: hidden;
   }
   /* 타이틀바를 만들기 위한 label류 요소들을 파란 바로 변신 */
   .card-label, .blocks-label, .settings-label, .chat-header .settings-label,
@@ -96,8 +97,9 @@
     padding-top: 5px; padding-left: 5px;
   }
   .hate-btn.pressed, .lunch-btn.done {
-    background: #c0c0c0; border-color: #808080 #808080 #808080 #808080; color: #808080; cursor: default;
-    box-shadow: inset 1px 1px 2px #808080;
+    background: #c0c0c0; border-color: #ffffff #808080 #808080 #ffffff; color: #000; cursor: default;
+    box-shadow: inset 1px 1px 0 #dfdfdf;
+    opacity: 0.5;
   }
 
   .card-sub-row { display: flex; align-items: center; gap: 6px; margin-top: 4px; }
