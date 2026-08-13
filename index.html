@@ -438,9 +438,16 @@
     display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical;
   }
   .photo-card-time { font-size: 9px; color: #808080; flex-shrink: 0; }
-  .photo-carousel-dots { display: flex; justify-content: center; gap: 4px; margin-top: 8px; }
-  .photo-dot { width: 8px; height: 8px; border-radius: 0; background: #808080; cursor: pointer; transition: background 0.2s; border: 1px solid #404040; }
-  .photo-dot.active { background: #000080; width: 8px; }
+  .photo-carousel-nav { display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 8px; }
+  .photo-page-info { font-size: 10px; color: #444; font-family: 'Galmuri11', 'Press Start 2P', 'Courier New', monospace; }
+  .photo-nav-btn {
+    background: #c0c0c0; border-radius: 0; padding: 3px 8px; font-size: 10px; color: #000; cursor: pointer;
+    font-family: 'Galmuri11', 'Press Start 2P', 'Courier New', monospace; flex-shrink: 0;
+    border-style: solid; border-width: 2px; border-color: #ffffff #808080 #808080 #ffffff;
+  }
+  .photo-nav-btn:hover { background: #dfdfdf; }
+  .photo-nav-btn:active { border-color: #808080 #ffffff #ffffff #808080; }
+  .photo-nav-btn:disabled { opacity: 0.4; cursor: default; }
   .photo-upload-btn {
     font-size: 9px; color: #000; background: #c0c0c0; border-radius: 0; padding: 2px 10px; cursor: pointer;
     font-family: 'Galmuri11', 'Press Start 2P', 'Courier New', monospace;
@@ -589,7 +596,11 @@
     <div class="photo-carousel-wrap">
       <div class="photo-carousel-track" id="photo-track"></div>
     </div>
-    <div class="photo-carousel-dots" id="photo-dots"></div>
+    <div class="photo-carousel-nav">
+      <button class="photo-nav-btn" id="photo-prev-btn">← 이전</button>
+      <span class="photo-page-info" id="photo-page-info"></span>
+      <button class="photo-nav-btn" id="photo-next-btn">다음 →</button>
+    </div>
   </div>
 
   <!-- 업로드 모달 -->
@@ -962,10 +973,14 @@ function fmtPhotoTime(ts){
 
 function renderCarousel(){
   const track = document.getElementById('photo-track');
-  const dots = document.getElementById('photo-dots');
+  const pageInfo = document.getElementById('photo-page-info');
   if(!photos.length){
     track.innerHTML = '<div class="photo-card-item" style="justify-content:center;"><div class="photo-empty">아직 사진이 없어요 📸</div></div>';
-    dots.innerHTML = '';
+    pageInfo.textContent = '';
+    const prevBtn = document.getElementById('photo-prev-btn');
+    const nextBtn = document.getElementById('photo-next-btn');
+    if(prevBtn) prevBtn.disabled = true;
+    if(nextBtn) nextBtn.disabled = true;
     return;
   }
   track.innerHTML = photos.map((p,i) => {
@@ -987,16 +1002,20 @@ function renderCarousel(){
       </div>
     </div>`;
   }).join('');
-  dots.innerHTML = photos.map((_, i) => 
-    `<div class="photo-dot ${i===photoIndex?'active':''}" onclick="goToPhoto(${i})"></div>`
-  ).join('');
+  pageInfo.textContent = (photoIndex + 1) + ' / ' + photos.length;
   track.style.transform = `translateX(-${photoIndex * 100}%)`;
+  const prevBtn = document.getElementById('photo-prev-btn');
+  const nextBtn = document.getElementById('photo-next-btn');
+  if(prevBtn) prevBtn.disabled = photoIndex <= 0;
+  if(nextBtn) nextBtn.disabled = photoIndex >= photos.length - 1;
 }
 
 function goToPhoto(idx){
   photoIndex = Math.max(0, Math.min(idx, photos.length - 1));
   renderCarousel();
 }
+document.getElementById('photo-prev-btn').addEventListener('click', ()=> goToPhoto(photoIndex - 1));
+document.getElementById('photo-next-btn').addEventListener('click', ()=> goToPhoto(photoIndex + 1));
 
 // 스와이프
 let _swipeStartX = 0;
