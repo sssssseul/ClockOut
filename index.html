@@ -204,7 +204,2386 @@
     box-sizing: border-box;
   }
   .nick-emoji-wrap { position: relative; display: inline-block; font-size: inherit; line-height: 1; }
-  .nick-crown { position: absolute; top: -9px; left: 35%; transform: translateX(-50%); font-size: 12px; pointer-events: none; }
+  .nick-crown { position: absolute; top: -0.6em; left: 35%; transform: translateX(-50%); font-size: 1.3em; pointer-events: none; }
+
+  .photo-view-modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.85); z-index: 200; justify-content: center; align-items: center; }
+  .photo-view-img { max-width: 95vw; max-height: 90vh; border-radius: 0; object-fit: contain; border: 3px solid #c0c0c0; }
+
+  /* --- 모달: Win98 다이얼로그 박스 --- */
+  .nick-modal, .photo-upload-modal {
+    display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.4);
+    z-index: 100; justify-content: center; align-items: center;
+  }
+  .nick-box, .photo-upload-box {
+    background: #c0c0c0; border-radius: 0; padding: 0; width: 90%; max-width: 340px;
+    display: flex; flex-direction: column; gap: 0; max-height: 80vh;
+    border-style: solid; border-width: 2px; border-color: #ffffff #808080 #808080 #ffffff;
+    box-shadow: 2px 2px 0 0 #000;
+  }
+  .nick-box h3, .photo-upload-box h3 {
+    font-size: 11px; color: #fff; margin: 0; background: linear-gradient(90deg, #000080, #1084d0);
+    padding: 4px 8px; font-weight: bold; text-shadow: 1px 1px 0 rgba(0,0,0,0.35);
+  }
+  .nick-box { padding: 0 0 10px 0; }
+  .nick-box .nick-list, .nick-box #nick-pw-area, .nick-box #nick-modal-close { margin-left: 10px; margin-right: 10px; }
+  .nick-box .nick-list { margin-top: 10px; }
+  .nick-box #nick-modal-close { margin-top: 8px; }
+  .photo-upload-box { padding-bottom: 10px; gap: 10px; }
+  .photo-upload-box .photo-preview, .photo-upload-box .photo-text-input, .photo-upload-box .photo-upload-actions {
+    margin-left: 10px; margin-right: 10px;
+  }
+  .photo-upload-box .photo-preview { margin-top: 10px; }
+
+  .nick-list { overflow-y: auto; max-height: 220px; display: flex; flex-direction: column; gap: 3px; }
+  .nick-item {
+    font-size: 11px; padding: 5px 8px; border-radius: 0; cursor: pointer; background: #fff; color: #000;
+    border-style: solid; border-width: 1px; border-color: #808080 #fff #fff #808080;
+  }
+  .nick-item:hover { background: #000080; color: #fff; }
+  .nick-pw-input {
+    font-size: 11px; border-radius: 0; padding: 4px 6px; font-family: 'Galmuri11', 'Press Start 2P', 'Courier New', monospace; outline: none; width: 100%; box-sizing: border-box;
+    background: #fff; border-style: solid; border-width: 2px; border-color: #808080 #ffffff #ffffff #808080;
+  }
+  .nick-confirm-btn, .nick-cancel-btn, .photo-submit-btn, .photo-cancel-btn {
+    color: #000; border-radius: 0; padding: 4px 8px; font-size: 11px; cursor: pointer; font-family: 'Galmuri11', 'Press Start 2P', 'Courier New', monospace;
+    background: #c0c0c0; border-style: solid; border-width: 2px; border-color: #ffffff #808080 #808080 #ffffff;
+  }
+  .nick-confirm-btn:active, .nick-cancel-btn:active, .photo-submit-btn:active, .photo-cancel-btn:active {
+    border-color: #808080 #ffffff #ffffff #808080;
+  }
+
+  .chat-messages { display: flex; flex-direction: column; margin-bottom: 8px; }
+  .chat-thread-group { display: flex; flex-direction: column; gap: 6px; width: 100%; position: relative; margin-bottom: 6px; }
+  .chat-thread-group:last-child { margin-bottom: 0; }
+
+  .chat-msg {
+    font-size: 11px;
+    background: #fff;
+    border-radius: 0;
+    padding: 6px 8px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 8px;
+    position: relative;
+    width: 100%;
+    border-style: solid; border-width: 1px; border-color: #808080 #fff #fff #808080;
+  }
+
+  .chat-msg.mine { background: #ffffcc !important; }
+  .chat-msg.reply-msg { background: #e8e8e8; }
+  .chat-msg.reply-msg.mine { background: #ffffcc !important; }
+
+  .reply-container {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 0;
+    margin-left: 16px;
+    padding-left: 8px;
+    border-left: 2px dotted #808080;
+    width: calc(100% - 16px);
+  }
+
+  .chat-msg-body { display: flex; flex-direction: column; width: 100%; gap: 5px; }
+  .chat-msg-top { display: flex; justify-content: space-between; align-items: center; width: 100%; }
+  .chat-msg-nick-group { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .chat-msg-bottom { font-size: 11px; line-height: 1.4; color: #000; word-break: break-all; display: flex; justify-content: space-between; align-items: flex-end; gap: 8px; }
+  .my-actions { display: flex; align-items: center; gap: 3px; }
+  .my-edit-btn, .my-del-btn { background: none; border: none; font-size: 11px; color: #808080; cursor: pointer; padding: 0; line-height: 1; }
+  .my-edit-btn:hover { color: #000080; }
+  .my-del-btn:hover { color: #c00000; }
+  .edit-mode-wrap { background: #ffffcc; border-radius: 0; padding: 6px 8px; border-style: solid; border-width: 1px; border-color: #808080 #fff #fff #808080; }
+  .edit-mode-input {
+    width: 100%; font-size: 11px; border-radius: 0; padding: 5px 6px; font-family: 'Galmuri11', 'Press Start 2P', 'Courier New', monospace;
+    resize: none; outline: none; background: #fff; box-sizing: border-box;
+    border-style: solid; border-width: 2px; border-color: #808080 #ffffff #ffffff #808080;
+  }
+  .edit-mode-actions { display: flex; gap: 6px; margin-top: 6px; justify-content: flex-end; }
+  .edit-save-btn, .edit-cancel-btn {
+    color: #000; border-radius: 0; padding: 3px 10px; font-size: 10px; cursor: pointer; font-family: 'Galmuri11', 'Press Start 2P', 'Courier New', monospace;
+    background: #c0c0c0; border-style: solid; border-width: 2px; border-color: #ffffff #808080 #808080 #ffffff;
+  }
+  .chat-msg-text { flex: 1; }
+  .like-btn {
+    background: #c0c0c0; border-radius: 0; padding: 1px 4px; font-size: 10px; color: #000; cursor: pointer;
+    display: inline-flex; align-items: center; justify-content: center; gap: 3px; font-family: 'Galmuri11', 'Press Start 2P', 'Courier New', monospace;
+    flex-shrink: 0; width: 38px; white-space: nowrap; overflow: hidden;
+    border-style: solid; border-width: 2px; border-color: #ffffff #808080 #808080 #ffffff;
+  }
+  .like-btn:hover { background: #dfdfdf; }
+  .chat-msg .chat-msg-nick { color: #000080; font-weight: bold; }
+  .chat-msg .chat-msg-time { color: #808080; font-size: 9px; flex-shrink: 0; }
+
+  .badge-siren-text {
+    display: inline-flex; align-items: center; justify-content: center; background-color: #ff0000; color: #fff;
+    font-size: 9px; font-weight: bold; padding: 1px 6px; border-radius: 0; line-height: 1; vertical-align: middle;
+    border-style: solid; border-width: 1px; border-color: #ff9090 #800000 #800000 #ff9090;
+  }
+  .badge-boom-text {
+    display: inline-flex; align-items: center; justify-content: center; background-color: #ffa500; color: #000;
+    font-size: 9px; font-weight: bold; padding: 1px 6px; border-radius: 0; line-height: 1; vertical-align: middle;
+    border-style: solid; border-width: 1px; border-color: #ffcc80 #804000 #804000 #ffcc80;
+  }
+
+  .chat-empty { font-size: 11px; color: #808080; text-align: center; padding: 12px 0; }
+
+  .chat-pagination { display: flex; align-items: center; justify-content: space-between; margin: 12px 0 8px 0; }
+  .chat-pagination button {
+    background: #c0c0c0; border-radius: 0; padding: 3px 10px; font-size: 10px; color: #000; cursor: pointer;
+    font-family: 'Galmuri11', 'Press Start 2P', 'Courier New', monospace;
+    border-style: solid; border-width: 2px; border-color: #ffffff #808080 #808080 #ffffff;
+  }
+  .chat-pagination button:hover { background: #dfdfdf; }
+  .chat-pagination button:disabled { opacity: 0.5; cursor: default; }
+  .chat-pagination .page-info { font-size: 10px; color: #000; }
+
+  .chat-input-area { display: flex; flex-direction: column; gap: 4px; width: 100%; margin-top: 4px; }
+
+  .reply-target-bar {
+    display: none; align-items: center; justify-content: space-between; background: #ffffcc; padding: 5px 10px;
+    border-radius: 0; font-size: 10px; color: #000;
+    border-style: solid; border-width: 1px; border-color: #808080 #fff #fff #808080;
+  }
+  .reply-target-bar button {
+    background: #c0c0c0;
+    border-radius: 0;
+    color: #000;
+    font-size: 9px;
+    padding: 2px 6px;
+    cursor: pointer;
+    font-family: 'Galmuri11', 'Press Start 2P', 'Courier New', monospace;
+    border-style: solid; border-width: 2px; border-color: #ffffff #808080 #808080 #ffffff;
+  }
+  .reply-target-bar button:hover { background: #dfdfdf; }
+
+  .chat-input-row { display: flex; gap: 6px; }
+  .chat-input-row input {
+    flex: 1; min-width: 0; font-size: 11px; color: #000; border-radius: 0; padding: 5px 8px;
+    background: #fff; outline: none; font-family: 'Galmuri11', 'Press Start 2P', 'Courier New', monospace;
+    border-style: solid; border-width: 2px; border-color: #808080 #ffffff #ffffff #808080;
+  }
+  .chat-input-row input:focus { outline: 1px dotted #000; }
+  .chat-input-row button {
+    background: #c0c0c0; color: #000; border-radius: 0; width: 32px; flex-shrink: 0; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    border-style: solid; border-width: 2px; border-color: #ffffff #808080 #808080 #ffffff;
+  }
+  .chat-input-row button:active { border-color: #808080 #ffffff #ffffff #808080; }
+
+  .chat-refresh-btn, .admin-btn {
+    background: #c0c0c0; border-radius: 0; width: 24px; height: 24px; display: flex; align-items: center;
+    justify-content: center; cursor: pointer; color: #000; font-size: 12px;
+    border-style: solid; border-width: 2px; border-color: #ffffff #808080 #808080 #ffffff;
+  }
+  .chat-refresh-btn:hover, .admin-btn:hover { background: #dfdfdf; }
+
+  .admin-panel { display: flex; align-items: center; gap: 4px; flex-shrink: 0; margin-left: 6px; }
+  .admin-dashboard { margin-top: 8px; margin-bottom: 8px; display: none; padding: 3px 6px 6px 6px; }
+  .admin-dashboard-header { margin: -3px -6px 8px -6px; }
+
+  .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; margin-bottom: 8px; }
+  .stat-box {
+    background: #fff; border-radius: 0; padding: 6px; text-align: center;
+    border-style: solid; border-width: 1px; border-color: #808080 #fff #fff #808080;
+  }
+  .stat-box-label { font-size: 9px; color: #000080; margin-bottom: 2px; font-weight: bold; }
+  .stat-box-value { font-size: 12px; font-weight: normal; color: #000; font-family: 'Galmuri11', 'Press Start 2P', 'Courier New', monospace; }
+  .stat-chart { margin-top: 8px; background: #fff; padding: 6px; border-style: solid; border-width: 1px; border-color: #808080 #fff #fff #808080; }
+  .stat-chart-label { font-size: 9px; color: #444; margin-bottom: 4px; }
+  .chart-bars { display: flex; align-items: flex-end; gap: 3px; height: 50px; }
+  .chart-bar-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 2px; height: 100%; justify-content: flex-end; }
+  .chart-bar { width: 100%; background: #000080; border-radius: 0; min-height: 2px; }
+  .chart-date { font-size: 8px; color: #808080; white-space: nowrap; }
+  .chart-tabs { display: flex; gap: 4px; margin-bottom: 8px; }
+  .chart-tab {
+    font-size: 9px; padding: 2px 8px; border-radius: 0; color: #000; cursor: pointer; background: #c0c0c0;
+    font-family: 'Galmuri11', 'Press Start 2P', 'Courier New', monospace;
+    border-style: solid; border-width: 2px; border-color: #ffffff #808080 #808080 #ffffff;
+  }
+  .chart-tab.active { background: #000080; color: #fff; border-color: #808080 #ffffff #ffffff #808080; }
+
+  .msg-action-btn { background: none; border: none; cursor: pointer; font-size: 10px; color: #000080; padding: 0; font-family: 'Galmuri11', 'Press Start 2P', 'Courier New', monospace; margin-left: 8px; font-weight: normal; }
+  .msg-action-btn:hover { text-decoration: underline; }
+  .siren-btn, .boom-btn, .delete-btn { background: none; border: none; cursor: pointer; font-size: 12px; padding: 0 2px; }
+  .delete-btn { color: #808080; }
+  .delete-btn:hover { color: #c00000; }
+
+  .king-card { padding: 6px 8px; }
+  .king-header { margin: -6px -8px 8px -8px; padding: 3px 8px; }
+  .kings-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; margin-bottom: 8px; }
+  .king-row { display: flex; align-items: center; gap: 8px; padding: 2px 0; }
+  .king-rank { font-size: 13px; flex-shrink: 0; }
+  .king-nick { font-size: 10px; color: #000; font-weight: normal; flex: 1; min-width: 0; }
+  .king-count { font-size: 9px; color: #000080; background: #fff; padding: 1px 5px; border-radius: 0; flex-shrink: 0; white-space: nowrap; border: 1px solid #808080; }
+  .king-divider { display: none !important; }
+
+  .photo-carousel-card { margin-top: 8px; margin-bottom: 8px; padding: 3px 6px 6px 6px; }
+  .photo-carousel-header { margin: -3px -6px 6px -6px; justify-content: space-between; }
+  .photo-carousel-wrap { overflow: hidden; position: relative; }
+  .photo-carousel-track { display: flex; transition: transform 0.3s ease; }
+  .photo-card-item {
+    flex: 0 0 100%; display: flex; align-items: stretch; background: #c0c0c0; border-radius: 0; overflow: hidden; height: 96px;
+    border-style: solid; border-width: 1px; border-color: #808080 #fff #fff #808080;
+    gap: 6px; padding: 3px;
+  }
+  .photo-card-img { width: 90px; height: auto; align-self: stretch; flex-shrink: 0; object-fit: cover; background: #dfdfdf; cursor: pointer; margin-right: 0; border: none; }
+  .photo-card-info {
+    padding: 6px 8px; flex: 1; display: flex; flex-direction: column; justify-content: space-between; min-width: 0; overflow: hidden;
+    background: #fff; border: none;
+  }
+  .photo-card-nick { font-size: 10px; color: #000080; font-weight: bold; flex-shrink: 0; }
+  .photo-card-text {
+    font-size: 11px; color: #000; line-height: 1.4; word-break: break-all; overflow: hidden;
+    display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical;
+  }
+  .photo-card-time { font-size: 9px; color: #808080; flex-shrink: 0; }
+  .photo-carousel-nav { display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 8px; }
+  .photo-page-info { font-size: 10px; color: #444; font-family: 'Galmuri11', 'Press Start 2P', 'Courier New', monospace; }
+  .photo-nav-btn {
+    background: #c0c0c0; border-radius: 0; padding: 3px 8px; font-size: 10px; color: #000; cursor: pointer;
+    font-family: 'Galmuri11', 'Press Start 2P', 'Courier New', monospace; flex-shrink: 0;
+    border-style: solid; border-width: 2px; border-color: #ffffff #808080 #808080 #ffffff;
+  }
+  .photo-nav-btn:hover { background: #dfdfdf; }
+  .photo-nav-btn:active { border-color: #808080 #ffffff #ffffff #808080; }
+  .photo-nav-btn:disabled { opacity: 0.4; cursor: default; }
+  .photo-upload-btn {
+    font-size: 9px; color: #000; background: #c0c0c0; border-radius: 0; padding: 2px 10px; cursor: pointer;
+    font-family: 'Galmuri11', 'Press Start 2P', 'Courier New', monospace;
+    border-style: solid; border-width: 2px; border-color: #ffffff #808080 #808080 #ffffff;
+  }
+  .photo-preview {
+    height: 150px; background: #fff; border-radius: 0; display: flex; align-items: center;
+    justify-content: center; font-size: 12px; color: #444; cursor: pointer; overflow: hidden;
+    border-style: solid; border-width: 2px; border-color: #808080 #ffffff #ffffff #808080;
+  }
+  .photo-preview img { width: 100%; height: 100%; object-fit: cover; }
+  .photo-text-input {
+    font-size: 11px; border-radius: 0; padding: 6px 8px; font-family: 'Galmuri11', 'Press Start 2P', 'Courier New', monospace; outline: none; resize: none;
+    box-sizing: border-box; background: #fff;
+    border-style: solid; border-width: 2px; border-color: #808080 #ffffff #ffffff #808080;
+  }
+  .photo-upload-actions { display: flex; gap: 8px; }
+  .photo-submit-btn, .photo-cancel-btn { flex: 1; }
+  .photo-empty { text-align: center; color: #808080; font-size: 11px; padding: 20px 0; }
+
+  /* --- 스크롤바 레트로화 --- */
+  ::-webkit-scrollbar { width: 16px; height: 16px; }
+  ::-webkit-scrollbar-track { background: #dfdfdf; }
+  ::-webkit-scrollbar-thumb { background: #c0c0c0; border-style: solid; border-width: 2px; border-color: #ffffff #808080 #808080 #ffffff; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="cards">
+    <div class="card">
+      <div class="card-label"><i class="ti ti-stack" style="font-size:13px"></i> 진행 세트</div>
+      <div style="flex:1; margin-bottom:4px; display:flex; align-items:baseline; gap:2px;"><span class="card-value" id="sets-val">--</span><span class="muted" id="sets-total"></span></div>
+      <div class="card-sub-row" style="margin-top:auto;">
+        <span class="card-sub">30분 단위</span>
+        <span class="badge badge-work" id="badge">로딩 중</span>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-label"><i class="ti ti-clock" style="font-size:13px"></i> 남은 시간</div>
+      <div style="flex:1; display:flex; align-items:baseline; gap:6px; flex-wrap:nowrap; margin-bottom:4px;">
+        <div class="card-value" id="countdown">--:--:--</div>
+        <span class="card-sub" id="now-clock" style="white-space:nowrap;"></span>
+      </div>
+      <div class="card-sub-row" style="margin-top:auto;">
+        <span class="card-sub" id="sublabel">퇴근까지</span>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-label"><i class="ti ti-thumb-down" style="font-size:13px"></i> 일하기 싫은 사람</div>
+      <div style="flex:1; margin-bottom:4px; display:flex; align-items:baseline; gap:2px;"><span class="card-value" id="hate-count">--</span><span class="muted" style="font-size:12px;"> 명</span></div>
+      <button class="hate-btn" id="hate-btn" style="margin-top:auto; font-family:'Galmuri11','Press Start 2P','Courier New',monospace; font-size:9px;">그건 바로 나</button>
+    </div>
+    <div class="card">
+      <div class="card-label"><i class="ti ti-tools-kitchen-2" style="font-size:13px"></i> 오늘 뭐 먹지?</div>
+      <div style="flex:1; margin-bottom:4px; display:flex; align-items:baseline; gap:4px;"><span class="card-value" id="lunch-result">?</span></div>
+      <button class="lunch-btn" id="lunch-btn" style="margin-top:auto; font-family:'Galmuri11','Press Start 2P','Courier New',monospace; font-size:9px;">돌려 돌려</button>
+    </div>
+  </div>
+
+  <div class="blocks-card">
+    <div class="blocks-top">
+      <span class="blocks-label"><i class="ti ti-layout-grid" style="font-size:13px"></i> 30분 블록</span>
+      <div class="lunch-toggle">
+        <label><input type="checkbox" id="lunch-alt"> 점심 12:00~13:00</label>
+      </div>
+    </div>
+    <div class="blocks-wrap" id="blocks"></div>
+    <div class="legend">
+      <div class="leg"><div class="leg-dot dot-done"></div>완료</div>
+      <div class="leg"><div class="leg-dot dot-current"></div>진행 중</div>
+      <div class="leg"><div class="leg-dot dot-rem"></div>남은 세트</div>
+      <div class="leg"><div class="leg-dot dot-lunch"></div>점심</div>
+    </div>
+  </div>
+
+  <div class="settings-card">
+    <div class="settings-label"><i class="ti ti-clock-edit" style="font-size:13px"></i> 근무시간 선택</div>
+    <div class="preset-grid" id="preset-grid"></div>
+  </div>
+
+  <div class="custom-card">
+    <label><i class="ti ti-clock" style="font-size:13px"></i> 출근</label>
+    <select id="start-time"></select>
+    <label><i class="ti ti-home" style="font-size:13px"></i> 퇴근</label>
+    <select id="end-time"></select>
+  </div>
+
+  <div class="admin-dashboard" id="admin-dashboard">
+    <div class="admin-dashboard-header"><i class="ti ti-chart-bar" style="font-size:13px"></i> 관리자 대시보드</div>
+    <div class="stats-grid">
+      <div class="stat-box">
+        <div class="stat-box-label">오늘 방문자</div>
+        <div class="stat-box-value" id="stat-today-visitors">-</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-box-label">오늘 댓글</div>
+        <div class="stat-box-value" id="stat-today-comments">-</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-box-label">오늘 일하기싫다</div>
+        <div class="stat-box-value" id="stat-today-hate">-</div>
+      </div>
+    </div>
+    <div class="chart-tabs">
+      <button class="chart-tab active" onclick="switchChart('visitors', this)">방문자</button>
+      <button class="chart-tab" onclick="switchChart('comments', this)">댓글</button>
+      <button class="chart-tab" onclick="switchChart('hate', this)">일하기싫다</button>
+    </div>
+    <div class="stat-chart">
+      <div class="chart-bars" id="chart-bars"></div>
+    </div>
+  </div>
+
+  <div class="kings-grid" id="kings-grid" style="display:none; margin-top:8px; margin-bottom:8px;">
+    <div class="king-card" id="king-card">
+      <div class="king-header"><i class="ti ti-crown" style="font-size:13px"></i> 이달의 댓글왕</div>
+      <div class="king-row" id="king-1" style="display:none;"><span class="king-rank">🥇</span><span class="king-nick" id="king-nick-1"></span><span class="king-count" id="king-count-1"></span></div>
+      <div class="king-divider" id="king-divider" style="display:none;"></div>
+      <div class="king-row" id="king-2" style="display:none;"><span class="king-rank">🥈</span><span class="king-nick" id="king-nick-2"></span><span class="king-count" id="king-count-2"></span></div>
+      <div class="king-row" id="king-3" style="display:none;"><span class="king-rank">🥉</span><span class="king-nick" id="king-nick-3"></span><span class="king-count" id="king-count-3"></span></div>
+    </div>
+    <div class="king-card" id="like-king-card">
+      <div class="king-header"><i class="ti ti-heart" style="font-size:13px"></i> 이달의 좋아요왕</div>
+      <div class="king-row" id="like-king-1" style="display:none;"><span class="king-rank">🥇</span><span class="king-nick" id="like-king-nick-1"></span><span class="king-count" id="like-king-count-1"></span></div>
+      <div class="king-row" id="like-king-2" style="display:none;"><span class="king-rank">🥈</span><span class="king-nick" id="like-king-nick-2"></span><span class="king-count" id="like-king-count-2"></span></div>
+      <div class="king-row" id="like-king-3" style="display:none;"><span class="king-rank">🥉</span><span class="king-nick" id="like-king-nick-3"></span><span class="king-count" id="like-king-count-3"></span></div>
+    </div>
+  </div>
+
+
+
+  <!-- 오늘의 운세 -->
+  <div class="card" id="fortune-card" style="margin-bottom:8px;">
+    <div class="card-label"><i class="ti ti-sparkles" style="font-size:13px"></i> 오늘의 운세</div>
+    <div id="fortune-text" style="font-family:'Galmuri11','Press Start 2P','Courier New',monospace; font-size:13px; font-weight:normal; color:#1a1a18; line-height:1.8; min-height:36px; text-align:center; flex:1; display:flex; align-items:center; justify-content:center;">
+      <span style="color:#000; font-size:10px;">아직 오늘의 운세를 확인하지 않았어요</span>
+    </div>
+    <button onclick="drawFortune()" id="fortune-btn" class="lunch-btn" style="font-family:'Galmuri11','Press Start 2P','Courier New',monospace; font-size:9px; font-weight:normal; color:#000;">🔮 운세 뽑기</button>
+  </div>
+  <!-- 사진 캐러셀 -->
+  <div class="photo-carousel-card">
+    <div class="photo-carousel-header">
+      <span style="display:flex;align-items:center;gap:5px;"><i class="ti ti-photo" style="font-size:13px"></i> 오늘의 TMI</span>
+      <button class="photo-upload-btn" id="photo-upload-btn">+ 올리기</button>
+    </div>
+    <div class="photo-carousel-wrap">
+      <div class="photo-carousel-track" id="photo-track"></div>
+    </div>
+    <div class="photo-carousel-nav">
+      <button class="photo-nav-btn" id="photo-prev-btn">← 이전</button>
+      <span class="photo-page-info" id="photo-page-info"></span>
+      <button class="photo-nav-btn" id="photo-next-btn">다음 →</button>
+    </div>
+  </div>
+
+  <!-- 업로드 모달 -->
+  <div class="photo-upload-modal" id="photo-modal">
+    <div class="photo-upload-box">
+      <h3>📸 오늘의 TMI</h3>
+      <div class="photo-preview" id="photo-preview-area">
+        <span>당신의 지금을 자랑해주세요</span>
+        <input type="file" id="photo-file-input" accept="image/*" style="display:none;">
+      </div>
+      <textarea class="photo-text-input" id="photo-text-input" placeholder="한마디 남겨요" rows="2" maxlength="50"></textarea>
+      <div class="photo-upload-actions">
+        <button class="photo-cancel-btn" id="photo-cancel-btn">취소</button>
+        <button class="photo-submit-btn" id="photo-submit-btn">올리기</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 사진 크게 보기 모달 -->
+  <div class="photo-view-modal" id="photo-view-modal" onclick="this.style.display='none'">
+    <img class="photo-view-img" id="photo-view-img" src="" alt="">
+  </div>
+
+  <div class="chat-card">
+    <div class="chat-header">
+      <span class="settings-label" style="margin:0;"><i class="ti ti-notebook" style="font-size:13px"></i> 방명록</span>
+      <!-- <span style="font-size:10.5px; color:#1a1a18; text-align:center; white-space:nowrap;">🍓 심한 욕 쓰면 삭제합니다 🍓</span> -->
+      <div style="display:flex; align-items:center; gap:6px;">
+        <span id="nick-hint" style="font-size:clamp(8px, 1.5vw, 10px); color:#aaa; cursor:pointer; text-decoration:underline;">모든 기기에서 동일하게 사용하기 →</span>
+        <span class="chat-nickname" id="my-nickname">익명</span>
+        <button id="admin-btn" class="admin-btn" title="관리자">🔑</button>
+        <button id="chat-refresh" class="chat-refresh-btn"><i class="ti ti-refresh" style="font-size:13px"></i></button>
+      </div>
+    </div>
+
+  <!-- 닉네임 변경 모달 -->
+  <div class="nick-modal" id="nick-modal">
+    <div class="nick-box">
+      <h3>닉네임 변경</h3>
+      <div class="nick-list" id="nick-list"></div>
+      <div id="nick-pw-area" style="display:none; flex-direction:column; gap:8px;">
+        <div style="font-size:11px;color:#888780;" id="nick-pw-label"></div>
+        <input class="nick-pw-input" type="password" id="nick-pw-input" placeholder="비밀번호 입력">
+        <div style="display:flex;gap:8px;">
+          <button class="nick-cancel-btn" id="nick-pw-back">← 뒤로</button>
+          <button class="nick-confirm-btn" id="nick-pw-confirm">확인</button>
+        </div>
+      </div>
+      <button class="nick-cancel-btn" id="nick-modal-close" style="margin-top:4px;">닫기</button>
+    </div>
+  </div>
+    <div class="notice-wrap" id="notice-wrap">
+      <div class="notice-inner" id="notice-inner"></div>
+      <button class="notice-edit-btn" id="notice-edit-btn">✏️</button>
+    </div>
+    
+    <div class="chat-messages" id="chat-messages"></div>
+    
+    <div class="chat-pagination" id="chat-pagination">
+      <button id="page-prev">← 이전</button>
+      <span class="page-info" id="page-info">1 / 1</span>
+      <button id="page-next">다음 →</button>
+    </div>
+    
+    <div class="chat-input-area">
+      <div class="reply-target-bar" id="reply-target-bar">
+        <span id="reply-target-text"></span>
+        <button id="cancel-reply-btn">취소</button>
+      </div>
+      <div class="chat-input-row">
+        <input type="text" id="chat-input" placeholder="한마디 남겨보세요" maxlength="200">
+        <button id="chat-send"><i class="ti ti-send" style="font-size:14px"></i></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const LUNCH_DEFAULT = {start: 11*60+30, end: 13*60};
+const LUNCH_ALT     = {start: 12*60,    end: 13*60};
+const PRESETS=[
+  {start:'08:00', end:'17:00'},{start:'08:30', end:'17:30'},
+  {start:'09:00', end:'18:00'},{start:'09:30', end:'18:30'},
+  {start:'10:00', end:'19:00'}
+];
+
+function getMins(str){const[h,m]=str.split(':').map(Number);return h*60+m;}
+function fmt(s){const h=Math.floor(s/3600),m=Math.floor((s%3600)/60),ss=s%60;return[h,m,ss].map(n=>String(n).padStart(2,'0')).join(':');}
+function fmtLabel(t){
+  const[h,m]=t.split(':').map(Number);
+  const ampm=h<12?'오전':'오후';
+  const hh=h===0?12:h>12?h-12:h;
+  return ampm+' '+hh+':'+String(m).padStart(2,'0');
+}
+
+function buildOptions(selectEl, defaultVal){
+  for(let t=0;t<24*60;t+=30){
+    const h=Math.floor(t/60),m=t%60;
+    const val=String(h).padStart(2,'0')+':'+String(m).padStart(2,'0');
+    const opt=document.createElement('option');
+    opt.value=val;opt.textContent=fmtLabel(val);
+    if(val===defaultVal)opt.selected=true;
+    selectEl.appendChild(opt);
+  }
+}
+
+const startSelect=document.getElementById('start-time');
+const endSelect=document.getElementById('end-time');
+const savedStart=localStorage.getItem('clockout-start')||'09:00';
+const savedEnd=localStorage.getItem('clockout-end')||'18:00';
+buildOptions(startSelect,savedStart);
+buildOptions(endSelect,savedEnd);
+
+const lunchAltEl=document.getElementById('lunch-alt');
+lunchAltEl.checked=localStorage.getItem('clockout-lunch-alt')==='true';
+lunchAltEl.addEventListener('change',()=>{
+  localStorage.setItem('clockout-lunch-alt',lunchAltEl.checked);tick();
+});
+
+const presetGrid=document.getElementById('preset-grid');
+function findMatchingPresetIdx(s,e){return PRESETS.findIndex(p=>p.start===s&&p.end===e);}
+let selectedIdx=findMatchingPresetIdx(savedStart,savedEnd);
+PRESETS.forEach((p,i)=>{
+  const wrap=document.createElement('div');wrap.className='preset-option';
+  const id='preset-'+i;
+  const input=document.createElement('input');
+  input.type='radio';input.name='preset';input.id=id;input.value=i;
+  if(i===selectedIdx)input.checked=true;
+  const label=document.createElement('label');
+  label.setAttribute('for',id);
+  label.innerHTML=fmtLabel(p.start)+'<br>~ '+fmtLabel(p.end);
+  wrap.appendChild(input);wrap.appendChild(label);presetGrid.appendChild(wrap);
+  input.addEventListener('change',()=>{startSelect.value=p.start;endSelect.value=p.end;saveAndTick();});
+});
+
+function uncheckPresets(){document.querySelectorAll('input[name="preset"]').forEach(r=>r.checked=false);}
+function syncPresetCheck(){
+  const idx=findMatchingPresetIdx(startSelect.value,endSelect.value);
+  uncheckPresets();
+  if(idx!==-1){const t=document.getElementById('preset-'+idx);if(t)t.checked=true;}
+}
+function saveAndTick(){
+  localStorage.setItem('clockout-start',startSelect.value);
+  localStorage.setItem('clockout-end',endSelect.value);
+  syncPresetCheck();tick();
+}
+startSelect.addEventListener('change',saveAndTick);
+endSelect.addEventListener('change',saveAndTick);
+
+function tick(){
+  const now=new Date();
+  const nowMins=now.getHours()*60+now.getMinutes();
+  const nowSecs=now.getHours()*3600+now.getMinutes()*60+now.getSeconds();
+  const nowClockEl=document.getElementById('now-clock');
+  const curH=now.getHours();
+  const curAmPm=curH<12?'오전':'오후';
+  const curHH=curH===0?12:curH>12?curH-12:curH;
+  nowClockEl.textContent='('+curAmPm+' '+curHH+':'+String(now.getMinutes()).padStart(2,'0')+')';
+  const lunch=lunchAltEl.checked?LUNCH_ALT:LUNCH_DEFAULT;
+  const LUNCH_START_MINS=lunch.start,LUNCH_END_MINS=lunch.end;
+  const startMins=getMins(startSelect.value),endMins=getMins(endSelect.value);
+  const startSecs=startMins*60,endSecs=endMins*60;
+  const blocks=[];
+  for(let t=startMins;t<endMins;t+=30)blocks.push({start:t,end:Math.min(t+30,endMins)});
+  const blocksEl=document.getElementById('blocks');
+  blocksEl.innerHTML='';
+  let completed=0,total=0;
+  blocks.forEach(b=>{
+    const div=document.createElement('div');
+    const mid=(b.start+b.end)/2;
+    const isLunch=mid>=LUNCH_START_MINS&&mid<=LUNCH_END_MINS;
+    if(!isLunch)total++;
+    if(isLunch){div.className=nowMins>=b.end?'block lunch done':'block lunch';}
+    else if(nowMins>=b.end){div.className='block done';completed++;}
+    else if(nowMins>=b.start&&nowMins<b.end){div.className='block current';}
+    else{div.className='block remaining';}
+    blocksEl.appendChild(div);
+  });
+  const isLunch=nowMins>=LUNCH_START_MINS&&nowMins<LUNCH_END_MINS;
+  const cdEl=document.getElementById('countdown');
+  const badge=document.getElementById('badge');
+  const sub=document.getElementById('sublabel');
+  const setsVal=document.getElementById('sets-val');
+  const setsTotal=document.getElementById('sets-total');
+  setsTotal.textContent=' / '+total;
+  if(nowMins<startMins){
+    cdEl.textContent=fmt(Math.max(0,startSecs-nowSecs));
+    badge.className='badge badge-before';badge.textContent='출근 전';
+    sub.textContent='출근까지';setsVal.childNodes[0].textContent='--';setsTotal.textContent='';
+  }else if(nowSecs>=endSecs){
+    cdEl.textContent='퇴근!';
+    badge.className='badge badge-done';badge.textContent='완료';
+    sub.textContent='수고하셨습니다';setsVal.childNodes[0].textContent=total;
+  }else if(isLunch){
+    cdEl.textContent=fmt(Math.max(0,endSecs-nowSecs));
+    badge.className='badge badge-lunch';badge.textContent='점심시간';
+    sub.textContent='퇴근까지';setsVal.childNodes[0].textContent=completed;
+  }else{
+    cdEl.textContent=fmt(Math.max(0,endSecs-nowSecs));
+    badge.className='badge badge-work';badge.textContent='근무 중';
+    sub.textContent='퇴근까지';setsVal.childNodes[0].textContent=completed;
+  }
+}
+
+// --- 일하기 싫다 로직 ---
+const todayKST=new Date(new Date().getTime()+9*60*60*1000).toISOString().slice(0,10);
+const hateKey='clockout-hate-'+todayKST;
+const hateBtn=document.getElementById('hate-btn');
+const hateCount=document.getElementById('hate-count');
+
+async function loadHate(){
+  try{const res=await fetch('/api/hate');const data=await res.json();hateCount.textContent=data.count;}
+  catch(e){hateCount.textContent='?';}
+}
+async function pressHate(){
+  if(localStorage.getItem(hateKey))return;
+  try{
+    const res=await fetch('/api/hate',{method:'POST'});
+    const data=await res.json();
+    hateCount.textContent=data.count;
+    localStorage.setItem(hateKey,'true');
+    hateBtn.innerHTML='퇴근하세요ㅋ';
+    hateBtn.classList.add('pressed');
+  }catch(e){}
+}
+if(localStorage.getItem(hateKey)){hateBtn.innerHTML='퇴근하세요ㅋ';hateBtn.classList.add('pressed');}
+hateBtn.addEventListener('click',pressHate);
+loadHate();
+
+// --- 점심 기요틴 룰렛 시스템 ---
+const MENUS = [
+  '김치찌개','된장찌개','순두부찌개','부대찌개','설렁탕','순대국밥','비빔밥','냉면',
+  '삼겹살','제육볶음','닭갈비','갈비탕','육개장','삼계탕','도시락','쌈밥',
+  '쭈꾸미볶음','오므라이스','덮밥','초계국수','칼국수','수제비','닭볶음탕',
+  '생선구이','비빔국수','짜장면','짬뽕','탕수육','마라탕','마라샹궈',
+  '초밥','라멘','돈까스','우동','소바','규동','오야코동','텐동',
+  '파스타','피자','햄버거','샌드위치','샐러드','리조또',
+  '김밥','순대','어묵','떡볶이','라볶이',
+  '카레','쌀국수','팟타이','케밥','타코','인도커리','훠궈',
+  '낙지볶음','오징어볶음','두부김치','미역국','만두','물냉면','비빔냉면',
+  '콩나물국밥','해장국','샤브샤브','스시','순대국','가츠동','굴국밥','비빔면',
+  '굶기ㅠ'
+];
+const lunchBtn = document.getElementById('lunch-btn');
+const lunchResult = document.getElementById('lunch-result');
+let lunchSpinning = false;
+lunchBtn.addEventListener('click', ()=>{
+  if(lunchSpinning) return;
+  lunchSpinning = true;
+  lunchBtn.classList.remove("done");
+  lunchBtn.textContent = '두근두근...';
+  lunchBtn.disabled = true;
+  let count = 0;
+  const interval = setInterval(()=>{
+    lunchResult.textContent = MENUS[Math.floor(Math.random()*MENUS.length)];
+    count++;
+    if(count > 20){
+      clearInterval(interval);
+      const final = MENUS[Math.floor(Math.random()*MENUS.length)];
+      if(final === '굶기ㅠ'){
+        lunchResult.innerHTML = '굶기ㅠ <span style="font-size:12px;color:#888780;font-weight:400;">...파이팅!</span>';
+      } else {
+        lunchResult.innerHTML = final + ' <span style="font-size:12px;color:#888780;font-weight:400;">맛점!</span>';
+      }
+      lunchBtn.textContent = '다시 돌리기';
+      lunchBtn.classList.add('done');
+      lunchBtn.disabled = false;
+      lunchSpinning = false;
+    }
+  }, 80);
+});
+
+// --- 전사 공지 제어판 ---
+const noticeWrap=document.getElementById('notice-wrap');
+const noticeInner=document.getElementById('notice-inner');
+const noticeEditBtn=document.getElementById('notice-edit-btn');
+function buildMarquee(text){
+  const isMobile = window.innerWidth < 600;
+  const fontSize = isMobile && text.length > 20 ? '11px' : '13px';
+  noticeInner.style.fontSize = fontSize;
+  noticeInner.innerHTML = '<span>' + escapeHtml(text) + '</span>';
+}
+async function loadTopCommenters(){
+  try{
+    const res = await fetch('/api/top-commenters');
+    const data = await res.json();
+    const top = data.top || [];
+    if(top.length > 0){
+      document.getElementById('kings-grid').style.display = 'grid';
+      ['1','2','3'].forEach((r,i)=>{
+        if(top[i]){
+          document.getElementById('king-nick-'+r).innerHTML = addCrownToNickname(addEmojiToNickname(top[i].nickname));
+          document.getElementById('king-count-'+r).textContent = top[i].count+'개';
+          document.getElementById('king-'+r).style.display = 'flex';
+        }
+      });
+    }
+  }catch(e){}
+  try{
+    const res2 = await fetch('/api/top-likers');
+    const data2 = await res2.json();
+    const top2 = data2.top || [];
+    if(top2.length > 0){
+      document.getElementById('kings-grid').style.display = 'grid';
+      ['1','2','3'].forEach((r,i)=>{
+        if(top2[i]){
+          document.getElementById('like-king-nick-'+r).innerHTML = addCrownToNickname(addEmojiToNickname(top2[i].nickname));
+          document.getElementById('like-king-count-'+r).textContent = top2[i].count+'개';
+          document.getElementById('like-king-'+r).style.display = 'flex';
+        }
+      });
+    }
+  }catch(e){}
+}
+
+let statsData = [];
+let currentChart = 'visitors';
+
+function switchChart(type, el) {
+  currentChart = type;
+  document.querySelectorAll('.chart-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  renderChart();
+}
+
+function renderChart() {
+  if(!statsData.length) return;
+  const bars = document.getElementById('chart-bars');
+  const max = Math.max(...statsData.map(d => d[currentChart])) || 1;
+  bars.innerHTML = statsData.map(d => {
+    const h = Math.max(2, Math.round((d[currentChart] / max) * 46));
+    const dateLabel = d.date.slice(5);
+    return `<div class="chart-bar-wrap">
+      <div style="font-size:9px;color:#993556;">${d[currentChart]}</div>
+      <div class="chart-bar" style="height:${h}px;"></div>
+      <div class="chart-date">${dateLabel}</div>
+    </div>`;
+  }).join('');
+}
+
+async function loadStats() {
+  try {
+    const res = await fetch('/api/stats?password=0530');
+    const data = await res.json();
+    statsData = data.stats || [];
+    const today = statsData[statsData.length - 1];
+    if(today) {
+      document.getElementById('stat-today-visitors').textContent = today.visitors;
+      document.getElementById('stat-today-comments').textContent = today.comments;
+      document.getElementById('stat-today-hate').textContent = today.hate;
+    }
+    renderChart();
+  } catch(e) {}
+}
+
+// --- 사진 캐러셀 ---
+let photoIndex = 0;
+let photos = [];
+
+function fmtPhotoTime(ts){
+  const d = new Date(ts*1000);
+  const yy = String(d.getFullYear()).slice(-2);
+  const mm = String(d.getMonth()+1).padStart(2,'0');
+  const dd = String(d.getDate()).padStart(2,'0');
+  const h = d.getHours(), m = d.getMinutes();
+  const ampm = h < 12 ? '오전' : '오후';
+  const hh = h===0?12:h>12?h-12:h;
+  return yy+'-'+mm+'-'+dd+' '+ampm+' '+hh+':'+String(m).padStart(2,'0');
+}
+
+function renderCarousel(){
+  const track = document.getElementById('photo-track');
+  const pageInfo = document.getElementById('photo-page-info');
+  if(!photos.length){
+    track.innerHTML = '<div class="photo-card-item" style="justify-content:center;"><div class="photo-empty">아직 사진이 없어요 📸</div></div>';
+    pageInfo.textContent = '';
+    const prevBtn = document.getElementById('photo-prev-btn');
+    const nextBtn = document.getElementById('photo-next-btn');
+    if(prevBtn) prevBtn.disabled = true;
+    if(nextBtn) nextBtn.disabled = true;
+    return;
+  }
+  track.innerHTML = photos.map((p,i) => {
+    const nick = addEmojiToNickname(p.nickname);
+    const isMine = nick === myNickname;
+    const delBtn = (isAdmin || isMine) 
+      ? `<button onclick="deletePhoto(${p.id})" style="background:none;border:none;color:#ccc;cursor:pointer;font-size:11px;padding:0;">🗑️</button>` : '';
+    const editBtn = isMine
+      ? `<button onclick="editPhoto(${p.id})" style="background:none;border:none;color:#ccc;cursor:pointer;font-size:11px;padding:0;">✏️</button>` : '';
+    return `<div class="photo-card-item">
+      <img class="photo-card-img" src="${p.image}" alt="" onclick="document.getElementById('photo-view-img').src='${p.image}';document.getElementById('photo-view-modal').style.display='flex';" >
+      <div class="photo-card-info">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <span class="photo-card-nick">${addCrownToNickname(nick)}</span>
+          <div style="display:flex;gap:4px;">${editBtn}${delBtn}</div>
+        </div>
+        <div class="photo-card-text">${escapeHtml(p.text||'')}</div>
+        <div style="text-align:right;" class="photo-card-time">${fmtPhotoTime(p.ts)}</div>
+      </div>
+    </div>`;
+  }).join('');
+  pageInfo.textContent = (photoIndex + 1) + ' / ' + photos.length;
+  track.style.transform = `translateX(-${photoIndex * 100}%)`;
+  const prevBtn = document.getElementById('photo-prev-btn');
+  const nextBtn = document.getElementById('photo-next-btn');
+  if(prevBtn) prevBtn.disabled = photoIndex <= 0;
+  if(nextBtn) nextBtn.disabled = photoIndex >= photos.length - 1;
+}
+
+function goToPhoto(idx){
+  photoIndex = Math.max(0, Math.min(idx, photos.length - 1));
+  renderCarousel();
+}
+document.getElementById('photo-prev-btn').addEventListener('click', ()=> goToPhoto(photoIndex - 1));
+document.getElementById('photo-next-btn').addEventListener('click', ()=> goToPhoto(photoIndex + 1));
+
+// 스와이프
+let _swipeStartX = 0;
+document.addEventListener('DOMContentLoaded', ()=>{
+  const w = document.querySelector('.photo-carousel-wrap');
+  if(!w) return;
+  w.addEventListener('touchstart', e=>{ _swipeStartX = e.touches[0].clientX; }, {passive:true});
+  w.addEventListener('touchend', e=>{
+    const diff = _swipeStartX - e.changedTouches[0].clientX;
+    if(Math.abs(diff) > 40){
+      if(diff > 0) goToPhoto(photoIndex + 1);
+      else goToPhoto(photoIndex - 1);
+    }
+  });
+});
+
+async function editPhoto(id){
+  const p = photos.find(x => x.id === id);
+  if(!p) return;
+  const modal = document.getElementById("photo-modal");
+  const previewArea = document.getElementById("photo-preview-area");
+  const textInput = document.getElementById("photo-text-input");
+  selectedImageBase64 = p.image;
+  previewArea.innerHTML = `<img src="${p.image}"><input type="file" id="photo-file-input" accept="image/*" style="display:none;">`;
+  textInput.value = p.text || "";
+  modal.style.display = "flex";
+  const submitBtn = document.getElementById("photo-submit-btn");
+  submitBtn.textContent = "수정하기";
+  submitBtn._editId = id;
+  rebindFileInput();
+}
+
+async function deletePhoto(id, nick){
+  if(!confirm('삭제할까요?')) return;
+  const body = isAdmin 
+    ? {password: adminPassword}
+    : {isOwner: true, nickname: myNickname};
+  try{
+    const res = await fetch('/api/photos/'+id, {method:'DELETE', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body)});
+    if(res.ok){ await loadPhotos(); }
+  }catch(e){}
+}
+
+async function loadPhotos(){
+  try{
+    const res = await fetch('/api/photos');
+    const data = await res.json();
+    photos = data.photos || [];
+    photoIndex = 0;
+    renderCarousel();
+  }catch(e){}
+}
+
+// 업로드 모달
+let selectedImageBase64 = '';
+document.getElementById('photo-upload-btn').addEventListener('click', ()=>{
+  document.getElementById('photo-modal').style.display = 'flex';
+});
+document.getElementById('photo-cancel-btn').addEventListener('click', ()=>{
+  document.getElementById('photo-modal').style.display = 'none';
+  selectedImageBase64 = '';
+  const submitBtn = document.getElementById('photo-submit-btn');
+  submitBtn._editId = null;
+  submitBtn.textContent = '올리기';
+  document.getElementById('photo-preview-area').innerHTML = '<span>당신의 지금을 자랑해주세요</span><input type="file" id="photo-file-input" accept="image/*" style="display:none;">';
+  document.getElementById('photo-text-input').value = '';
+  rebindFileInput();
+});
+function rebindFileInput(){
+  const inp = document.getElementById('photo-file-input');
+  if(inp) inp.addEventListener('change', handleFileSelect);
+}
+function handleFileSelect(e){
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = (ev)=>{
+    const img = new Image();
+    img.onload = ()=>{
+      const canvas = document.createElement('canvas');
+      const max = 800;
+      let w = img.width, h = img.height;
+      if(w > h){
+        if(w > max){ h = Math.round(h * (max / w)); w = max; }
+      } else {
+        if(h > max){ w = Math.round(w * (max / h)); h = max; }
+      }
+      canvas.width = w; canvas.height = h;
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, w, h);
+      ctx.drawImage(img, 0, 0, w, h);
+      selectedImageBase64 = canvas.toDataURL("image/jpeg", 0.95);
+      const previewArea = document.getElementById('photo-preview-area');
+      let imgEl = previewArea.querySelector('img');
+      if(!imgEl){
+        imgEl = document.createElement('img');
+        imgEl.style.width = '100%';
+        imgEl.style.height = '100%';
+        imgEl.style.objectFit = 'cover';
+        const span = previewArea.querySelector('span');
+        if(span) span.remove();
+        previewArea.insertBefore(imgEl, previewArea.firstChild);
+      }
+      imgEl.src = selectedImageBase64;
+    };
+    img.src = ev.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+document.getElementById('photo-preview-area').addEventListener('click', ()=>{
+  const input = document.getElementById('photo-file-input');
+  if(input) input.click();
+});
+document.getElementById('photo-file-input').addEventListener('change', handleFileSelect);
+document.getElementById('photo-submit-btn').addEventListener('click', async()=>{
+  if(!selectedImageBase64){ alert('사진을 선택해주세요!'); return; }
+  const text = document.getElementById('photo-text-input').value.trim();
+  const submitBtn = document.getElementById('photo-submit-btn');
+  const editId = submitBtn._editId;
+  try{
+    if(editId){
+      await fetch('/api/photos/'+editId+'/edit', {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({nickname: myNickname, text, image: selectedImageBase64})
+      });
+      submitBtn._editId = null;
+      submitBtn.textContent = '올리기';
+    } else {
+      await fetch('/api/photos', {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({nickname: myNickname, text, image: selectedImageBase64})
+      });
+    }
+    document.getElementById('photo-cancel-btn').click();
+    loadPhotos();
+  }catch(e){ alert('실패'); }
+});
+
+// --- 닉네임 변경 ---
+let selectedNick = '';
+document.getElementById('my-nickname').addEventListener('click', async()=>{
+  if(isAdmin) return;
+  if(!confirm('⚠️ 본인이 기존에 사용하던 닉네임을 선택하세요 ⚠️')) return;
+  const modal = document.getElementById('nick-modal');
+  const list = document.getElementById('nick-list');
+  const pwArea = document.getElementById('nick-pw-area');
+  list.innerHTML = '<div style="font-size:12px;color:#aaa;text-align:center;padding:12px;">불러오는 중...</div>';
+  pwArea.style.display = 'none';
+  modal.style.display = 'flex';
+  try{
+    const res = await fetch('/api/nicknames');
+    const data = await res.json();
+    const nicks = [...new Set((data.nicknames || []).map(n => addEmojiToNickname(n)))];
+    nicks.sort();
+    list.innerHTML = nicks.map(n => `<div class="nick-item" data-nick="${n}">${n}</div>`).join('');
+    list.querySelectorAll('.nick-item').forEach(el => {
+      el.addEventListener('click', ()=>{
+        selectedNick = el.dataset.nick;
+        list.style.display = 'none';
+        document.getElementById('nick-pw-label').textContent = 
+          `"${selectedNick}" 선택됨\n처음이면 새 비밀번호를 설정해주세요.`;
+        document.getElementById('nick-pw-input').value = '';
+        pwArea.style.display = 'flex';
+      });
+    });
+  }catch(e){
+    list.innerHTML = '<div style="font-size:12px;color:#aaa;text-align:center;padding:12px;">불러오기 실패</div>';
+  }
+});
+document.getElementById('nick-modal-close').addEventListener('click', ()=>{
+  document.getElementById('nick-modal').style.display = 'none';
+  document.getElementById('nick-list').style.display = 'flex';
+  document.getElementById('nick-pw-area').style.display = 'none';
+});
+document.getElementById('nick-pw-back').addEventListener('click', ()=>{
+  document.getElementById('nick-list').style.display = 'flex';
+  document.getElementById('nick-pw-area').style.display = 'none';
+});
+document.getElementById('nick-pw-confirm').addEventListener('click', async()=>{
+  const pw = document.getElementById('nick-pw-input').value.trim();
+  if(!pw){ alert('비밀번호를 입력해주세요!'); return; }
+  try{
+    const res = await fetch('/api/nickname-auth', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({nickname: selectedNick, password: pw})
+    });
+    if(res.ok){
+      myNickname = selectedNick;
+      localStorage.setItem('clockout-nickname', myNickname);
+      document.getElementById('my-nickname').textContent = myNickname;
+      document.getElementById('nick-modal').style.display = 'none';
+      document.getElementById('nick-list').style.display = 'flex';
+      document.getElementById('nick-pw-area').style.display = 'none';
+    } else {
+      alert('비밀번호가 틀렸어요!');
+    }
+  }catch(e){ alert('오류 발생'); }
+});
+
+async function loadNotice(){
+  try{
+    const res=await fetch('/api/notice');
+    const data=await res.json();
+    if(data.text){buildMarquee(data.text);noticeWrap.style.display='block';}
+    else{noticeWrap.style.display='none';}
+  }catch(e){}
+}
+noticeEditBtn.addEventListener('click',async()=>{
+  const current=noticeInner.textContent.replace(/^🌼\s*/,'').replace(/\s*🌼$/,'').trim();
+  const newText=prompt('공지 입력 (비우면 삭제):',current);
+  if(newText===null)return;
+  try{
+    await fetch('/api/notice',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({password:adminPassword,text:newText})
+    });
+    loadNotice();
+  }catch(e){alert('저장 실패');}
+});
+
+const ANIMAL_EMOJI={
+  "돼지":"🐷","다람쥐":"🐿️","펭귄":"🐧","햄스터":"🐹",
+  "여우":"🦊","고래":"🐳","토끼":"🐰","부엉이":"🦉",
+  "거북이":"🐢","수달":"🦦","코알라":"🐨","사자":"🦁",
+  "너구리":"🦝","오리":"🦆","곰":"🐻","강아지":"🐶",
+  "물개":"🦭","기린":"🦒","판다":"🐼","라마":"🦙"
+};
+function addEmojiToNickname(nickname){
+  if(!nickname)return nickname;
+  const firstChar=nickname.codePointAt(0);
+  if(firstChar>0x1F000)return nickname;
+  for(const noun in ANIMAL_EMOJI){if(nickname.includes(noun))return ANIMAL_EMOJI[noun]+' '+nickname;}
+  return nickname;
+}
+
+let myNickname=localStorage.getItem('clockout-nickname');
+if(myNickname){
+  const withEmoji=addEmojiToNickname(myNickname);
+  if(withEmoji!==myNickname){myNickname=withEmoji;localStorage.setItem('clockout-nickname',myNickname);}
+}
+function addCrownToNickname(nick){
+  if(nick === '🐳 졸린 고래'){
+    return '<span class="nick-emoji-wrap">🐳<span class="nick-crown">👑</span></span> 졸린 고래';
+  }
+  return escapeHtml(nick);
+}
+
+function setNicknameDisplay(){
+  const el = document.getElementById('my-nickname');
+  if(myNickname === '🐳 졸린 고래'){
+    el.innerHTML = '<span class="nick-emoji-wrap">🐳<span class="nick-crown">👑</span></span> 졸린 고래';
+  } else {
+    el.textContent = myNickname;
+  }
+}
+const FORTUNES = [
+  "오늘 회의는 예상보다 일찍 끝날 운세",
+  "점심 메뉴 고민이 오늘의 최대 난관",
+  "오늘 상사가 뭔가 좋은 소식을 들고 올 것",
+  "퇴근 5분 전 갑자기 일이 생길 수도 있으니 조심",
+  "오늘은 커피 두 잔이 답이다",
+  "집중력이 오전에 최고조에 달한다. 중요한 일은 오전에!",
+  "오늘 메일함에 반가운 소식이 숨어있다",
+  "야근 없이 퇴근할 가능성 87%",
+  "오늘 팀원 중 한 명이 당신을 고마워하고 있다",
+  "점심은 가볍게 먹는 게 오후 집중력에 좋다",
+  "오늘 보고서는 한 번에 통과될 운세",
+  "갑자기 칭찬받을 수 있으니 겸손한 표정 준비",
+  "오전 중에 하기 싫은 일 먼저 처리하면 하루가 편하다",
+  "오늘 탕비실에서 좋은 간식을 발견할 것",
+  "퇴근길이 유독 상쾌할 예감",
+  "오늘 회의에서 당신의 의견이 채택될 운세",
+  "점심 후 살짝 졸릴 수 있으니 커피 타이밍 잘 잡아야",
+  "오늘 일이 술술 풀리는 날이다",
+  "동료와 소소한 수다가 스트레스를 날려줄 것",
+  "오늘은 집중하면 두 배의 성과를 낼 수 있다",
+  "퇴근 후 뭔가 맛있는 것 먹을 운명",
+  "오늘 중요한 결정은 오후에 내리는 게 좋다",
+  "갑자기 아이디어가 떠오를 시간대: 오후 3시",
+  "오늘은 누군가에게 먼저 말 걸면 좋은 일이 생긴다",
+  "오늘 하루 무사히 버티면 내일은 더 좋을 것",
+  "점심 약속이 있다면 오늘은 특히 즐거울 것",
+  "오늘 컨디션이 좋아서 일이 잘 될 것 같은 날",
+  "오늘 상사의 기분이 좋을 운세. 기회를 놓치지 말 것",
+  "오늘 다이어트는 내일부터 해도 될 것",
+  "오전보다 오후가 훨씬 잘 풀리는 날",
+  "오늘 점심 메뉴가 기대 이하일 수 있다. 마음의 준비를",
+  "화장실 타이밍이 절묘하게 맞아떨어질 것",
+  "오늘 엘리베이터 문이 닫히기 직전에 타게 될 운세",
+  "오늘 인터넷이 느릴 예감. 인내심을 발휘할 것",
+  "주머니 속에 영수증이 가득할 것",
+  "오늘 하루 종일 노래 한 곡이 머릿속에서 맴돌 것",
+  "점심 먹고 졸릴 확률 99.9%",
+  "퇴근하자마자 누군가 카톡 보낼 운세",
+  "오늘 길 가다가 아는 사람을 마주칠 것",
+  "충전기 챙기는 걸 잊었을 가능성이 높다",
+  "오늘 회의 중 딴생각 할 확률 78%",
+  "점심에 뭐 먹을지 결정하는 데 10분 이상 걸릴 것",
+  "오늘 자판기 앞에서 고민을 많이 할 운세",
+  "퇴근 후 소파에서 일어나지 못할 예감",
+  "오늘 핸드폰 배터리가 중요한 순간에 빨간불 켜질 것",
+  "오늘 무언가를 잃어버렸다가 찾을 것",
+  "오늘 먹은 것보다 더 먹고 싶을 것이다",
+  "볼펜이 없어서 찾아 헤맬 운세",
+  "오늘 알람을 껐다 켰다 세 번은 반복할 것",
+  "오늘 계획의 절반은 내일로 미뤄질 것",
+  "오늘 집에 가면 아무것도 하기 싫을 것이다. 쉬어라",
+  "오늘 문 닫히는 엘리베이터를 놓칠 것",
+  "오늘 하루 중 '아 진짜'를 세 번 이상 말할 것",
+  "오늘 퇴근하면서 왜 이렇게 빨리 지쳤나 생각할 것",
+  "오늘 스마트폰 화면을 200번 이상 켤 것",
+  "오늘 의자 등받이에 기대는 횟수가 많을 것",
+  "오늘 일이 마음대로 안 될 때 물 한 모금이 답이다",
+  "오늘 퇴근길에 편의점에 들를 운명",
+  "점심 먹고 커피 안 마시면 오후가 힘들 것",
+  "오늘 모니터가 평소보다 밝아 보일 것. 설정 탓이 아니다",
+  "오늘 당신의 노력이 결실을 맺기 시작하는 날",
+  "작은 친절이 큰 행운을 불러온다",
+  "오늘은 직관을 믿어라. 틀리지 않는다",
+  "새로운 시작을 두려워하지 마라",
+  "오늘 포기하면 내일 후회할 것이다",
+  "당신이 생각하는 것보다 훨씬 잘하고 있다",
+  "오늘 누군가에게 진심을 전하면 관계가 깊어진다",
+  "기회는 준비된 자에게만 온다. 오늘이 그날이다",
+  "작은 성취도 충분히 기뻐할 자격이 있다",
+  "오늘 하루를 마무리할 때 세 가지 감사함을 떠올려라",
+  "힘든 시간은 지나간다. 오늘도 잘 버티고 있다",
+  "당신의 가치는 타인의 시선에 달려있지 않다",
+  "오늘 결정을 미루지 마라. 지금이 최적의 타이밍이다",
+  "주변 사람들이 당신을 더 많이 의지하고 있다",
+  "오늘 자신에게 너그러워도 된다",
+  "걱정하는 일의 90%는 일어나지 않는다",
+  "오늘 좋은 소식이 당신을 기다리고 있다",
+  "지금 이 순간을 즐겨라. 지나고 나면 소중해진다",
+  "당신이 하는 일은 분명히 의미 있다",
+  "오늘 한 발짝 내딛으면 내일 두 발짝이 된다",
+  "당신의 꿈은 생각보다 가까이 있다",
+  "오늘 당신 곁에 있는 사람들이 특히 소중하다",
+  "어제보다 오늘이 더 나은 당신이다",
+  "오늘 용기를 내면 예상치 못한 기회가 열린다",
+  "포기하지 않은 것만으로도 이미 대단하다",
+  "오늘 하루가 쌓여 훗날의 좋은 추억이 된다",
+  "지금 힘들어도 이 시간이 당신을 성장시키고 있다",
+  "오늘 받은 것보다 주는 것이 더 많은 사람이 되어라",
+  "당신의 선택이 옳았다는 것을 곧 알게 될 것이다",
+  "오늘 작은 변화가 큰 차이를 만든다",
+  "오늘 달달한 것이 당긴다면 먹어도 된다. 운세가 허락한다",
+  "오늘 국물 요리가 몸에 좋을 것",
+  "오늘 아이스크림이 유혹할 것이다. 적당히",
+  "오늘 점심은 혼밥이 정답일 수 있다",
+  "오늘 새로운 메뉴 도전이 성공할 운세",
+  "오늘 커피보다 차가 더 잘 맞는 날",
+  "오늘 배달 음식을 시키면 만족도가 높을 것",
+  "오늘 샐러드를 먹으면 오후에 더 상쾌할 것",
+  "퇴근 후 치킨이 당신을 기다리고 있다",
+  "오늘 물을 많이 마시면 컨디션이 확 달라진다",
+  "오늘 점심은 따뜻한 국물이 정답",
+  "오늘 간식 타이밍: 오후 3시가 최적",
+  "오늘 뭔가 새로운 음식을 먹어보면 좋은 경험이 될 것",
+  "오늘 과식하면 후회할 것이다. 적당히",
+  "오늘 커피 한 잔이 기적을 만든다",
+  "오늘 바깥 공기가 생각보다 상쾌할 것",
+  "오늘 창밖을 자주 보면 마음이 편해진다",
+  "오늘 걸어서 이동하면 좋은 생각이 떠오를 것",
+  "오늘 햇빛을 5분만 쬐어도 기분이 달라진다",
+  "오늘 날씨가 기분에 플러스 요인이 될 것",
+  "오늘 오래된 친구에게 연락하면 반가워할 것이다",
+  "오늘 동료에게 작은 칭찬 한마디가 큰 힘이 된다",
+  "오늘 가족에게 연락하면 기뻐할 것이다",
+  "오늘 처음 만나는 사람과 의외로 잘 통할 것",
+  "오늘 당신이 먼저 웃으면 상대도 웃는다",
+  "오늘 오해가 풀릴 기회가 생긴다",
+  "주변 사람의 말을 귀 기울여 들으면 보물 같은 정보를 얻는다",
+  "오늘 누군가가 당신 생각을 하고 있다",
+  "오늘 감사한 마음을 표현하면 관계가 더 깊어진다",
+  "오늘 혼자 있는 시간이 충전의 시간이 된다",
+  "오늘 스트레칭 한 번이 하루를 바꾼다",
+  "오늘 충분한 수분 섭취가 중요하다",
+  "오늘 눈을 자주 쉬게 해주어라",
+  "오늘 점심 후 잠깐의 산책이 오후를 상쾌하게 한다",
+  "오늘 어깨 펴는 것만으로도 자신감이 생긴다",
+  "오늘 일찍 자면 내일 컨디션이 확실히 다를 것",
+  "오늘 심호흡 세 번이 스트레스를 날려준다",
+  "오늘 핸드폰을 잠깐 내려놓으면 눈이 편해진다",
+  "오늘 계단 오르기가 의외의 활력을 줄 것",
+  "오늘 몸이 보내는 신호에 귀 기울여라",
+  "오늘 긍정적인 말 한마디가 하루를 바꾼다",
+  "오늘 계획을 세우면 실천 확률이 두 배가 된다",
+  "오늘 모르는 척하는 것이 때로는 지혜다",
+  "오늘 침묵이 말보다 강할 때가 있다",
+  "오늘 남의 말에 흔들리지 않는 하루",
+  "오늘 자신을 믿어라. 생각보다 잘하고 있다",
+  "오늘 포기하지 않는 것 자체가 성공이다",
+  "오늘 뭔가 잃은 것 같아도 곧 더 좋은 것이 온다",
+  "오늘 기대하지 않은 곳에서 기쁨을 찾게 된다",
+  "오늘 어디선가 좋은 소식이 날아올 것",
+  "오늘 사소한 것에 집착하지 말 것",
+  "오늘 큰 그림을 보면 작은 문제가 해결된다",
+  "오늘 실수를 두려워하지 마라. 경험이 된다",
+  "오늘 하루를 성실하게 살면 미래가 달라진다",
+  "오늘 당신의 에너지가 주변에 긍정적 영향을 미친다",
+  "오늘 작은 습관이 큰 변화를 만든다",
+  "오늘 기회가 두드릴 때 문을 열어라",
+  "오늘 감정보다 이성이 더 나은 선택을 하게 한다",
+  "오늘 한 발짝 물러나면 더 잘 보인다",
+  "오늘 끝까지 해내는 사람이 결국 이긴다",
+  "오늘 뭔가 새로운 것을 배우면 뇌가 활성화된다",
+  "오늘 아침에 한 다짐을 저녁까지 기억하라",
+  "오늘 비교하지 말고 어제의 나와 경쟁하라",
+  "오늘 남의 성공이 당신의 실패가 아니다",
+  "오늘 칭찬은 고래도 춤추게 한다. 아끼지 말 것",
+  "오늘 진심이 담긴 말 한마디가 기적을 만든다",
+  "오늘 불필요한 걱정을 내려놓으면 몸이 가벼워진다",
+  "오늘 하루를 버티는 것만으로도 대단하다",
+  "오늘 좋은 사람이 되려는 마음 자체가 이미 좋은 사람이다",
+  "오늘 당신이 있어서 주변이 더 밝다",
+  "오늘 늦은 게 아니라 제때 시작하는 것이다",
+  "오늘 변화는 두려운 것이 아니라 성장의 신호다",
+  "오늘 도움을 요청하는 것도 용기다",
+  "오늘 실패는 성공의 반대가 아니라 일부다",
+  "오늘 선택을 후회하지 마라. 그 선택이 최선이었다",
+  "오늘 마음의 여유가 최고의 무기다",
+  "오늘 조급함을 내려놓으면 더 잘 된다",
+  "오늘 당신만의 속도로 가면 된다",
+  "오늘 천천히 가도 가고 있는 것이다",
+  "오늘 행복은 멀리 있지 않다. 지금 이 순간에 있다",
+  "오늘 점심은 뭘 먹어도 맛있을 것이다",
+  "오늘 갑자기 배고파질 시간: 오후 2시",
+  "오늘 뭔가 달달한 게 당길 예감",
+  "오늘 혼자 밥 먹어도 맛있는 날",
+  "오늘 같이 밥 먹을 사람 있으면 더 맛있을 것",
+  "오늘 배달 음식 만족도 높은 날",
+  "오늘 새 메뉴 도전 성공 확률 85%",
+  "오늘 커피는 오전 중에 마시는 게 최고",
+  "오늘 차 한 잔이 마음을 따뜻하게 한다",
+  "오늘 물을 자주 마시면 두통이 예방된다",
+  "오늘 과자가 유혹할 것이다. 한 봉지만",
+  "오늘 편의점에서 좋은 걸 발견할 것",
+  "오늘 소식(小食)이 몸에 이롭다",
+  "오늘 따뜻한 음식이 몸과 마음을 녹여줄 것",
+  "오늘 차가운 음료보다 따뜻한 게 더 맞는 날",
+  "오늘 국물 한 모금이 천국처럼 느껴질 것",
+  "오늘 밥 대신 면이 더 당기는 날",
+  "오늘 고기가 먹고 싶다면 먹어도 된다",
+  "오늘 채소를 많이 먹으면 오후 집중력이 올라간다",
+  "오늘 회식이 있다면 적당히 즐기는 게 정답",
+  "오늘 디저트를 건너뛰면 후회할 것이다",
+  "오늘 새벽 배달은 자제하는 것이 좋다",
+  "오늘 퇴근 후 집밥이 최고일 것",
+  "오늘 냉장고에 뭔가 맛있는 게 있을 것이다",
+  "오늘 간식으로 견과류를 먹으면 두뇌가 활성화된다",
+  "오늘 점심 후 디저트가 하루를 살린다",
+  "오늘 먹는 것에서 작은 행복을 찾아라",
+  "오늘 라면이 당긴다면 운명이다",
+  "오늘 밥 한 공기 더 먹어도 되는 날",
+  "오늘 식후 산책 10분이 소화를 도울 것",
+  "오늘 음식 사진을 찍고 싶어질 것이다",
+  "오늘 누군가와 밥을 나눠먹으면 더 맛있다",
+  "오늘 간식 타임에 눈치 보지 말 것",
+  "오늘 음료 한 잔이 기분 전환에 최고",
+  "오늘 탕수육은 부먹이 정답이다",
+  "오늘 짜장면과 짬뽕 중 하나를 골라야 한다면 짬뽕",
+  "오늘 치킨은 후라이드가 운세에 맞다",
+  "오늘 피자를 먹는다면 도우부터 먹어라",
+  "오늘 떡볶이가 최고의 선택일 것이다",
+  "오늘 순대국밥이 생각날 것이다",
+  "오늘 삼겹살이 당긴다면 오늘 운세가 좋다",
+  "오늘 냉면 한 그릇이 완벽한 점심",
+  "오늘 돈까스 먹으면 기분이 업된다",
+  "오늘 파스타가 의외로 잘 맞는 날",
+  "오늘 초밥이 먹고 싶다면 가도 좋다",
+  "오늘 우동 한 그릇으로 속을 달래라",
+  "오늘 샐러드가 의외로 만족스러울 것",
+  "오늘 햄버거가 유혹할 것이다. 응해도 된다",
+  "오늘 카레가 영혼을 구할 것이다",
+  "오늘 김밥 한 줄이 든든한 한 끼",
+  "오늘 제육볶음이 에너지를 준다",
+  "오늘 된장찌개가 그리울 것이다",
+  "오늘 비빔밥이 몸에 좋은 날",
+  "오늘 갈비탕이 보약보다 낫다",
+  "오늘 오므라이스가 기분을 살린다",
+  "오늘 마라탕이 스트레스를 날려줄 것",
+  "오늘 쌀국수가 의외로 정답",
+  "오늘 순두부찌개가 따뜻하게 감싸줄 것",
+  "오늘 칼국수가 속을 편하게 한다",
+  "오늘 만두 한 접시가 행복이다",
+  "오늘 굶기ㅠ 는 제발 피해라",
+  "오늘 야식은 자제하는 것이 내일을 위한 선물",
+  "오늘 달고나 커피를 만들어 먹으면 기분이 좋아질 것",
+  "오늘 디카페인으로 바꿀 때가 됐을 수도",
+  "오늘 아메리카노보다 라떼가 어울린다",
+  "오늘 핫초코가 마시고 싶어질 것이다",
+  "오늘 밀크티가 의외로 맞는 날",
+  "오늘 레몬에이드가 기분을 상쾌하게 한다",
+  "오늘 탄산음료보다 주스가 몸에 좋다",
+  "오늘 스무디 한 잔으로 건강을 챙겨라",
+  "오늘 녹차가 두뇌를 맑게 한다",
+  "오늘 물만 마셔도 기적이 일어난다",
+  "오늘 음료 한 잔이 하루의 쉼표가 된다",
+  "오늘 엘리베이터 대신 계단을 선택하면 운이 따른다",
+  "오늘 출근길에 좋아하는 음악 한 곡이 하루를 바꾼다",
+  "오늘 스트레칭 3분이 허리를 살린다",
+  "오늘 낮잠 10분이 오후 생산성을 두 배로 만든다",
+  "오늘 일찍 자면 내일 아침이 달라진다",
+  "오늘 핸드폰을 잠깐 내려놓는 시간이 필요하다",
+  "오늘 귀에 이어폰을 빼고 주변 소리를 들어봐라",
+  "오늘 천천히 걸어보면 새로운 것이 보인다",
+  "오늘 좋아하는 노래 들으면서 일하면 능률이 오른다",
+  "오늘 잠깐의 명상이 하루를 리셋한다",
+  "오늘 일기를 쓰면 마음이 정리된다",
+  "오늘 감사 일기 세 줄이 행복을 부른다",
+  "오늘 책 한 페이지가 인생을 바꿀 수도 있다",
+  "오늘 드라마 한 편이 충분한 휴식이다",
+  "오늘 유튜브에서 좋은 영상을 발견할 것이다",
+  "오늘 좋아하는 것을 하는 시간이 필요하다",
+  "오늘 취미를 위한 시간을 30분만 내보자",
+  "오늘 그림 한 장 그려보면 어떨까",
+  "오늘 산책이 최고의 처방이다",
+  "오늘 요가 10분이 몸과 마음을 회복시킨다",
+  "오늘 좋아하는 향기가 기분을 올려줄 것",
+  "오늘 정리정돈 하면 마음도 정리된다",
+  "오늘 불필요한 앱을 지워라. 가벼워진다",
+  "오늘 SNS를 잠깐 쉬면 삶이 더 현실적이 된다",
+  "오늘 사진 한 장 찍어두면 나중에 추억이 된다",
+  "오늘 오래된 사진을 보면 미소가 지어질 것",
+  "오늘 가족 단체방에 안부 문자 하나 보내라",
+  "오늘 친구에게 갑자기 연락해도 반가워할 것이다",
+  "오늘 혼자만의 시간이 충전에 도움이 된다",
+  "오늘 군중 속에서도 자신을 잃지 마라",
+  "오늘 타인의 기준에 자신을 맞추지 말 것",
+  "오늘 나를 위한 작은 선물 하나 어때",
+  "오늘 무언가를 사고 싶다면 하루 생각해봐라",
+  "오늘 충동구매는 조금 자제하는 게 좋다",
+  "오늘 절약이 미래의 나에게 선물이 된다",
+  "오늘 지갑을 열기 전에 한 번 더 생각하라",
+  "오늘 계획 없는 소비는 후회로 이어진다",
+  "오늘 저축한 만큼 미래가 든든해진다",
+  "오늘 돈보다 경험에 투자하는 게 더 가치있다",
+  "오늘 작은 성취에 스스로 상을 줘도 된다",
+  "오늘 세일 유혹에 빠지지 말 것",
+  "오늘 필요한 것과 원하는 것을 구분하라",
+  "오늘 정기구독 중 안 쓰는 것이 있는지 확인하라",
+  "오늘 커피 한 잔을 아끼면 한 달 후 작은 행복이 온다",
+  "오늘 택시 대신 대중교통을 선택하면 운이 좋아진다",
+  "오늘 중고 거래를 해보면 뜻밖의 이득이 있을 것",
+  "오늘 물건을 아끼면 오래 쓸 수 있다",
+  "오늘 할인 쿠폰이 숨어있으니 찾아봐라",
+  "오늘 포인트 적립을 잊지 마라",
+  "오늘 재테크 공부를 시작하기 좋은 날",
+  "오늘 기분이 안 좋으면 쇼핑하고 싶어진다. 참아라",
+  "오늘 예산 안에서 최선의 선택을 하라",
+  "오늘 비가 올 것 같은 예감. 우산 챙겨라",
+  "오늘 날씨보다 마음이 더 맑다",
+  "오늘 구름 사이로 햇살이 들어올 것",
+  "오늘 바람이 의외로 상쾌할 것이다",
+  "오늘 하늘을 한 번 올려다보면 마음이 넓어진다",
+  "오늘 석양이 유독 아름다울 것이다",
+  "오늘 창밖 풍경이 마음을 위로한다",
+  "오늘 자연과 가까워지면 기분이 좋아진다",
+  "오늘 꽃 한 송이가 하루를 화사하게 만든다",
+  "오늘 나무를 보면 여유가 생긴다",
+  "오늘 파란 하늘이 스트레스를 날려준다",
+  "오늘 소나기가 지나면 무지개가 있을 것",
+  "오늘 빗소리가 집중력을 높여줄 것",
+  "오늘 맑은 공기 한 모금이 두뇌를 깨운다",
+  "오늘 산책로에서 뜻밖의 발견이 있을 것",
+  "오늘 별을 볼 수 있다면 소원을 빌어라",
+  "오늘 달이 유독 밝을 것이다",
+  "오늘 해 뜨는 것을 보면 에너지가 충전된다",
+  "오늘 계절의 변화를 느껴봐라",
+  "오늘 나뭇잎 색이 특히 예쁠 것이다",
+  "오늘 새소리를 들으면 기분이 좋아진다",
+  "오늘 공원에서 10분만 앉아있어도 리프레시된다",
+  "오늘 하늘 사진 한 장 찍어두어라",
+  "오늘 운전하다가 좋아하는 노래가 나올 것",
+  "오늘 지하철에서 자리가 생길 것이다",
+  "오늘 버스를 딱 맞게 탈 운세",
+  "오늘 길이 막히지 않을 것이다",
+  "오늘 주차 자리가 잘 날 것이다",
+  "오늘 이동 중에 좋은 아이디어가 떠오를 것",
+  "오늘 길을 헤매더라도 결국 찾게 된다",
+  "오늘 낯선 길을 걸어봐라. 새로운 발견이 있다",
+  "오늘 퇴근길이 평소보다 짧게 느껴질 것",
+  "오늘 출근길에 아는 사람을 만날 수도 있다",
+  "오늘 대중교통에서 좋은 자리가 날 것",
+  "오늘 택배가 도착할 것이다",
+  "오늘 기다리던 무언가가 온다",
+  "오늘 예상치 못한 선물을 받을 수도 있다",
+  "오늘 잊고 있던 것을 문득 기억하게 된다",
+  "오늘 오래된 물건에서 의미를 찾게 된다",
+  "오늘 정리하다가 잃어버린 것을 찾을 것이다",
+  "오늘 핸드폰 메모에 뭔가 적어두어라",
+  "오늘 할 일 목록을 작성하면 두 배로 효율적이 된다",
+  "오늘 하나를 완료하면 다음이 술술 풀린다",
+  "오늘 미루던 일 하나를 처리하면 마음이 가벼워진다",
+  "오늘 작은 완성이 큰 자신감을 만든다",
+  "오늘 계획대로 되지 않아도 괜찮다",
+  "오늘 예상 밖의 변수가 오히려 기회가 된다",
+  "오늘 유연하게 생각하면 해결책이 보인다",
+  "오늘 복잡하게 생각하지 마라. 단순하게",
+  "오늘 답은 생각보다 가까이 있다",
+  "오늘 잠깐 멈추면 더 빨리 갈 수 있다",
+  "오늘 완벽하지 않아도 충분하다",
+  "오늘 80%도 훌륭한 결과다",
+  "오늘 너무 잘하려고 하지 않아도 된다",
+  "오늘 실수해도 내일 만회할 수 있다",
+  "오늘 누군가에게 솔직하게 말하면 관계가 좋아진다",
+  "오늘 웃음이 최고의 처방이다",
+  "오늘 유머 한마디가 분위기를 바꾼다",
+  "오늘 상대방 입장에서 생각하면 답이 보인다",
+  "오늘 양보 한 번이 더 큰 것을 가져다준다",
+  "오늘 경청하면 모든 관계가 좋아진다",
+  "오늘 고집을 조금만 내려놓아라",
+  "오늘 먼저 사과하면 더 강한 사람이 된다",
+  "오늘 오해는 대화로 풀 수 있다",
+  "오늘 불필요한 논쟁은 피하는 게 상책이다",
+  "오늘 묵묵히 하던 일을 계속하면 결과가 나온다",
+  "오늘 당신의 성실함이 빛을 발하는 날",
+  "오늘 꾸준함이 재능을 이긴다",
+  "오늘 1%의 노력이 쌓이면 결국 차이가 난다",
+  "오늘 어제보다 조금 더 나아지면 충분하다",
+  "오늘 성장은 눈에 보이지 않아도 일어나고 있다",
+  "오늘 당신이 걸어온 길이 곧 답이다",
+  "오늘 경험이 가장 좋은 스승이다",
+  "오늘 실패에서 배운 것이 성공보다 값지다",
+  "오늘 지금 하고 있는 것이 미래의 자산이다",
+  "오늘 배움을 멈추지 마라",
+  "오늘 모르는 것을 인정하는 것이 지혜다",
+  "오늘 한 가지를 깊게 파면 전문가가 된다",
+  "오늘 새로운 것을 배우면 뇌가 젊어진다",
+  "오늘 유튜브보다 책 한 페이지가 더 도움이 된다",
+  "오늘 업무 중 10분 공부가 1년을 바꾼다",
+  "오늘 트렌드를 파악하면 앞서갈 수 있다",
+  "오늘 멘토의 말을 새겨들어라",
+  "오늘 조언을 구하는 것이 빠른 길이다",
+  "오늘 피드백을 달게 받아들여라",
+  "오늘 비판도 당신을 성장시킨다",
+  "오늘 자기 자신에게 너무 가혹하지 마라",
+  "오늘 당신은 충분히 노력하고 있다",
+  "오늘 인정받지 못해도 스스로를 인정하라",
+  "오늘 자존감을 높이는 한 가지를 해봐라",
+  "오늘 당신만의 강점을 발휘할 기회가 온다",
+  "오늘 남들과 다른 것이 당신의 경쟁력이다",
+  "오늘 개성을 숨기지 마라",
+  "오늘 자신다운 것이 가장 매력적이다",
+  "오늘 꿈을 향해 작은 한 걸음만 내딛어라",
+  "오늘 목표를 적으면 이룰 가능성이 높아진다",
+  "오늘 5년 후의 나를 생각하고 행동하라",
+  "오늘 지금 이 선택이 미래를 만든다",
+  "오늘 하루가 모여 인생이 된다",
+  "오늘도 파이팅!",
+  "오늘 힘내라, 당신을 응원하는 사람이 있다",
+  "오늘 당신이 있어서 세상이 더 좋아진다",
+  "오늘 존재 자체로 충분하다",
+  "오늘도 수고 많았다",
+  "오늘 자신을 사랑하는 것이 모든 것의 시작이다",
+  "오늘 당신은 이미 충분히 잘하고 있다",
+  "오늘도 기적 같은 하루가 될 것이다",
+  "오늘 작은 행복을 놓치지 마라",
+  "오늘 미소 한 번이 하루를 바꾼다",
+  "오늘 웃으면 복이 온다",
+  "오늘 좋은 일이 생길 예감이 든다",
+  "오늘 기분 좋은 일이 기다리고 있다",
+  "오늘 운이 당신 편이다",
+  "오늘 하늘이 당신을 돕고 있다",
+  "오늘 모든 것이 잘 될 것이다",
+  "오늘 최선을 다하면 결과는 따라온다",
+  "오늘 당신이 선택한 길이 옳다",
+  "오늘 믿음이 현실을 만든다",
+  "오늘 긍정적으로 생각하면 긍정적인 일이 생긴다",
+  "오늘 감사한 마음이 행운을 부른다",
+  "오늘 평범한 하루가 사실은 특별하다",
+  "오늘도 살아있다는 것 자체가 행운이다",
+  "오늘 이 순간을 소중히 여겨라",
+  "오늘 흘러가는 시간 속에서 당신만의 의미를 찾아라",
+  "오늘 결국 다 잘 될 것이다",
+  "오늘 조금만 더 버텨라. 내일은 더 좋다",
+  "오늘 이미 충분히 잘 살고 있다",
+  "오늘 당신의 존재가 누군가에게 힘이 된다",
+  "오늘 완벽하지 않아도 괜찮다. 그게 인간이다",
+  "오늘 실수해도 내일은 더 잘할 수 있다",
+  "오늘 끝이 아니라 새로운 시작의 하루다",
+  "오늘 당신의 이야기는 아직 끝나지 않았다",
+  "오늘 포기하지 않는 한 실패가 아니다",
+  "오늘도 멋진 하루를 만들어가고 있다",
+  "오늘 당신이 최고다",
+  "대길!",
+  "소길. 하지만 충분하다",
+  "평범하지만 그게 가장 좋은 것",
+  "예측불가. 그래서 재미있는 하루",
+  "대박은 아니어도 소박하게 행복한 날",
+  "상승 중. 기대해도 좋다",
+  "변화의 기운이 있다",
+  "안정적. 그냥 하던 대로 해라",
+  "작은 기적이 일어날 것",
+  "행운이 당신 근처를 맴돌고 있다",
+  "오늘 회의 자료 미리 준비하면 칭찬받을 것이다",
+  "오늘 발표가 있다면 자신감 있게 해라. 잘 될 것이다",
+  "오늘 메일 보내기 전에 한 번 더 읽어봐라",
+  "오늘 중요한 연락은 문자보다 전화가 낫다",
+  "오늘 업무 중 뜻밖의 변경이 생길 수 있으니 유연하게",
+  "오늘 동료의 도움이 필요할 수 있다. 부탁해도 된다",
+  "오늘 혼자 끙끙대지 말고 물어봐라",
+  "오늘 업무 보고는 간결하게 하는 게 좋다",
+  "오늘 아이디어를 메모해두어라. 나중에 빛난다",
+  "오늘 멀티태스킹보다 한 가지 집중이 낫다",
+  "오늘 마감 전에 여유를 두고 끝내는 게 좋다",
+  "오늘 기록하는 습관이 생산성을 높인다",
+  "오늘 체크리스트를 만들면 하나도 빠뜨리지 않는다",
+  "오늘 우선순위를 정하면 시간이 두 배가 된다",
+  "오늘 집중 업무 시간을 정해두면 효율이 오른다",
+  "오늘 알림을 끄고 집중하면 업무가 빨리 끝난다",
+  "오늘 이메일 확인 횟수를 줄이면 더 많이 할 수 있다",
+  "오늘 30분 단위로 일하면 지치지 않는다",
+  "오늘 포모도로 기법이 도움이 될 것이다",
+  "오늘 잘 모르면 아는 척하지 말 것. 솔직함이 낫다",
+  "오늘 새로운 아이디어가 터질 예감이다",
+  "오늘 창의적인 생각이 샘솟는 날",
+  "오늘 직감대로 해라. 대부분 맞다",
+  "오늘 남들과 다른 방법을 시도해봐라",
+  "오늘 관행을 따르기보다 더 나은 방법을 고민해봐라",
+  "오늘 작은 개선이 큰 변화를 만든다",
+  "오늘 피드백을 두려워하지 마라",
+  "오늘 배움에 투자하는 것이 최고의 투자다",
+  "오늘 스킬 하나를 더 연습하면 내일이 달라진다",
+  "오늘 경험을 글로 정리하면 자산이 된다",
+  "오늘 인맥이 곧 기회다. 관계를 소중히 해라",
+  "오늘 명함보다 진심이 더 오래 기억된다",
+  "오늘 첫인상이 중요한 날이다. 단정하게 챙겨라",
+  "오늘 신뢰를 쌓는 날이다. 약속을 지켜라",
+  "오늘 작은 약속도 반드시 지켜라",
+  "오늘 말보다 행동이 중요한 날이다",
+  "오늘 성과보다 과정을 즐겨라",
+  "오늘 결과에 연연하지 말고 최선을 다해라",
+  "오늘 노력은 반드시 보상받는다",
+  "오늘 씨앗을 뿌리는 날이다. 열매는 나중에",
+  "오늘 지금 하고 있는 일이 의미있다",
+  "오늘 당신의 일이 누군가에게 가치있다",
+  "오늘 자신의 일을 사랑하면 더 잘하게 된다",
+  "오늘 열정이 실력보다 중요할 때가 있다",
+  "오늘 즐기면서 하면 결과도 좋아진다",
+  "오늘 부담 없이 시작하면 의외로 잘 된다",
+  "오늘 완벽한 준비를 기다리지 말고 시작해라",
+  "오늘 시작이 반이다",
+  "오늘 5분만 해봐라. 그러면 계속하게 된다",
+  "오늘 작게 시작하면 부담이 없다",
+  "오늘 일을 쪼개면 어렵지 않다",
+  "오늘 복잡한 것을 단순하게 만들어라",
+  "오늘 문제를 나눠서 생각하면 답이 보인다",
+  "오늘 어려운 일도 작은 단계로 나누면 된다",
+  "오늘 첫 번째 단계를 밟으면 두 번째는 자연스럽다",
+  "오늘 하나씩 해결하면 결국 다 된다",
+  "오늘 조급하게 생각하지 마라. 하나씩이면 충분하다",
+  "오늘 기다림도 일의 일부다",
+  "오늘 성과는 조금 늦게 나타나도 분명히 온다",
+  "오늘 포기하기 직전이 가장 가까운 때다",
+  "오늘 마지막 순간까지 최선을 다해라",
+  "오늘 다 됐다고 방심하지 마라",
+  "오늘 마무리가 시작만큼 중요하다",
+  "오늘 끝까지 해내는 사람이 결국 이긴다",
+  "오늘 다음 기회를 노리는 것도 전략이다",
+  "오늘 무조건 이길 수 없을 때는 현명하게 물러나라",
+  "오늘 지는 게 지는 게 아닐 수 있다",
+  "오늘 실패해도 배운 것이 있다면 성공이다",
+  "오늘 어제의 실수가 오늘의 지혜가 된다",
+  "오늘 과거에 집착하지 마라. 지금이 중요하다",
+  "오늘 미래를 너무 걱정하지 마라. 지금에 집중",
+  "오늘 현재에 충실하면 미래가 알아서 온다",
+  "오늘 지금 이 순간이 가장 중요하다",
+  "오늘을 잘 살면 내일은 저절로 좋아진다",
+  "오늘 하루하루가 쌓여 인생이 된다",
+  "오늘도 좋은 하루를 만들어가는 당신이 멋지다",
+  "오늘 스스로를 칭찬해줘라",
+  "오늘 자신에게 격려의 말을 해봐라",
+  "오늘 마음속으로라도 파이팅을 외쳐라",
+  "오늘 힘든 것은 당신만이 아니다",
+  "오늘 다들 각자의 짐을 지고 살아간다",
+  "오늘 당신의 짐이 가볍게 느껴지기를",
+  "오늘 짐을 내려놓을 자격이 있다",
+  "오늘 쉬는 것도 일의 일부다",
+  "오늘 휴식이 더 나은 내일을 만든다",
+  "오늘 쉬어도 된다. 죄책감 갖지 마라",
+  "오늘 놀아도 된다. 삶은 일만이 아니다",
+  "오늘 취미를 즐겨도 된다",
+  "오늘 좋아하는 것을 마음껏 즐겨라",
+  "오늘 행복을 느끼는 것이 의무다",
+  "오늘 기쁨을 찾는 것이 삶의 숙제다",
+  "오늘 웃을 이유를 하나 만들어봐라",
+  "오늘 재미있는 것을 찾아봐라",
+  "오늘 진심으로 웃으면 운이 따른다",
+  "오늘 밝은 표정이 당신을 더 빛나게 한다",
+  "오늘 자신감 있는 걸음걸이가 하루를 바꾼다",
+  "오늘 자세를 바로 하면 기분도 달라진다",
+  "오늘 심호흡 한 번이 스트레스를 줄여준다",
+  "오늘 손을 자주 씻으면 건강에 좋다",
+  "오늘 눈 깜빡임을 자주 해라. 눈이 편해진다",
+  "오늘 어깨를 자주 돌려주면 뭉침이 풀린다",
+  "오늘 목 스트레칭이 두통을 예방한다",
+  "오늘 손목 스트레칭을 잊지 마라",
+  "오늘 허리를 세우면 집중력이 오른다",
+  "오늘 발을 따뜻하게 하면 몸이 편해진다",
+  "오늘 수면 전 핸드폰을 멀리하면 잠이 잘 온다",
+  "오늘 규칙적인 생활이 모든 것의 기초다",
+  "오늘 아침 루틴이 하루를 결정한다",
+  "오늘 밤 루틴이 내일 아침을 결정한다",
+  "오늘 규칙적인 식사가 컨디션을 만든다",
+  "오늘 식사를 거르지 마라. 몸이 보내는 신호다",
+  "오늘 채소 한 가지라도 더 먹어봐라",
+  "오늘 과일이 오후 간식으로 최적이다",
+  "오늘 가공식품을 줄이면 컨디션이 달라진다",
+  "오늘 설탕을 줄이면 오후 졸음이 줄어든다",
+  "오늘 카페인을 오후 2시 이후엔 자제해라",
+  "오늘 일찍 잘 수 있다면 일찍 자라",
+  "오늘 8시간 수면이 답이다",
+  "오늘 낮잠 10분이 오후를 살린다",
+  "오늘 졸리면 잠깐 자라. 능률이 오른다",
+  "오늘 피곤함을 참는 것은 좋지 않다",
+  "오늘 몸 신호에 귀 기울여라",
+  "오늘 두통이 있다면 잠깐 쉬어라",
+  "오늘 눈이 피로하면 멀리 보는 연습을 해라",
+  "오늘 배가 불편하면 따뜻한 차 한 잔이 답이다",
+  "오늘 컨디션이 안 좋으면 일의 속도를 줄여도 된다",
+  "오늘 무리하지 말 것. 내일이 있다",
+  "오늘 건강이 최우선이다",
+  "오늘 건강을 잃으면 모든 것을 잃는다",
+  "오늘 몸이 보내는 SOS에 응해라",
+  "오늘 병원이 필요하다면 미루지 마라",
+  "오늘 예방이 치료보다 낫다",
+  "오늘 정기검진을 받을 때가 됐을 수도 있다",
+  "오늘 약을 챙겨 먹었는가? 잊지 마라",
+  "오늘 건강을 위한 작은 습관 하나를 시작하라",
+  "오늘 걸음 수 1000보만 더 걸어봐라",
+  "오늘 계단 하나만 더 올라가봐라",
+  "오늘 10분 걷기가 30분 운동만큼 효과적이다",
+  "오늘 스쿼트 10개가 허벅지를 살린다",
+  "오늘 팔굽혀펴기 5개가 기분을 끌어올린다",
+  "오늘 요가 한 자세가 몸을 부드럽게 한다",
+  "오늘 달리기보다 걷기가 더 효과적일 수 있다",
+  "오늘 운동하기 싫어도 일단 옷만 갈아입어봐라",
+  "오늘 운동 후 개운함이 기다리고 있다",
+  "오늘 운동을 마치면 뿌듯함이 찾아온다",
+  "오늘 땀 한 방울이 자신감을 만든다",
+  "오늘 몸을 쓰면 머리가 맑아진다",
+  "오늘 운동이 최고의 스트레스 해소제다",
+  "오늘 달리면 고민이 해결된다",
+  "오늘 몸이 가벼워지면 마음도 가벼워진다",
+  "오늘 근육이 당신을 지지하고 있다",
+  "오늘 건강한 몸이 자신감의 원천이다",
+  "오늘 거울을 보며 자신을 칭찬해봐라",
+  "오늘 내 몸에 감사해봐라",
+  "오늘 있는 그대로의 자신을 받아들여라",
+  "오늘 자신을 사랑하는 것이 먼저다",
+  "오늘 남과 비교하지 마라. 어제의 나와 비교해라",
+  "오늘 성장 속도는 사람마다 다르다",
+  "오늘 천천히 가도 괜찮다",
+  "오늘 길을 돌아가도 결국 도착한다",
+  "오늘 다른 길이 더 좋을 수도 있다",
+  "오늘 정답은 하나가 아니다",
+  "오늘 당신만의 방식이 있다",
+  "오늘 남들과 같을 필요가 없다",
+  "오늘 다름이 특별함이다",
+  "오늘 개성이 강점이 된다",
+  "오늘 자신만의 색을 발견해라",
+  "오늘 진정한 당신을 보여줘라",
+  "오늘 가면을 벗어도 된다",
+  "오늘 솔직한 당신이 가장 매력있다",
+  "오늘 진심이 통한다",
+  "오늘 당신이 행복하면 주변도 행복해진다",
+  "오늘 행복은 전염된다",
+  "오늘 웃음은 가장 좋은 선물이다",
+  "오늘 작은 나눔이 큰 행복이 된다",
+  "오늘 베풀면 두 배로 돌아온다",
+  "오늘 친절은 돈이 들지 않는다",
+  "오늘 도움이 필요한 사람에게 손을 내밀어봐라",
+  "오늘 작은 친절이 누군가의 하루를 구한다",
+  "오늘 따뜻한 말 한마디가 기적을 만든다",
+  "오늘 누군가를 응원해봐라",
+  "오늘 칭찬을 아끼지 마라",
+  "오늘 감사를 표현하면 관계가 깊어진다",
+  "오늘 먼저 연락하면 반가워할 것이다",
+  "오늘 안부를 물어봐라",
+  "오늘 오래된 인연을 소중히 해라",
+  "오늘 새로운 인연도 소중하다",
+  "오늘 인연은 우연이 아니다",
+  "오늘 만남에 감사해라",
+  "오늘 이별도 새로운 시작이다",
+  "오늘 변화를 두려워하지 마라",
+  "오늘 끝은 새로운 시작이다",
+  "오늘 문이 닫히면 더 좋은 문이 열린다",
+  "오늘 포기한 것 대신 더 좋은 것이 온다",
+  "오늘 잃은 것보다 얻은 것에 집중해라",
+  "오늘 부족함이 오히려 동기가 된다",
+  "오늘 갈망이 성장의 씨앗이다",
+  "오늘 욕심과 야망의 차이를 알아라",
+  "오늘 적당한 욕심은 원동력이 된다",
+  "오늘 목표가 있는 사람이 더 빨리 간다",
+  "오늘 꿈이 있는 사람이 더 빛난다",
+  "오늘 비전이 있는 사람이 더 멀리 간다",
+  "오늘 방향이 속도보다 중요하다",
+  "오늘 올바른 방향으로 가고 있다면 충분하다",
+  "오늘 잘못된 방향이라면 빨리 고치는 것이 낫다",
+  "오늘 용기있게 방향을 바꿔도 된다",
+  "오늘 새로운 시작을 두려워하지 마라",
+  "오늘 리셋해도 된다",
+  "오늘 처음부터 다시 시작하는 것도 용기다",
+  "오늘 두 번째 기회를 잡아라",
+  "오늘 마지막 기회라고 생각하고 해봐라",
+  "오늘 최선을 다하면 후회가 없다",
+  "오늘 결과보다 과정이 중요하다",
+  "오늘 즐기면서 하면 성과도 좋아진다",
+  "오늘 일이 놀이처럼 느껴지면 성공이다",
+  "오늘 흥미를 찾으면 능률이 오른다",
+  "오늘 열정이 있는 일을 해라",
+  "오늘 좋아하는 일이 잘하는 일이 된다",
+  "오늘 재능보다 노력이 더 큰 차이를 만든다",
+  "오늘 꾸준함이 기적을 만든다",
+  "오늘 1만 시간이 전문가를 만든다",
+  "오늘 그 1만 시간의 하루다",
+  "오늘 지금 이 순간이 미래를 만들고 있다",
+  "오늘도 열심히 살고 있는 당신이 자랑스럽다",
+  "오늘도 포기하지 않는 당신을 응원한다",
+  "오늘도 버티는 당신에게 박수를",
+  "오늘도 노력하는 당신이 멋지다",
+  "오늘도 성장하고 있는 당신이 대단하다",
+  "오늘도 살아있는 것 자체가 감사한 일이다",
+  "오늘도 내일을 기대하며 살아가는 당신을 응원한다",
+  "오늘도 좋은 하루 되세요!",
+  "오늘 운세는 맑음. 가끔 구름",
+  "오늘 운세는 흐림. 하지만 곧 개인다",
+  "예측 불가능. 하지만 괜찮다",
+  "보통. 하지만 보통도 충분하다",
+  "좋음. 기대해도 된다",
+  "매우 좋음. 오늘 뭔가 해봐라",
+  "최고. 도전해도 된다",
+  "소극적으로 가면 안전하다",
+  "적극적으로 나서면 이익이 된다",
+  "숫자 3이 행운을 가져온다",
+  "파란색이 당신의 색이다",
+  "분홍색이 행운을 부른다",
+  "왼쪽에서 기회가 온다",
+  "오른쪽을 주목하라",
+  "아침에 결정한 것이 정답이다",
+  "저녁에 중요한 일을 처리해라",
+  "만나는 모든 이가 귀인이다",
+  "혼자보다 함께할 때 더 좋다",
+  "조용히 있으면 기회가 온다",
+  "목소리를 내면 원하는 것을 얻는다",
+  "오전이 오후보다 좋다",
+  "오후가 오전보다 좋다",
+  "모든 시간이 고르게 좋다",
+  "한 가지에 집중하면 대박이다",
+  "여러 가지를 나눠 해라",
+  "기대했던 것이 이루어질 날이다",
+  "기대하지 않은 것이 이루어질 날이다",
+  "준비한 것이 빛을 발하는 날",
+  "즉흥적인 것이 더 잘 되는 날",
+  "계획대로 하면 최선이다",
+  "계획을 바꾸면 더 좋아진다",
+  "때로는 아무것도 안 하는 게 최선",
+  "움직이면 기회가 생긴다",
+  "기다리면 답이 온다",
+  "지금 바로 결정하면 좋다",
+  "생각보다 빨리 해결된다",
+  "생각보다 오래 걸리지만 결국 된다",
+  "한 발짝 앞서 나가면 유리하다",
+  "남을 따라가면 편하다",
+  "자신만의 길을 가라",
+  "협력하면 혼자보다 세 배가 된다",
+  "당신이 리더다",
+  "팔로워로 있을 때가 좋다",
+  "작은 것부터 차근차근",
+  "큰 그림을 보면 길이 보인다",
+  "세부사항에 집중하면 완벽해진다",
+  "전체를 보면 방향이 보인다",
+  "오늘 만나는 모든 것이 인연이다",
+  "우연이 필연으로 바뀌는 날",
+  "모든 것이 연결되어 있다",
+  "점이 선이 되는 날이다",
+  "과거가 현재를 만들고 현재가 미래를 만든다",
+  "지금이 가장 좋은 때다",
+  "지금 시작하면 딱 맞다",
+  "오늘이 그날이다",
+  "기회는 지금 이 순간 당신 앞에 있다",
+];
+
+function drawFortune(){
+  if(!myNickname || myNickname === '익명'){
+    alert('닉네임이 아직 배정되지 않았어요. 잠시 후 다시 눌러주세요!');
+    return;
+  }
+  const todayKST = new Date(new Date().getTime()+9*60*60*1000).toISOString().slice(0,10);
+  const fortuneKey = "clockout-fortune-"+todayKST+"-"+(myNickname||"anon");
+  const el = document.getElementById('fortune-text');
+  const btn = document.getElementById('fortune-btn');
+  const stored = localStorage.getItem(fortuneKey);
+  if(stored){
+    el.innerHTML = stored;
+    btn.textContent = "🔮 오늘의 운세는 이미 확인했어요"; btn.style.opacity = "0.5"; btn.style.cursor = "default";
+    return;
+  }
+  const seed = todayKST.replace(/-/g,"") + (myNickname||"").split("").reduce((a,c)=>a+c.charCodeAt(0),0);
+  const idx = parseInt(seed) % FORTUNES.length;
+  const fortune = FORTUNES[idx];
+  el.innerHTML = '<span style="color:#1a1a18;">' + fortune + '</span>';
+  localStorage.setItem(fortuneKey, el.innerHTML);
+  btn.textContent = "🔮 오늘의 운세는 이미 확인했어요"; btn.style.opacity = "0.5"; btn.style.cursor = "default";
+}
+
+
+async function ensureNickname(){
+  if(myNickname){
+    try{ await fetch('/api/nickname?existing='+encodeURIComponent(myNickname)); }catch(e){}
+  } else {
+    try{
+      const res=await fetch('/api/nickname');
+      const data=await res.json();
+      myNickname=data.nickname;
+      localStorage.setItem('clockout-nickname',myNickname);
+    }catch(e){myNickname='익명';}
+  }
+  setNicknameDisplay();
+}
+function fmtChatTime(ts){
+  const d=new Date(ts*1000);
+  const year=String(d.getFullYear()).slice(-2);
+  const month=String(d.getMonth()+1).padStart(2,'0');
+  const date=String(d.getDate()).padStart(2,'0');
+  const h=d.getHours();
+  const ampm=h<12?'오전':'오후';
+  const hh=h===0?12:h>12?h-12:h;
+  return year+'-'+month+'-'+date+' '+ampm+' '+hh+':'+String(d.getMinutes()).padStart(2,'0');
+}
+
+const chatMessagesEl=document.getElementById('chat-messages');
+const paginationEl=document.getElementById('chat-pagination');
+const pageInfoEl=document.getElementById('page-info');
+const pagePrevEl=document.getElementById('page-prev');
+const pageNextEl=document.getElementById('page-next');
+
+let allMessages=[], isAdmin=false, adminPassword='';
+let selectedParentId = null;
+
+let currentPage = 0;
+const PAGE_SIZE = 6; 
+
+function escapeHtml(str){const div=document.createElement('div');div.textContent=str;return div.innerHTML;}
+
+function renderPage(){
+  const rootMessages = allMessages.filter(m => m.parent_id === null || m.parent_id === undefined);
+  const totalRoots = rootMessages.length;
+  const totalPages = Math.ceil(totalRoots / PAGE_SIZE) || 1;
+  
+  if(currentPage >= totalPages) currentPage = totalPages - 1;
+  if(currentPage < 0) currentPage = 0;
+  
+  if(allMessages.length===0){
+    chatMessagesEl.innerHTML='<div class="chat-empty">아직 방명록이 비어있어요. 첫 글을 남겨보세요!</div>';
+    paginationEl.style.display='none';
+    return;
+  }
+  
+  chatMessagesEl.innerHTML='';
+  
+  const start = currentPage * PAGE_SIZE;
+  const pageRoots = rootMessages.slice(start, start + PAGE_SIZE);
+  
+  pageRoots.forEach(root => {
+    const threadGroup = document.createElement('div');
+    threadGroup.className = 'chat-thread-group';
+    
+    const rootDiv = buildMessageDOM(root, false);
+    threadGroup.appendChild(rootDiv);
+    
+    const replies = allMessages.filter(m => m.parent_id === root.id).sort((a,b)=> a.id - b.id);
+    
+    if(replies.length > 0) {
+      const replyContainer = document.createElement('div');
+      replyContainer.className = 'reply-container';
+      
+      replies.forEach(reply => {
+        const replyDiv = buildMessageDOM(reply, true);
+        replyContainer.appendChild(replyDiv);
+      });
+      
+      threadGroup.appendChild(replyContainer);
+    }
+    
+    chatMessagesEl.appendChild(threadGroup);
+  });
+  
+  paginationEl.style.display = totalPages > 1 ? 'flex' : 'none';
+  pageInfoEl.textContent = (currentPage + 1) + ' / ' + totalPages;
+  pagePrevEl.disabled = currentPage === 0;
+  pageNextEl.disabled = currentPage >= totalPages - 1;
+}
+
+function buildMessageDOM(m, isReply) {
+  const displayNick=addEmojiToNickname(m.nickname);
+  const mine=displayNick===myNickname || m.nickname===myNickname || addEmojiToNickname(m.nickname)===myNickname;
+  
+  const div=document.createElement('div');
+  div.className='chat-msg' + (mine?' mine':'') + (isReply?' reply-msg':'');
+  
+  const body=document.createElement('div');
+  body.className='chat-msg-body';
+  
+  const sirenHtml=m.has_siren?`<span class="badge-siren-text">🚨경고</span>`:'';
+  const boomHtml=m.has_boom?`<span class="badge-boom-text">👍붐업</span>`:'';
+  
+  const replyArrow = isReply ? `<span style="color: #94a3b8; margin-right: 5px; font-weight: bold; font-family: sans-serif;">ㄴ</span> ` : '';
+  
+  body.innerHTML=`
+    <div class="chat-msg-top">
+      <div class="chat-msg-nick-group">
+        ${replyArrow}<span class="chat-msg-nick">${addCrownToNickname(displayNick)}</span>${sirenHtml}${boomHtml}
+      </div>
+      <span class="chat-msg-time">${fmtChatTime(m.ts)}</span>
+    </div>
+    <div class="chat-msg-bottom">
+      <span class="chat-msg-text">${escapeHtml(m.text)}</span>
+      <div style="display:flex;align-items:center;gap:6px;flex-shrink:0;">
+        ${mine ? `<div class="my-actions"><button class="my-edit-btn">✏️</button><button class="my-del-btn">🗑️</button></div>` : ''}
+        ${!isReply ? `<button class="msg-action-btn" onclick="initReply(${m.id}, '${escapeHtml(displayNick)}')">답글</button>` : ''}
+        <button class="like-btn" data-id="${m.id}">👍${m.likes ? ' '+m.likes : ''}</button>
+      </div>
+    </div>
+  `;
+
+  if(mine){
+    body.querySelector('.my-edit-btn').addEventListener('click', ()=>{
+      const textarea = document.createElement('textarea');
+      textarea.className = 'edit-mode-input';
+      textarea.value = m.text;
+      textarea.rows = 2;
+      const actions = document.createElement('div');
+      actions.className = 'edit-mode-actions';
+      actions.innerHTML = `<button class="edit-cancel-btn">취소</button><button class="edit-save-btn">저장</button>`;
+      const wrap = document.createElement('div');
+      wrap.className = 'edit-mode-wrap';
+      wrap.appendChild(textarea);
+      wrap.appendChild(actions);
+      div.replaceWith(wrap);
+      textarea.focus();
+      actions.querySelector('.edit-cancel-btn').addEventListener('click', ()=>{ wrap.replaceWith(div); });
+      actions.querySelector('.edit-save-btn').addEventListener('click', async()=>{
+        const newText = textarea.value.trim();
+        if(!newText) return;
+        try{
+          const res = await fetch('/api/guestbook/'+m.id+'/edit', {
+            method:'POST', headers:{'Content-Type':'application/json'},
+            body: JSON.stringify({nickname: myNickname, text: newText})
+          });
+          if(res.ok) loadGuestbook();
+          else alert('수정 실패');
+        }catch(e){ alert('오류 발생'); }
+      });
+      textarea.addEventListener('keydown', (e)=>{
+        if(e.key==='Enter' && e.ctrlKey){ e.preventDefault(); actions.querySelector('.edit-save-btn').click(); }
+      });
+    });
+    body.querySelector('.my-del-btn').addEventListener('click', async()=>{
+      if(!confirm('내 댓글을 삭제할까요?')) return;
+      try{
+        const res = await fetch('/api/guestbook/'+m.id, {
+          method:'DELETE', headers:{'Content-Type':'application/json'},
+          body: JSON.stringify({isOwner: true, nickname: myNickname})
+        });
+        if(res.ok) loadGuestbook(); else alert('삭제 실패');
+      }catch(e){ alert('오류 발생'); }
+    });
+  }
+  const likeBtn = body.querySelector('.like-btn');
+  if(likeBtn){
+    const likeKey = 'like-'+m.id;
+    if(localStorage.getItem(likeKey)){
+      likeBtn.style.opacity='0.5';
+      likeBtn.style.cursor='default';
+    }
+  }
+  div.appendChild(body);
+
+  if(isAdmin){
+    const adminPanel=document.createElement('div');
+    adminPanel.className='admin-panel';
+    const sirenBtn=document.createElement('button');
+    sirenBtn.className='siren-btn';
+    sirenBtn.textContent=m.has_siren?'🚨✕':'🚨';
+    sirenBtn.addEventListener('click',()=>setSiren(m.id));
+    adminPanel.appendChild(sirenBtn);
+    const boomBtn=document.createElement('button');
+    boomBtn.className='boom-btn';
+    boomBtn.textContent=m.has_boom?'👍✕':'👍';
+    boomBtn.addEventListener('click',()=>setBoom(m.id));
+    adminPanel.appendChild(boomBtn);
+    const delBtn=document.createElement('button');
+    delBtn.className='delete-btn';delBtn.textContent='🗑️';
+    delBtn.addEventListener('click',()=>deleteMsg(m.id));
+    adminPanel.appendChild(delBtn);
+    div.appendChild(adminPanel);
+  }
+  return div;
+}
+
+pagePrevEl.addEventListener('click',()=>{if(currentPage>0){currentPage--;renderPage();}});
+pageNextEl.addEventListener('click',()=>{currentPage++;renderPage();});
+
+chatMessagesEl.addEventListener('click', async(e)=>{
+  const btn = e.target.closest('.like-btn');
+  if(!btn) return;
+  e.stopPropagation();
+  const id = btn.dataset.id;
+  const likeKey = 'like-'+id;
+  const liked = localStorage.getItem(likeKey);
+  try{
+    if(liked){
+      const res = await fetch('/api/guestbook/'+id+'/like', {method:'DELETE'});
+      const data = await res.json();
+      btn.innerHTML = '👍'+(data.count ? ' '+data.count : '');
+      btn.style.opacity = '1';
+      localStorage.removeItem(likeKey);
+    } else {
+      const res = await fetch('/api/guestbook/'+id+'/like', {method:'POST'});
+      const data = await res.json();
+      btn.innerHTML = '👍'+(data.count ? ' '+data.count : '');
+      btn.style.opacity = '0.5';
+      localStorage.setItem(likeKey, 'true');
+    }
+  }catch(err){}
+});
+
+window.initReply = function(id, nick) {
+  selectedParentId = id;
+  const bar = document.getElementById('reply-target-bar');
+  const txt = document.getElementById('reply-target-text');
+  txt.textContent = `💬 ${nick} 님에게 답글 작성 중`;
+  bar.style.display = 'flex';
+  document.getElementById('chat-input').focus();
+};
+
+document.getElementById('cancel-reply-btn').addEventListener('click', () => {
+  selectedParentId = null;
+  document.getElementById('reply-target-bar').style.display = 'none';
+});
+
+async function setSiren(id){
+  const m = allMessages.find(x=>x.id===id);
+  const msg = m && m.has_siren ? '이 댓글의 🚨 경고를 취소할까요?' : '이 댓글에 🚨 경고 뱃지를 부여할까요?';
+  if(!confirm(msg))return;
+  try{
+    const res=await fetch('/api/guestbook/'+id+'/siren',{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({password:adminPassword})
+    });
+    if(res.ok)loadGuestbook();else alert('경고 처리 실패');
+  }catch(e){alert('오류 발생');}
+}
+async function setBoom(id){
+  const m = allMessages.find(x=>x.id===id);
+  const msg = m && m.has_boom ? '이 댓글의 👍 붐업을 취소할까요?' : '이 댓글에 👍 붐업 뱃지를 부여할까요?';
+  if(!confirm(msg))return;
+  try{
+    const res=await fetch('/api/guestbook/'+id+'/boom',{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({password:adminPassword})
+    });
+    if(res.ok)loadGuestbook();else alert('붐업 처리 실패');
+  }catch(e){alert('오류 발생');}
+}
+async function deleteMsg(id){
+  if(!confirm('이 댓글을 삭제할까요? (답글이 함께 삭제될 수 있습니다)'))return;
+  try{
+    const res=await fetch('/api/guestbook/'+id,{
+      method:'DELETE',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({password:adminPassword})
+    });
+    if(res.ok)loadGuestbook();else alert('삭제 실패');
+  }catch(e){alert('오류 발생');}
+}
+
+document.getElementById('admin-btn').addEventListener('click',()=>{
+  if(isAdmin){
+    isAdmin=false;adminPassword='';
+    document.getElementById('admin-btn').textContent='🔑';
+    document.getElementById('admin-dashboard').style.display='none';
+    noticeEditBtn.style.display='none';
+    if(!noticeInner.textContent.trim()) noticeWrap.style.display='none';
+    renderPage();return;
+  }
+  const pw=prompt('관리자 비밀번호를 입력하세요:');
+  if(pw===null)return;
+  if(pw!=='0530'){alert('비밀번호가 틀렸습니다.');return;}
+  adminPassword=pw;isAdmin=true;
+  myNickname='🐳 졸린 고래';
+  localStorage.setItem('clockout-nickname', myNickname);
+  setNicknameDisplay();
+  document.getElementById('admin-btn').textContent='🔓';
+  document.getElementById('admin-dashboard').style.display='block';
+  loadStats();
+  noticeWrap.style.display='block';
+  noticeEditBtn.style.display='block';
+  renderPage();
+});
+
+async function loadGuestbook(){
+  try{
+    const res=await fetch('/api/guestbook');
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    const data=await res.json();
+    allMessages=data.messages||[];
+    renderPage();
+  }catch(e){
+    console.error('loadGuestbook error:', e);
+    chatMessagesEl.innerHTML='<div class="chat-empty">불러오기 실패: '+e.message+'</div>';
+  }
+}
+
+async function sendChat(){
+  const input=document.getElementById('chat-input');
+  const text=input.value.trim();
+  if(!text)return;
+  input.value='';
+  try{
+    await fetch('/api/guestbook',{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({nickname:myNickname, text: text, parent_id: selectedParentId})
+    });
+    selectedParentId = null;
+    document.getElementById('reply-target-bar').style.display = 'none';
+    currentPage = 0; 
+    loadGuestbook();
+  }catch(e){input.value=text;}
+}
+
+let sending=false;
+async function safeSendChat(){if(sending)return;sending=true;await sendChat();sending=false;}
+document.getElementById('chat-send').addEventListener('click',safeSendChat);
+document.getElementById('chat-input').addEventListener('keydown',(e)=>{
+  if(e.key==='Enter' && !e.isComposing){e.preventDefault();safeSendChat();}
+});
+document.getElementById('chat-refresh').addEventListener('click',loadGuestbook);
+
+tick();
+setInterval(tick,1000);
+function initFortune(){
+  const todayKST = new Date(new Date().getTime()+9*60*60*1000).toISOString().slice(0,10);
+  const fortuneKey = 'clockout-fortune-'+todayKST+'-'+(myNickname||'anon');
+  const stored = localStorage.getItem(fortuneKey);
+  if(stored){
+    const el = document.getElementById('fortune-text');
+    const btn = document.getElementById('fortune-btn');
+    el.innerHTML = stored;
+    btn.textContent = "🔮 오늘의 운세는 이미 확인했어요";
+    btn.style.opacity = "0.5";
+    btn.style.cursor = "default";
+  }
+}
+ensureNickname().then(()=>{loadGuestbook();loadNotice();loadTopCommenters();loadPhotos();initFortune();});
+</script>
+</body>
+</html><!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ClockOut</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text x=%2250%22 y=%2250%22 font-size=%2280%22 text-anchor=%22middle%22 dominant-baseline=%22central%22>📁</text></svg>">
+<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text x=%2250%22 y=%2250%22 font-size=%2280%22 text-anchor=%22middle%22 dominant-baseline=%22central%22>📁</text></svg>">
+<link rel="manifest" href="/manifest.json">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500&family=Press+Start+2P&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/galmuri/dist/galmuri.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+<style>
+  /* =========================================================
+     ClockOut — Windows 98 / IE6 레트로 스킨
+     팔레트: 페이스 #c0c0c0, 하이라이트 #fff/#dfdfdf, 쉐도우 #808080/#000,
+             타이틀바 그라디언트 #000080→#1084d0, 데스크탑 틸 #008080
+     ========================================================= */
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  @font-face {
+    font-family: 'W98';
+    src: local('Tahoma'), local('MS Sans Serif'), local('Segoe UI');
+  }
+
+  html, body { height: 100%; }
+  body {
+    background: #008080;
+    background-image:
+      repeating-linear-gradient(45deg, rgba(255,255,255,0.03) 0 2px, transparent 2px 4px);
+    font-family: 'Galmuri11', 'Press Start 2P', 'Courier New', monospace;
+    font-size: 11px;
+    color: #000;
+    display: flex; justify-content: center; align-items: flex-start;
+    min-height: 100vh; padding: 1.5rem 0.75rem;
+  }
+
+  .wrap { width: 100%; max-width: 480px; }
+
+  /* --- 공용 "윈도우" 프레임 : outset 베젤 + 타이틀바 --- */
+  .card, .blocks-card, .settings-card, .custom-card, .chat-card,
+  .admin-dashboard, .king-card, .photo-carousel-card {
+    background: #c0c0c0;
+    border-radius: 0;
+    border-style: solid;
+    border-width: 2px;
+    border-color: #ffffff #808080 #808080 #ffffff;
+    box-shadow: 1px 1px 0 0 #000, inset 1px 1px 0 0 #dfdfdf;
+    padding: 3px;
+    position: relative;
+    overflow: hidden;
+  }
+  /* 타이틀바를 만들기 위한 label류 요소들을 파란 바로 변신 */
+  .card-label, .blocks-label, .settings-label, .chat-header .settings-label,
+  .admin-dashboard-header, .king-header, .photo-carousel-header {
+    background: linear-gradient(90deg, #000080, #1084d0);
+    color: #fff;
+    font-weight: normal;
+    font-size: 9px;
+    font-family: 'Galmuri11', 'Press Start 2P', 'Courier New', monospace;
+    padding: 4px 6px;
+    margin: -3px -3px 4px -3px;
+    display: flex; align-items: center; gap: 5px;
+    letter-spacing: 0.2px;
+    text-shadow: 1px 1px 0 rgba(0,0,0,0.35);
+  }
+  .card { display: flex; flex-direction: column; min-width: 0; padding: 3px 6px 6px 6px; }
+  .card-full { grid-column: 1 / -1; }
+  .card-label { margin: -3px -6px 5px -6px; padding: 3px 6px; }
+
+  .cards { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px; align-items: stretch; }
+
+  .card-value { font-size: 15px; font-weight: normal; color: #000; font-variant-numeric: tabular-nums; letter-spacing: -0.5px; line-height: 1.4; font-family: 'Galmuri11', 'Press Start 2P', 'Courier New', monospace; }
+
+  /* --- 버튼: 3D outset, active 시 inset --- */
+  .hate-btn, .lunch-btn, #fortune-btn, .photo-upload-btn,
+  .photo-submit-btn, .photo-cancel-btn, .nick-confirm-btn, .nick-cancel-btn,
+  .chat-input-row button, .chat-refresh-btn, .admin-btn, .chart-tab,
+  .chat-pagination button, .edit-save-btn, .edit-cancel-btn, .reply-target-bar button,
+  .msg-action-btn, .like-btn {
+    font-family: 'Galmuri11', 'Press Start 2P', 'Courier New', monospace;
+  }
+
+  .hate-btn, .lunch-btn, #fortune-btn {
+    width: 100%; margin-top: 8px; padding: 4px 4px;
+    background: #c0c0c0; color: #000; font-size: 11px; font-weight: normal;
+    cursor: pointer;
+    border-style: solid; border-width: 2px;
+    border-color: #ffffff #808080 #808080 #ffffff;
+    box-shadow: inset 1px 1px 0 #dfdfdf;
+  }
+  .hate-btn:active, .lunch-btn:active, #fortune-btn:active {
+    border-color: #808080 #ffffff #ffffff #808080;
+    box-shadow: inset 1px 1px 0 #000;
+    padding-top: 5px; padding-left: 5px;
+  }
+  .hate-btn.pressed, .lunch-btn.done {
+    background: #c0c0c0; border-color: #ffffff #808080 #808080 #ffffff; color: #000; cursor: default;
+    box-shadow: inset 1px 1px 0 #dfdfdf;
+    opacity: 0.5;
+  }
+
+  .card-sub-row { display: flex; align-items: center; gap: 6px; margin-top: 4px; }
+  .card-sub { font-size: 10px; color: #444; }
+  .muted { font-size: 10px; font-weight: normal; color: #444; font-family: 'Galmuri11', 'Press Start 2P', 'Courier New', monospace; }
+
+  /* --- 배지: 사각 인셋 태그 --- */
+  .badge {
+    display: inline-block; font-size: 9px; padding: 2px 6px; border-radius: 0;
+    font-family: 'Galmuri11', 'Press Start 2P', 'Courier New', monospace; font-weight: normal;
+    border-style: solid; border-width: 1px;
+  }
+  .badge-work  { background: #c0c0c0; color: #000080; border-color: #ffffff #808080 #808080 #ffffff; }
+  .badge-done  { background: #c0c0c0; color: #000080; border-color: #ffffff #808080 #808080 #ffffff; }
+  .badge-before{ background: #c0c0c0; color: #000080; border-color: #ffffff #808080 #808080 #ffffff; }
+  .badge-lunch { background: #c0c0c0; color: #000080; border-color: #ffffff #808080 #808080 #ffffff; }
+
+  .blocks-card { margin-bottom: 8px; padding: 3px 6px 6px 6px; }
+  .blocks-top { display: flex; align-items: center; justify-content: space-between; margin: -3px -6px 6px -6px; padding: 3px 6px; background: linear-gradient(90deg, #000080, #1084d0); }
+  .blocks-label { font-size: 9px; color: #fff; font-weight: normal; font-family: 'Galmuri11', 'Press Start 2P', 'Courier New', monospace; display: flex; align-items: center; gap: 5px; padding: 0; margin: 0; background: none; text-shadow: 1px 1px 0 rgba(0,0,0,0.35); }
+  .lunch-toggle label { font-size: 9px; color: #fff; cursor: pointer; display: flex; align-items: center; gap: 4px; font-family: 'Galmuri11', 'Press Start 2P', 'Courier New', monospace; }
+  .lunch-toggle input[type="checkbox"] {
+    appearance: none; -webkit-appearance: none; width: 13px; height: 13px;
+    background: #fff; margin: 0; cursor: pointer; position: relative; flex-shrink: 0;
+    border-style: solid; border-width: 1px; border-color: #808080 #fff #fff #808080;
+  }
+  .lunch-toggle input[type="checkbox"]:checked { background: #fff; }
+  .lunch-toggle input[type="checkbox"]:checked::after {
+    content: '✓'; position: absolute; left: 1px; top: -3px; font-size: 12px; color: #000; font-weight: bold;
+  }
+
+  .blocks-wrap { display: grid; grid-template-columns: repeat(18, 1fr); gap: 2px; }
+  .block { border-radius: 0; height: 14px; border-style: solid; border-width: 1px; }
+  .block.done      { background: #000080; border-color: #4040c0 #000040 #000040 #4040c0; }
+  .block.current   { background: #008080; border-color: #40b0b0 #004040 #004040 #40b0b0; animation: blockBlink 1s step-start infinite; }
+  .block.remaining { background: #ffffff; border-color: #ffffff #808080 #808080 #ffffff; }
+  .block.lunch      { background: #c0c0c0; border-color: #ffffff #808080 #808080 #ffffff; }
+  .block.lunch.done { background: #808080; border-color: #a0a0a0 #404040 #404040 #a0a0a0; }
+  @keyframes blockBlink { 50% { opacity: 0.55; } }
+
+  .legend { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 8px; }
+  .leg { display: flex; align-items: center; gap: 4px; font-size: 8px; color: #000; font-family: 'Galmuri11', 'Press Start 2P', 'Courier New', monospace; }
+  .leg-dot { width: 10px; height: 10px; border-radius: 0; flex-shrink: 0; border-style: solid; border-width: 1px; }
+  .dot-done    { background: #000080; border-color: #4040c0 #000040 #000040 #4040c0; }
+  .dot-current { background: #008080; border-color: #40b0b0 #004040 #004040 #40b0b0; }
+  .dot-rem     { background: #ffffff; border-color: #ffffff #808080 #808080 #ffffff; }
+  .dot-lunch   { background: #c0c0c0; border-color: #ffffff #808080 #808080 #ffffff; }
+
+  .settings-card { margin-bottom: 8px; padding: 3px 6px 6px 6px; }
+  .settings-label { margin: -3px -6px 6px -6px; }
+
+  .preset-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; }
+  .preset-option { position: relative; }
+  .preset-option input[type="radio"] { position: absolute; opacity: 0; width: 100%; height: 100%; margin: 0; cursor: pointer; }
+  .preset-option label {
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px;
+    padding: 6px 2px; cursor: pointer; font-size: 9.5px; color: #000; line-height: 1.25; text-align: center;
+    font-family: 'Galmuri11', 'Press Start 2P', 'Courier New', monospace;
+    background: #c0c0c0;
+    border-style: solid; border-width: 2px; border-color: #ffffff #808080 #808080 #ffffff;
+  }
+  .preset-option input[type="radio"]:checked + label {
+    border-color: #808080 #ffffff #ffffff #808080;
+    background: #000080; color: #fff; font-weight: normal;
+    box-shadow: inset 1px 1px 0 #000;
+  }
+
+  .custom-card {
+    display: flex; align-items: center; gap: 6px; margin-bottom: 8px; padding: 6px;
+  }
+  .custom-card label { font-size: 10px; color: #000; white-space: nowrap; display: flex; align-items: center; gap: 4px; flex-shrink: 0; width: 34px; font-family: 'Galmuri11', 'Press Start 2P', 'Courier New', monospace; }
+  .custom-card select {
+    flex: 1; min-width: 0; font-size: 11px; color: #000;
+    background: #fff; outline: none; font-family: 'Galmuri11', 'Press Start 2P', 'Courier New', monospace; cursor: pointer;
+    border-style: solid; border-width: 2px; border-color: #808080 #ffffff #ffffff #808080;
+    padding: 2px 4px; border-radius: 0;
+  }
+  .custom-card select:focus { outline: 1px dotted #000; }
+
+  /* --- 방명록 --- */
+  .chat-card { margin-top: 8px; padding: 3px 6px 6px 6px; }
+  .chat-header { display: flex; align-items: center; justify-content: space-between; margin: -3px -6px 6px -6px; padding: 3px 6px; gap: 6px; background: linear-gradient(90deg, #000080, #1084d0); }
+  .chat-header .settings-label { margin: 0; padding: 0; background: none; color: #fff; text-shadow: 1px 1px 0 rgba(0,0,0,0.35); }
+  .placard { font-size: 11px; font-weight: bold; color: #000; text-align: center; margin-bottom: 8px; }
+  .placard span { background: #ffff00; padding: 0 2px; }
+
+  .notice-wrap {
+    background: #fff; border: none; height: auto; overflow: visible; margin-bottom: 8px; display: none;
+    position: relative; text-align: center; box-shadow: none;
+    border-style: solid; border-width: 2px; border-color: #808080 #ffffff #ffffff #808080; padding: 3px 6px;
+  }
+  .notice-inner { display: inline-block; white-space: nowrap; font-size: 13px; font-weight: normal; color: #000; padding: 0; font-family: 'Galmuri11', 'Press Start 2P', 'Courier New', monospace; animation: shake 0.8s ease-in-out infinite; }
+  .notice-inner span { display: inline-block; vertical-align: middle; background: none; padding: 0 3px; color: #000; }
+  .notice-edit-btn { position: absolute; right: 6px; top: 50%; transform: translateY(-50%); background: none; border: none; color: #000080; font-size: 13px; padding: 0; cursor: pointer; display: none; }
+  @keyframes shake { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-3px)} 40%{transform:translateX(3px)} 60%{transform:translateX(-2px)} 80%{transform:translateX(2px)} }
+
+  .chat-nickname {
+    font-size: 10px; color: #000; background: #c0c0c0; padding: 0 8px;
+    height: 24px; display: inline-flex; align-items: center;
+    border-radius: 0; font-family: 'Galmuri11', 'Press Start 2P', 'Courier New', monospace; cursor: pointer;
+    border-style: solid; border-width: 2px; border-color: #ffffff #808080 #808080 #ffffff;
+    box-sizing: border-box;
+  }
+  .nick-emoji-wrap { position: relative; display: inline-block; font-size: inherit; line-height: 1; }
+  .nick-crown { position: absolute; top: -0.6em; left: 35%; transform: translateX(-50%); font-size: 1.3em; pointer-events: none; }
 
   .photo-view-modal { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.85); z-index: 200; justify-content: center; align-items: center; }
   .photo-view-img { max-width: 95vw; max-height: 90vh; border-radius: 0; object-fit: contain; border: 3px solid #c0c0c0; }
