@@ -172,9 +172,9 @@
     border-radius: 12px; padding: 10px 34px 10px 12px;
     align-items: center; gap: 8px;
   }
-  .notice-icon { color: #4dabf7; font-size: 15px; flex-shrink: 0; }
-  .notice-chevron { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); color: #b0b0b0; font-size: 15px; pointer-events: none; }
-  .notice-inner { display: inline-block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 13px; font-weight: 700; color: #191919; padding: 0; font-family: 'Noto Sans KR', sans-serif; max-width: calc(100% - 50px); }
+  .notice-icon { color: #4dabf7; font-size: 16px; flex-shrink: 0; line-height: 1; display: inline-flex; align-items: center; position: relative; top: 1px; }
+  .notice-chevron { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); color: #b0b0b0; font-size: 15px; pointer-events: none; line-height: 1; }
+  .notice-inner { display: inline-flex; align-items: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 13px; font-weight: 700; color: #191919; padding: 0; line-height: 1; font-family: 'Noto Sans KR', sans-serif; max-width: calc(100% - 50px); }
   .notice-inner span { display: inline-block; vertical-align: middle; background: none; padding: 0; color: #191919; }
   .notice-edit-btn { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); background: none; border: none; color: #2b8fd1; font-size: 13px; padding: 0; cursor: pointer; display: none; }
 
@@ -386,7 +386,7 @@
   .kings-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; margin-bottom: 10px; }
   .king-row { display: flex; align-items: center; gap: 8px; padding: 3px 0; }
   .king-rank { font-size: 14px; flex-shrink: 0; }
-  .king-nick { font-size: 12px; color: #191919; font-weight: 400; flex: 1; min-width: 0; }
+  .king-nick { font-size: 9px; color: #191919; font-weight: 400; flex: 1; min-width: 0; }
   .king-count { font-size: 10px; color: #a67c00; background: #fff6d9; padding: 1px 7px; border-radius: 99px; flex-shrink: 0; white-space: nowrap; }
   .king-divider { display: none !important; }
 
