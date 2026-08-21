@@ -23,7 +23,7 @@
   body {
     background: #b2c7d9;
     font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
-    font-size: 13px;
+    font-size: 12px;
     color: #191919;
     display: flex; justify-content: center; align-items: flex-start;
     min-height: 100vh; padding: 1.5rem 0.75rem;
@@ -35,19 +35,19 @@
   .card, .blocks-card, .settings-card, .custom-card, .chat-card,
   .admin-dashboard, .king-card, .photo-carousel-card {
     background: #ffffff;
-    border-radius: 16px;
+    border-radius: 13px;
     border: none;
     box-shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04);
-    padding: 14px 16px;
+    padding: 11px 13px;
     position: relative;
   }
   .card-label, .blocks-label, .settings-label, .chat-header .settings-label,
   .admin-dashboard-header, .king-header, .photo-carousel-header {
     color: #191919;
     font-weight: 700;
-    font-size: 14px;
+    font-size: 13px;
     padding: 0;
-    margin: 0 0 12px 0;
+    margin: 0 0 9px 0;
     display: flex; align-items: center; gap: 6px;
     background: none;
     text-shadow: none;
@@ -57,7 +57,7 @@
 
   .cards { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; align-items: stretch; }
 
-  .card-value { font-size: 24px; font-weight: 700; color: #191919; font-variant-numeric: tabular-nums; letter-spacing: -0.5px; line-height: 1.2; font-family: 'Noto Sans KR', sans-serif; }
+  .card-value { font-size: 20px; font-weight: 700; color: #191919; font-variant-numeric: tabular-nums; letter-spacing: -0.5px; line-height: 1.2; font-family: 'Noto Sans KR', sans-serif; }
 
   /* --- 버튼: 카톡 옐로우 필 버튼 --- */
   .hate-btn, .lunch-btn, #fortune-btn, .photo-upload-btn,
@@ -69,10 +69,10 @@
   }
 
   .hate-btn, .lunch-btn, #fortune-btn {
-    width: 100%; margin-top: 10px; padding: 9px 4px;
-    background: #fee500; color: #191919; font-size: 12px; font-weight: 700;
+    width: 100%; margin-top: 8px; padding: 7px 4px;
+    background: #fee500; color: #191919; font-size: 11px; font-weight: 700;
     cursor: pointer;
-    border: none; border-radius: 20px;
+    border: none; border-radius: 16px;
     box-shadow: 0 1px 2px rgba(0,0,0,0.1);
   }
   .hate-btn:active, .lunch-btn:active, #fortune-btn:active {
@@ -86,11 +86,11 @@
 
   .card-sub-row { display: flex; align-items: center; gap: 6px; margin-top: 4px; }
   .card-sub { font-size: 11px; color: #9b9b9b; }
-  .muted { font-size: 13px; font-weight: 400; color: #9b9b9b; }
+  .muted { font-size: 12px; font-weight: 400; color: #9b9b9b; }
 
   /* --- 배지: 라운드 필 --- */
   .badge {
-    display: inline-block; font-size: 11px; padding: 3px 9px; border-radius: 99px;
+    display: inline-block; font-size: 10px; padding: 2px 8px; border-radius: 99px;
     font-family: 'Noto Sans KR', sans-serif; font-weight: 700;
     border: none;
   }
@@ -101,7 +101,7 @@
 
   .blocks-card { margin-bottom: 10px; }
   .blocks-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
-  .blocks-label { font-size: 14px; color: #191919; font-weight: 700; display: flex; align-items: center; gap: 6px; padding: 0; margin: 0; background: none; }
+  .blocks-label { font-size: 13px; color: #191919; font-weight: 700; display: flex; align-items: center; gap: 6px; padding: 0; margin: 0; background: none; }
   .lunch-toggle label { font-size: 11px; color: #6b6b6b; cursor: pointer; display: flex; align-items: center; gap: 4px; font-family: 'Noto Sans KR', sans-serif; }
   .lunch-toggle input[type="checkbox"] {
     appearance: none; -webkit-appearance: none; width: 15px; height: 15px;
@@ -167,13 +167,16 @@
   .placard span { background: #fff6d9; padding: 0 2px; border-radius: 3px; }
 
   .notice-wrap {
-    background: #fffbe8; border: none; height: auto; overflow: visible; margin-bottom: 10px; display: none;
-    position: relative; text-align: center; box-shadow: none;
-    border-radius: 12px; padding: 8px 12px;
+    background: #ffffff; border: 1px solid #ececec; height: auto; overflow: visible; margin-bottom: 10px; display: none;
+    position: relative; text-align: left; box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+    border-radius: 12px; padding: 10px 34px 10px 12px;
+    align-items: center; gap: 8px;
   }
-  .notice-inner { display: inline-block; white-space: nowrap; font-size: 12.5px; font-weight: 500; color: #a67c00; padding: 0; font-family: 'Noto Sans KR', sans-serif; }
-  .notice-inner span { display: inline-block; vertical-align: middle; background: none; padding: 0 3px; color: #a67c00; }
-  .notice-edit-btn { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); background: none; border: none; color: #a67c00; font-size: 13px; padding: 0; cursor: pointer; display: none; }
+  .notice-icon { color: #4dabf7; font-size: 15px; flex-shrink: 0; }
+  .notice-chevron { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); color: #b0b0b0; font-size: 15px; pointer-events: none; }
+  .notice-inner { display: inline-block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 13px; font-weight: 700; color: #191919; padding: 0; font-family: 'Noto Sans KR', sans-serif; max-width: calc(100% - 50px); }
+  .notice-inner span { display: inline-block; vertical-align: middle; background: none; padding: 0; color: #191919; }
+  .notice-edit-btn { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); background: none; border: none; color: #2b8fd1; font-size: 13px; padding: 0; cursor: pointer; display: none; }
 
   .chat-nickname {
     font-size: 11px; color: #191919; background: #fee500; padding: 0 10px;
@@ -193,7 +196,7 @@
     z-index: 100; justify-content: center; align-items: center;
   }
   .nick-box, .photo-upload-box {
-    background: #fff; border-radius: 20px; padding: 18px; width: 88%; max-width: 340px;
+    background: #fff; border-radius: 16px; padding: 15px; width: 88%; max-width: 320px;
     display: flex; flex-direction: column; gap: 10px; max-height: 80vh;
     border: none;
     box-shadow: 0 8px 32px rgba(0,0,0,0.25);
@@ -227,10 +230,10 @@
   .chat-thread-group:last-child { margin-bottom: 0; }
 
   .chat-msg {
-    font-size: 12.5px;
+    font-size: 12px;
     background: #f6f6f6;
-    border-radius: 14px;
-    padding: 9px 12px;
+    border-radius: 12px;
+    padding: 7px 10px;
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
@@ -330,20 +333,20 @@
 
   .chat-input-row { display: flex; gap: 8px; }
   .chat-input-row input {
-    flex: 1; min-width: 0; font-size: 13px; color: #191919; border-radius: 20px; padding: 9px 14px;
+    flex: 1; min-width: 0; font-size: 12.5px; color: #191919; border-radius: 18px; padding: 7px 12px;
     background: #f1f1f1; outline: none; font-family: 'Noto Sans KR', sans-serif;
     border: none;
   }
   .chat-input-row input:focus { outline: 2px solid #fee500; }
   .chat-input-row button {
-    background: #fee500; color: #191919; border-radius: 50%; width: 36px; height: 36px; flex-shrink: 0; cursor: pointer;
+    background: #fee500; color: #191919; border-radius: 50%; width: 32px; height: 32px; flex-shrink: 0; cursor: pointer;
     display: flex; align-items: center; justify-content: center;
     border: none;
   }
   .chat-input-row button:active { opacity: 0.8; }
 
   .chat-refresh-btn, .admin-btn {
-    background: #f1f1f1; border-radius: 50%; width: 26px; height: 26px; display: flex; align-items: center;
+    background: #f1f1f1; border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center;
     justify-content: center; cursor: pointer; color: #191919; font-size: 12px;
     border: none;
   }
@@ -358,7 +361,7 @@
     border: none;
   }
   .stat-box-label { font-size: 10px; color: #a67c00; margin-bottom: 2px; font-weight: 700; }
-  .stat-box-value { font-size: 18px; font-weight: 700; color: #191919; font-family: 'Noto Sans KR', sans-serif; }
+  .stat-box-value { font-size: 16px; font-weight: 700; color: #191919; font-family: 'Noto Sans KR', sans-serif; }
   .stat-chart { margin-top: 10px; background: #f6f6f6; padding: 10px; border-radius: 12px; border: none; }
   .stat-chart-label { font-size: 10px; color: #6b6b6b; margin-bottom: 4px; }
   .chart-bars { display: flex; align-items: flex-end; gap: 3px; height: 50px; }
@@ -379,7 +382,7 @@
   .delete-btn { color: #b0b0b0; }
   .delete-btn:hover { color: #e0503c; }
 
-  .king-card { padding: 12px 14px; }
+  .king-card { padding: 10px 12px; }
   .kings-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; margin-bottom: 10px; }
   .king-row { display: flex; align-items: center; gap: 8px; padding: 3px 0; }
   .king-rank { font-size: 14px; flex-shrink: 0; }
@@ -392,11 +395,11 @@
   .photo-carousel-wrap { overflow: hidden; position: relative; }
   .photo-carousel-track { display: flex; transition: transform 0.3s ease; }
   .photo-card-item {
-    flex: 0 0 100%; display: flex; align-items: stretch; background: #f6f6f6; border-radius: 14px; overflow: hidden; height: 96px;
+    flex: 0 0 100%; display: flex; align-items: stretch; background: #f6f6f6; border-radius: 14px; overflow: hidden; height: 84px;
     border: none;
     gap: 8px; padding: 4px;
   }
-  .photo-card-img { width: 90px; height: auto; align-self: stretch; flex-shrink: 0; object-fit: cover; background: #e6e6e6; cursor: pointer; margin-right: 0; border: none; border-radius: 10px; }
+  .photo-card-img { width: 78px; height: auto; align-self: stretch; flex-shrink: 0; object-fit: cover; background: #e6e6e6; cursor: pointer; margin-right: 0; border: none; border-radius: 10px; }
   .photo-card-info {
     padding: 6px 8px; flex: 1; display: flex; flex-direction: column; justify-content: space-between; min-width: 0; overflow: hidden;
     background: none; border: none;
@@ -621,8 +624,10 @@
     </div>
   </div>
     <div class="notice-wrap" id="notice-wrap">
+      <i class="ti ti-speakerphone notice-icon"></i>
       <div class="notice-inner" id="notice-inner"></div>
       <button class="notice-edit-btn" id="notice-edit-btn">✏️</button>
+      <i class="ti ti-chevron-down notice-chevron"></i>
     </div>
     
     <div class="chat-messages" id="chat-messages"></div>
@@ -1190,7 +1195,7 @@ async function loadNotice(){
   try{
     const res=await fetch('/api/notice');
     const data=await res.json();
-    if(data.text){buildMarquee(data.text);noticeWrap.style.display='block';}
+    if(data.text){buildMarquee(data.text);noticeWrap.style.display='flex';}
     else{noticeWrap.style.display='none';}
   }catch(e){}
 }
@@ -2286,7 +2291,7 @@ document.getElementById('admin-btn').addEventListener('click',()=>{
   document.getElementById('admin-btn').textContent='🔓';
   document.getElementById('admin-dashboard').style.display='block';
   loadStats();
-  noticeWrap.style.display='block';
+  noticeWrap.style.display='flex';
   noticeEditBtn.style.display='block';
   renderPage();
 });
