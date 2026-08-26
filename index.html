@@ -173,11 +173,11 @@
     align-items: center; justify-content: center; gap: 8px;
   }
   .notice-icon {
-    width: 20px; height: 20px; flex-shrink: 0;
+    color: #4dabf7; font-size: 16px; flex-shrink: 0;
     display: inline-flex; align-items: center; justify-content: center;
-    overflow: visible; font-size: 16px; line-height: 1;
+    line-height: 1;
   }
-  .notice-inner { display: inline-flex; align-items: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 13px; font-weight: 700; color: #191919; padding: 0; line-height: 1; font-family: 'Noto Sans KR', sans-serif; max-width: calc(100% - 26px); }
+  .notice-inner { display: block; white-space: normal; overflow: visible; word-break: break-word; font-size: 13px; font-weight: 700; color: #191919; padding: 0; line-height: 1.4; font-family: 'Noto Sans KR', sans-serif; max-width: calc(100% - 26px); text-align: center; }
   .notice-inner span { display: inline-block; vertical-align: middle; background: none; padding: 0; color: #191919; }
   .notice-edit-btn { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); background: none; border: none; color: #2b8fd1; font-size: 13px; padding: 0; cursor: pointer; display: none; }
 
@@ -630,7 +630,7 @@
     </div>
   </div>
     <div class="notice-wrap" id="notice-wrap">
-      <span class="notice-icon">📢</span>
+      <i class="ti ti-speakerphone notice-icon"></i>
       <div class="notice-inner" id="notice-inner"></div>
       <button class="notice-edit-btn" id="notice-edit-btn">✏️</button>
     </div>
